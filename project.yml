@@ -1,0 +1,32 @@
+name: MultiOut
+options:
+  bundleIdPrefix: com.multiout
+  deploymentTarget:
+    macOS: "13.0"
+  createIntermediateGroups: false
+
+targets:
+  MultiOut:
+    type: application
+    platform: macOS
+    sources:
+      - path: MultiOut
+        excludes:
+          - "**/*.plist"
+          - "**/*.entitlements"
+    info:
+      path: MultiOut/Info.plist
+      properties:
+        CFBundleName: MultiOut
+        CFBundleDisplayName: MultiOut
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        LSUIElement: YES
+        NSHumanReadableCopyright: ""
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.multiout.app
+      SWIFT_VERSION: "5.9"
+      MACOSX_DEPLOYMENT_TARGET: "13.0"
+      CODE_SIGN_STYLE: Automatic
+      DEVELOPMENT_TEAM: ""
+      ENABLE_HARDENED_RUNTIME: NO
