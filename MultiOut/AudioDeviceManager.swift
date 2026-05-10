@@ -113,24 +113,34 @@ final class AudioDeviceManager: ObservableObject {
         var ids = [AudioDeviceID](repeating: 0, count: count)
         AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject), &addr, 0, nil, &size, &ids)
 
-        let newDevices = ids.compactMap { makeDevice($0) }
-        let validIDs = Set(newDevices.map { $0.id })
+        var newDevices: [AudioDevice] = []
+        for id in ids {
+            guard isOutputDevice(id),
+                  let name = stringProp(id, kAudioObjectPropertyName),
+                  let uid = stringProp(id, kAudioDevicePropertyDeviceUID),
+                  uid != "com.multiout.aggregate" else { continue }
+            let transport = readTransportType(id)
+            // AirPlay devices can't be aggregated — Audio MIDI Setup hides them too.
+            if transport == kAudioDeviceTransportTypeAirPlay { continue }
+            newDevices.append(AudioDevice(id: id, name: name, uid: uid,
+                                          canSetVolume: checkSettable(id),
+                                          transportType: transport))
+        }
+
+        let freshIDs = Set(newDevices.map { $0.id })
+
+        // Selected devices that vanished from CoreAudio are likely sub-devices absorbed
+        // by our aggregate — keep them visible and selected so the UI stays consistent.
+        let preserved = devices.filter { selectedIDs.contains($0.id) && !freshIDs.contains($0.id) }
+        newDevices += preserved
+
         devices = newDevices
-        let removed = selectedIDs.subtracting(validIDs)
-        if !removed.isEmpty {
-            selectedIDs = selectedIDs.intersection(validIDs)
+
+        let trulyGone = selectedIDs.subtracting(Set(newDevices.map { $0.id }))
+        if !trulyGone.isEmpty {
+            selectedIDs = selectedIDs.subtracting(trulyGone)
             updateAggregate()
         }
-    }
-
-    private func makeDevice(_ id: AudioDeviceID) -> AudioDevice? {
-        guard isOutputDevice(id),
-              let name = stringProp(id, kAudioObjectPropertyName),
-              let uid = stringProp(id, kAudioDevicePropertyDeviceUID),
-              uid != "com.multiout.aggregate" else { return nil }
-        return AudioDevice(id: id, name: name, uid: uid,
-                           canSetVolume: checkSettable(id),
-                           transportType: readTransportType(id))
     }
 
     private func readTransportType(_ id: AudioDeviceID) -> UInt32 {
@@ -238,9 +248,31 @@ final class AudioDeviceManager: ObservableObject {
     }
 
     private func startListening() {
-        var addr = AudioObjectPropertyAddress(kAudioHardwarePropertyDevices)
-        AudioObjectAddPropertyListenerBlock(AudioObjectID(kAudioObjectSystemObject), &addr, nil) { [weak self] _, _ in
+        var devAddr = AudioObjectPropertyAddress(kAudioHardwarePropertyDevices)
+        AudioObjectAddPropertyListenerBlock(AudioObjectID(kAudioObjectSystemObject), &devAddr, nil) { [weak self] _, _ in
             Task { @MainActor [weak self] in self?.refreshDevices() }
         }
+
+        // Detect when something external (System Settings, Control Center) changes
+        // the default output away from our aggregate device
+        var defAddr = AudioObjectPropertyAddress(kAudioHardwarePropertyDefaultOutputDevice)
+        AudioObjectAddPropertyListenerBlock(AudioObjectID(kAudioObjectSystemObject), &defAddr, nil) { [weak self] _, _ in
+            Task { @MainActor [weak self] in self?.handleExternalDefaultChange() }
+        }
     }
+
+    private func handleExternalDefaultChange() {
+        guard let aggID = aggregateID,
+              let currentDefault = readDefault(),
+              currentDefault != aggID else { return }
+        // System default changed away from our aggregate externally — reset state
+        AudioHardwareDestroyAggregateDevice(aggID)
+        aggregateID = nil
+        savedDefaultID = nil
+        selectedIDs = []
+        isActive = false
+        // refreshDevices() will be called by the kAudioHardwarePropertyDevices
+        // notification that fires when the aggregate is destroyed
+    }
+
 }
