@@ -1,33 +1,30 @@
 import SwiftUI
 import CoreAudio
-import ServiceManagement
-
-private extension Color {
-    static let chassis    = Color(red: 0.073, green: 0.071, blue: 0.078)
-    static let armed      = Color(red: 1.00,  green: 0.62,  blue: 0.20)
-    static let armedDim   = Color(red: 0.78,  green: 0.46,  blue: 0.13)
-    static let signal     = Color(red: 0.42,  green: 0.88,  blue: 0.55)
-    static let danger     = Color(red: 0.95,  green: 0.32,  blue: 0.30)
-    static let hairline   = Color.white.opacity(0.07)
-    static let textHi     = Color(white: 0.95)
-    static let textMid    = Color(white: 0.55)
-    static let textLo     = Color(white: 0.32)
-}
 
 struct MenuBarView: View {
     @EnvironmentObject var manager: AudioDeviceManager
     @EnvironmentObject var presets: PresetStore
+    @StateObject private var updater = UpdateChecker()
     @State private var showSaveField = false
     @State private var presetName = ""
+    @State private var showingSettings = false
 
     private var showPresetsSection: Bool {
         !presets.presets.isEmpty || manager.selectedIDs.count >= 2
     }
 
     var body: some View {
+        if showingSettings {
+            SettingsView(visible: $showingSettings, updater: updater)
+        } else {
+            mainView
+        }
+    }
+
+    private var mainView: some View {
         VStack(spacing: 0) {
             statusHeader
-            hairline
+            hairlineDivider()
 
             VStack(spacing: 0) {
                 if manager.devices.isEmpty {
@@ -50,24 +47,20 @@ struct MenuBarView: View {
             .padding(.vertical, 4)
 
             if showPresetsSection {
-                hairline
+                hairlineDivider()
                 presetsSection
             }
 
             if showSaveField {
-                hairline
+                hairlineDivider()
                 saveField
             }
 
-            hairline
+            hairlineDivider()
             footer
         }
         .frame(width: 320)
         .background(Color.chassis)
-    }
-
-    private var hairline: some View {
-        Rectangle().fill(Color.hairline).frame(height: 0.5)
     }
 
     private var statusHeader: some View {
@@ -176,8 +169,23 @@ struct MenuBarView: View {
 
     private var footer: some View {
         HStack(spacing: 10) {
-            AutoLaunchButton()
+            Button { showingSettings = true } label: {
+                HStack(spacing: 5) {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 11, weight: .medium))
+                    Text("设置")
+                        .font(.system(size: 11, weight: .medium))
+                        .tracking(0.3)
+                    if updater.hasUpdate {
+                        Circle().fill(Color.armed).frame(width: 5, height: 5)
+                    }
+                }
+                .foregroundStyle(Color.textMid)
+            }
+            .buttonStyle(.plain)
+
             Spacer()
+
             Button { NSApplication.shared.terminate(nil) } label: {
                 HStack(spacing: 5) {
                     Image(systemName: "power")
@@ -368,40 +376,6 @@ struct LEDMeter: View {
         if frac > 0.88 { return Color.danger }
         if frac > 0.72 { return Color.armed }
         return Color.armed.opacity(0.9)
-    }
-}
-
-struct AutoLaunchButton: View {
-    @State private var enabled: Bool = SMAppService.mainApp.status == .enabled
-
-    var body: some View {
-        Button { toggleState() } label: {
-            HStack(spacing: 7) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 3.5)
-                        .stroke(Color.white.opacity(0.18), lineWidth: 0.8)
-                        .frame(width: 13, height: 13)
-                    if enabled {
-                        Image(systemName: "checkmark")
-                            .font(.system(size: 8, weight: .bold))
-                            .foregroundStyle(Color.signal)
-                    }
-                }
-                Text("开机自动启动")
-                    .font(.system(size: 11))
-                    .foregroundStyle(Color.textMid)
-            }
-        }
-        .buttonStyle(.plain)
-    }
-
-    private func toggleState() {
-        if enabled {
-            try? SMAppService.mainApp.unregister()
-        } else {
-            try? SMAppService.mainApp.register()
-        }
-        enabled = SMAppService.mainApp.status == .enabled
     }
 }
 
