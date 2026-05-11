@@ -1,5 +1,6 @@
 import Foundation
 import CoreAudio
+import ApplicationServices
 
 private extension AudioObjectPropertyAddress {
     init(_ sel: AudioObjectPropertySelector,
@@ -17,18 +18,21 @@ final class AudioDeviceManager: ObservableObject {
     @Published private(set) var isActive = false {
         didSet { volumeKeyMonitor?.interceptEnabled = isActive }
     }
+    @Published private(set) var hasAccessibilityPermission = false
 
     private var aggregateID: AudioDeviceID?
     private var savedDefaultID: AudioDeviceID?
 
     private var volumeKeyMonitor: VolumeKeyMonitor?
     private var preMuteVolumes: [AudioDeviceID: Float]?
+    private var permissionTimer: DispatchSourceTimer?
 
     init() {
         cleanupOrphans()
         refreshDevices()
         startListening()
         startVolumeKeyMonitoring()
+        startPermissionPolling()
     }
 
     func toggle(_ device: AudioDevice) {
@@ -286,6 +290,32 @@ final class AudioDeviceManager: ObservableObject {
     // Aggregate devices don't expose master volume to CoreAudio, so the system
     // volume slider is greyed out when our aggregate is the default. We intercept
     // the hardware volume keys globally and apply the change to all sub-devices.
+    // SwiftUI Timer.publish in a MenuBarExtra popover isn't reliable — alt-tab-macos
+    // uses a DispatchSourceTimer on a background queue for the same reason.
+    private func startPermissionPolling() {
+        let timer = DispatchSource.makeTimerSource(queue: DispatchQueue.global(qos: .utility))
+        timer.schedule(deadline: .now(), repeating: 1.0)
+        timer.setEventHandler { [weak self] in
+            Task { @MainActor [weak self] in self?.recheckPermission() }
+        }
+        timer.resume()
+        permissionTimer = timer
+    }
+
+    private func recheckPermission() {
+        // Retry tap creation in case permission was just granted externally.
+        volumeKeyMonitor?.start(promptForPermission: false)
+        // Trust either signal — AX may have stale in-process state, tap creation
+        // may fail for unrelated reasons. Granted if either reports true.
+        let axTrusted = AXIsProcessTrustedWithOptions([
+            kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: false
+        ] as CFDictionary)
+        let now = axTrusted || (volumeKeyMonitor?.isRunning ?? false)
+        if now != hasAccessibilityPermission {
+            hasAccessibilityPermission = now
+        }
+    }
+
     private func startVolumeKeyMonitoring() {
         volumeKeyMonitor = VolumeKeyMonitor { [weak self] action in
             Task { @MainActor [weak self] in

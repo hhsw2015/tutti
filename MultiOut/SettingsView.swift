@@ -70,19 +70,16 @@ struct SettingsView: View {
 }
 
 struct PermissionRow: View {
-    @State private var granted = isAccessibilityGranted()
-    private let timer = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
+    @EnvironmentObject var manager: AudioDeviceManager
 
     var body: some View {
+        let granted = manager.hasAccessibilityPermission
         HStack(spacing: 9) {
             ZStack {
-                if granted {
-                    Circle().fill(Color.signal.opacity(0.45))
-                        .frame(width: 16, height: 16).blur(radius: 3.5)
-                } else {
-                    Circle().fill(Color.danger.opacity(0.45))
-                        .frame(width: 16, height: 16).blur(radius: 3.5)
-                }
+                Circle()
+                    .fill((granted ? Color.signal : Color.danger).opacity(0.45))
+                    .frame(width: 16, height: 16)
+                    .blur(radius: 3.5)
                 Circle()
                     .fill(granted ? Color.signal : Color.danger)
                     .frame(width: 7, height: 7)
@@ -108,7 +105,6 @@ struct PermissionRow: View {
         }
         .padding(.horizontal, 14)
         .padding(.bottom, 10)
-        .onReceive(timer) { _ in granted = isAccessibilityGranted() }
     }
 }
 
@@ -231,12 +227,6 @@ struct UpdatesSection: View {
             Text(message).foregroundStyle(Color.danger.opacity(0.85))
         }
     }
-}
-
-func isAccessibilityGranted() -> Bool {
-    AXIsProcessTrustedWithOptions([
-        kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: false
-    ] as CFDictionary)
 }
 
 func openAccessibilitySettings() {

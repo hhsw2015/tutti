@@ -23,6 +23,8 @@ final class VolumeKeyMonitor {
 
     var interceptEnabled: Bool = false
 
+    var isRunning: Bool { eventTap != nil }
+
     private let onKey: (VolumeKeyAction) -> Void
 
     init(onKey: @escaping (VolumeKeyAction) -> Void) {
@@ -33,10 +35,13 @@ final class VolumeKeyMonitor {
     func start(promptForPermission: Bool) -> Bool {
         guard eventTap == nil else { return true }
 
-        let trusted = AXIsProcessTrustedWithOptions([
-            kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: promptForPermission
-        ] as CFDictionary)
-        guard trusted else { return false }
+        // Use AX only for its UI side-effect (prompting). Its return value can be
+        // stale on unsigned binaries — tapCreate below is the authoritative check.
+        if promptForPermission {
+            _ = AXIsProcessTrustedWithOptions([
+                kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true
+            ] as CFDictionary)
+        }
 
         // NSEvent.EventType.systemDefined (= 14) covers media key aux events;
         // CGEventType doesn't expose it as a named case.
