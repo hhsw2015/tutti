@@ -15,6 +15,7 @@ final class AudioDeviceManager: ObservableObject {
     @Published private(set) var devices: [AudioDevice] = []
     @Published private(set) var selectedIDs: Set<AudioDeviceID> = []
     @Published var volumes: [AudioDeviceID: Float] = [:]
+    @Published private(set) var sampleRates: [AudioDeviceID: Double] = [:]
     @Published private(set) var isActive = false {
         didSet { volumeKeyMonitor?.interceptEnabled = isActive }
     }
@@ -146,11 +147,26 @@ final class AudioDeviceManager: ObservableObject {
 
         devices = newDevices
 
+        var newRates: [AudioDeviceID: Double] = [:]
+        for d in newDevices {
+            let r = readSampleRate(d.id)
+            newRates[d.id] = r > 0 ? r : sampleRates[d.id] ?? 0
+        }
+        sampleRates = newRates
+
         let trulyGone = selectedIDs.subtracting(Set(newDevices.map { $0.id }))
         if !trulyGone.isEmpty {
             selectedIDs = selectedIDs.subtracting(trulyGone)
             updateAggregate()
         }
+    }
+
+    private func readSampleRate(_ id: AudioDeviceID) -> Double {
+        var addr = AudioObjectPropertyAddress(kAudioDevicePropertyNominalSampleRate)
+        var rate: Float64 = 0
+        var size = UInt32(MemoryLayout<Float64>.size)
+        guard AudioObjectGetPropertyData(id, &addr, 0, nil, &size, &rate) == noErr else { return 0 }
+        return rate
     }
 
     private func readTransportType(_ id: AudioDeviceID) -> UInt32 {

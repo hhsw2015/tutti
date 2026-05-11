@@ -235,6 +235,13 @@ struct DeviceRow: View {
                             .foregroundStyle(isSelected ? Color.textHi : Color.textMid)
                             .lineLimit(1)
 
+                        if let rate = manager.sampleRates[device.id], rate > 0 {
+                            Text(formatSampleRate(rate))
+                                .font(.system(size: 9.5, weight: .medium, design: .monospaced))
+                                .tracking(0.3)
+                                .foregroundStyle(Color.textLo)
+                        }
+
                         Spacer(minLength: 6)
 
                         if isSelected {
@@ -289,6 +296,14 @@ struct DeviceRow: View {
         if hovering { return Color.white.opacity(0.04) }
         return Color.clear
     }
+}
+
+private func formatSampleRate(_ hz: Double) -> String {
+    let k = hz / 1000
+    if k.truncatingRemainder(dividingBy: 1) == 0 {
+        return "\(Int(k))k"
+    }
+    return String(format: "%.1fk", k)
 }
 
 struct PresetRow: View {
