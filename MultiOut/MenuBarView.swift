@@ -1,172 +1,367 @@
 import SwiftUI
 import CoreAudio
 
+private let panelWidth: CGFloat = 320
+private let capsuleRadius: CGFloat = 22
+private let innerRowRadius: CGFloat = 14
+private let capsuleGap: CGFloat = 8
+
+// MARK: - Root
+
 struct MenuBarView: View {
     @EnvironmentObject var manager: AudioDeviceManager
     @EnvironmentObject var presets: PresetStore
     @StateObject private var updater = UpdateChecker()
+    @StateObject private var prefs = AppearancePrefs.shared
     @State private var showSaveField = false
     @State private var presetName = ""
     @State private var showingSettings = false
+    @State private var devicesFolded = false
+    @State private var presetsFolded = false
 
+    private var showMaster: Bool { manager.selectedIDs.count >= 2 }
     private var showPresetsSection: Bool {
         !presets.presets.isEmpty || manager.selectedIDs.count >= 2
     }
 
     var body: some View {
-        if showingSettings {
-            SettingsView(visible: $showingSettings, updater: updater)
-        } else {
-            mainView
+        ZStack {
+            Color.panelBackdrop.ignoresSafeArea()
+
+            Group {
+                if showingSettings {
+                    SettingsView(visible: $showingSettings, updater: updater)
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
+                } else {
+                    mainView
+                        .transition(.move(edge: .leading).combined(with: .opacity))
+                }
+            }
+            .animation(.easeOut(duration: 0.22), value: showingSettings)
         }
+        .frame(width: panelWidth)
+        .environmentObject(prefs)
     }
 
     private var mainView: some View {
-        VStack(spacing: 0) {
-            statusHeader
-            hairlineDivider()
+        VStack(spacing: capsuleGap) {
+            StatusCapsule()
 
-            VStack(spacing: 0) {
-                if manager.devices.isEmpty {
-                    Text("未发现音频输出设备")
-                        .font(.system(size: 11))
-                        .foregroundStyle(Color.textLo)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 22)
-                } else {
-                    if manager.selectedIDs.count >= 2 {
-                        MasterRow()
-                        hairlineDivider()
-                    }
-                    ForEach(manager.devices) { device in
-                        DeviceRow(
-                            device: device,
-                            isSelected: manager.selectedIDs.contains(device.id)
-                        )
-                        .animation(.easeOut(duration: 0.16),
-                                   value: manager.selectedIDs.contains(device.id))
-                    }
-                }
+            if showMaster {
+                MasterCapsule()
+                    .transition(.scale(scale: 0.96).combined(with: .opacity))
             }
-            .padding(.vertical, 4)
+
+            DevicesCapsule(folded: $devicesFolded)
 
             if showPresetsSection {
-                hairlineDivider()
-                presetsSection
+                PresetsCapsule(
+                    folded: $presetsFolded,
+                    showSaveField: $showSaveField,
+                    presetName: $presetName
+                )
+                .transition(.scale(scale: 0.96).combined(with: .opacity))
             }
 
-            if showSaveField {
-                hairlineDivider()
-                saveField
-            }
-
-            hairlineDivider()
-            footer
+            DockCapsule(showingSettings: $showingSettings, updater: updater)
+                .padding(.top, 2)
         }
-        .frame(width: 320)
-        .background(Color.chassis)
+        .padding(.horizontal, 12)
+        .padding(.top, 12)
+        .padding(.bottom, 14)
+        .animation(.easeOut(duration: 0.20), value: showMaster)
+        .animation(.easeOut(duration: 0.20), value: showPresetsSection)
+        .animation(.easeOut(duration: 0.20), value: devicesFolded)
+        .animation(.easeOut(duration: 0.20), value: presetsFolded)
+    }
+}
+
+// MARK: - Status capsule
+
+private struct StatusCapsule: View {
+    @EnvironmentObject var manager: AudioDeviceManager
+
+    private var count: Int { manager.selectedIDs.count }
+    private var isMuted: Bool { manager.isMuted }
+
+    private var statusText: String {
+        if isMuted { return "已静音 · \(count) 个设备待命" }
+        switch count {
+        case 0:  return "待机"
+        case 1:  return "正在输出"
+        default: return "正在输出 · \(count) 个设备"
+        }
     }
 
-    private var statusHeader: some View {
-        let count = manager.selectedIDs.count
-        let lit = count > 0
-        return HStack(spacing: 9) {
-            ZStack {
-                if lit {
-                    Circle()
-                        .fill(Color.signal.opacity(0.45))
-                        .frame(width: 16, height: 16)
-                        .blur(radius: 3.5)
+    private var dotColor: Color {
+        if isMuted { return .muteRed }
+        if count > 0 { return .statusGreen }
+        return Color.white.opacity(0.22)
+    }
+
+    var body: some View {
+        GlassCapsule(cornerRadius: 18) {
+            HStack(spacing: 8) {
+                StatusDot(color: dotColor, active: count > 0 || isMuted)
+                Text(statusText)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(Color.glassTextHi)
+                    .lineLimit(1)
+                Spacer(minLength: 6)
+                Text("MULTIOUT")
+                    .font(.system(size: 10, weight: .semibold))
+                    .tracking(2.2)
+                    .foregroundStyle(Color.glassTextLo)
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+        }
+    }
+}
+
+// MARK: - Master capsule
+
+private struct MasterCapsule: View {
+    @EnvironmentObject var manager: AudioDeviceManager
+    @EnvironmentObject var prefs: AppearancePrefs
+
+    private var volumeBinding: Binding<Float> {
+        Binding(
+            get: { manager.masterVolume },
+            set: { manager.setMasterVolume($0) }
+        )
+    }
+
+    var body: some View {
+        let muted = manager.isMuted
+        GlassCapsule(tint: muted ? .muteRed : nil) {
+            VStack(alignment: .leading, spacing: 9) {
+                HStack {
+                    Text(muted ? "总音量 · 已静音" : "总音量")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(muted ? Color(red: 1.0, green: 0.71, blue: 0.69) : Color.glassTextHi)
+                    Spacer()
+                    Text("\(Int(manager.masterVolume * 100))%")
+                        .font(.system(size: 12).monospacedDigit())
+                        .foregroundStyle(Color.glassTextMid)
                 }
-                Circle()
-                    .fill(lit ? Color.signal : Color.white.opacity(0.18))
-                    .frame(width: 7, height: 7)
-            }
-            .frame(width: 16, height: 16)
 
-            Text(statusLabel(count: count))
-                .font(.system(size: 10.5, weight: .semibold))
-                .tracking(0.5)
-                .foregroundStyle(lit ? Color.textHi : Color.textMid)
-
-            Spacer()
-
-            Text("MULTIOUT")
-                .font(.system(size: 9, weight: .heavy, design: .monospaced))
-                .tracking(2.0)
-                .foregroundStyle(Color.textLo)
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 11)
-    }
-
-    private var presetsSection: some View {
-        VStack(spacing: 0) {
-            HStack {
-                Text("预设")
-                    .font(.system(size: 9.5, weight: .semibold))
-                    .tracking(1.5)
-                    .foregroundStyle(Color.textLo)
-                Spacer()
-                if manager.selectedIDs.count >= 2 {
-                    Button {
-                        showSaveField.toggle()
-                        if !showSaveField { presetName = "" }
-                    } label: {
-                        Text(showSaveField ? "取消" : "+ 保存当前")
-                            .font(.system(size: 10.5, weight: .medium))
-                            .foregroundStyle(showSaveField ? Color.textMid : Color.armed)
-                    }
-                    .buttonStyle(.plain)
+                HStack(spacing: 10) {
+                    MuteButton(muted: muted) { manager.toggleMasterMute() }
+                    GlassSlider(value: volumeBinding,
+                                accent: prefs.accent.color,
+                                muted: muted)
+                        .frame(height: 16)
                 }
             }
             .padding(.horizontal, 14)
-            .padding(.top, 10)
-            .padding(.bottom, presets.presets.isEmpty ? 10 : 4)
+            .padding(.vertical, 12)
+        }
+    }
+}
 
-            if !presets.presets.isEmpty {
-                VStack(spacing: 0) {
-                    ForEach(presets.presets) { preset in
-                        PresetRow(preset: preset)
-                    }
-                }
-                .padding(.bottom, 4)
+private struct MuteButton: View {
+    let muted: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            ZStack {
+                Circle()
+                    .fill(
+                        LinearGradient(
+                            colors: muted
+                                ? [Color(red: 1.0, green: 0.48, blue: 0.45),
+                                   Color(red: 1.0, green: 0.27, blue: 0.23)]
+                                : [Color.white.opacity(0.32),
+                                   Color.white.opacity(0.12)],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .overlay(
+                        Circle().stroke(Color.white.opacity(0.45), lineWidth: 0.5)
+                    )
+                    .frame(width: 32, height: 32)
+                    .shadow(color: muted ? Color.muteRed.opacity(0.35) : .clear,
+                            radius: 6, y: 1)
+
+                Image(systemName: muted ? "speaker.slash.fill" : "speaker.wave.2.fill")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(Color.white)
             }
         }
+        .buttonStyle(.plain)
     }
+}
 
-    private var saveField: some View {
-        HStack(spacing: 7) {
-            TextField("预设名称", text: $presetName)
-                .textFieldStyle(.plain)
-                .font(.system(size: 12))
-                .foregroundStyle(Color.textHi)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 6)
-                .background(
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(Color.white.opacity(0.04))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 4)
-                                .stroke(Color.white.opacity(0.09), lineWidth: 0.5)
+// MARK: - Glass slider
+
+private struct GlassSlider: View {
+    @Binding var value: Float
+    var accent: Color
+    var muted: Bool = false
+    var trackHeight: CGFloat = 6
+    var knobSize: CGFloat = 14
+
+    var body: some View {
+        GeometryReader { geo in
+            let w = geo.size.width
+            let fillWidth = max(0, min(1, CGFloat(value))) * w
+
+            ZStack(alignment: .leading) {
+                Capsule()
+                    .fill(Color.white.opacity(0.18))
+                    .overlay(
+                        Capsule().stroke(Color.white.opacity(0.15), lineWidth: 0.5)
+                    )
+                    .frame(height: trackHeight)
+
+                Capsule()
+                    .fill(
+                        LinearGradient(
+                            colors: muted
+                                ? [Color.white.opacity(0.40), Color.white.opacity(0.20)]
+                                : [accent.opacity(0.95).lighter(by: 0.25), accent],
+                            startPoint: .top,
+                            endPoint: .bottom
                         )
-                )
-                .onSubmit { commitSave() }
+                    )
+                    .frame(width: fillWidth, height: trackHeight)
+                    .shadow(color: muted ? .clear : accent.opacity(0.55),
+                            radius: 4, y: 0)
 
-            Button("保存") { commitSave() }
-                .buttonStyle(ArmedButton())
-                .keyboardShortcut(.defaultAction)
+                Circle()
+                    .fill(
+                        RadialGradient(colors: [.white, Color(white: 0.94)],
+                                       center: .init(x: 0.35, y: 0.30),
+                                       startRadius: 0, endRadius: knobSize)
+                    )
+                    .overlay(Circle().stroke(Color.black.opacity(0.15), lineWidth: 0.5))
+                    .frame(width: knobSize, height: knobSize)
+                    .shadow(color: .black.opacity(0.35), radius: 2, y: 1)
+                    .offset(x: fillWidth - knobSize / 2)
+            }
+            .frame(height: max(trackHeight, knobSize))
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { g in
+                        let v = max(0, min(1, g.location.x / w))
+                        value = Float(v)
+                    }
+            )
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 9)
+    }
+}
+
+// MARK: - Devices capsule
+
+private struct DevicesCapsule: View {
+    @EnvironmentObject var manager: AudioDeviceManager
+    @EnvironmentObject var prefs: AppearancePrefs
+    @Binding var folded: Bool
+
+    var body: some View {
+        GlassCapsule {
+            VStack(spacing: 0) {
+                SectionHead(
+                    title: "输出设备",
+                    trailing: "\(manager.selectedIDs.count) / \(manager.devices.count) 已选",
+                    folded: $folded
+                )
+
+                if !folded {
+                    VStack(spacing: 2) {
+                        if manager.devices.isEmpty {
+                            Text("未发现音频输出设备")
+                                .font(.system(size: 11))
+                                .foregroundStyle(Color.glassTextLo)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 22)
+                        } else {
+                            ForEach(manager.devices) { device in
+                                GlassDeviceRow(
+                                    device: device,
+                                    isSelected: manager.selectedIDs.contains(device.id)
+                                )
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 4)
+                    .padding(.bottom, 6)
+                }
+            }
+            .padding(4)
+        }
+    }
+}
+
+// MARK: - Presets capsule
+
+private struct PresetsCapsule: View {
+    @EnvironmentObject var manager: AudioDeviceManager
+    @EnvironmentObject var presets: PresetStore
+    @EnvironmentObject var prefs: AppearancePrefs
+    @Binding var folded: Bool
+    @Binding var showSaveField: Bool
+    @Binding var presetName: String
+
+    private var canSave: Bool { manager.selectedIDs.count >= 2 }
+
+    var body: some View {
+        GlassCapsule {
+            VStack(spacing: 0) {
+                SectionHead(title: "预设", folded: $folded) {
+                    if canSave {
+                        Button {
+                            withAnimation { showSaveField.toggle() }
+                            if !showSaveField { presetName = "" }
+                        } label: {
+                            HStack(spacing: 3) {
+                                Image(systemName: showSaveField ? "xmark" : "plus")
+                                    .font(.system(size: 9, weight: .bold))
+                                Text(showSaveField ? "取消" : "保存当前")
+                                    .font(.system(size: 11, weight: .semibold))
+                            }
+                            .foregroundStyle(showSaveField ? Color.glassTextMid : prefs.accent.color)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+
+                if !folded {
+                    if showSaveField {
+                        SaveField(presetName: $presetName, onSubmit: commitSave)
+                            .padding(.horizontal, 8)
+                            .padding(.bottom, 8)
+                            .transition(.opacity)
+                    }
+
+                    if !presets.presets.isEmpty {
+                        let activeUIDs = activeDeviceUIDs
+                        VStack(spacing: 1) {
+                            ForEach(presets.presets) { preset in
+                                GlassPresetRow(
+                                    preset: preset,
+                                    isActive: Set(preset.deviceUIDs) == activeUIDs
+                                )
+                            }
+                        }
+                        .padding(.horizontal, 4)
+                        .padding(.bottom, 6)
+                    }
+                }
+            }
+            .padding(4)
+            .animation(.easeOut(duration: 0.18), value: showSaveField)
+        }
     }
 
-    private func statusLabel(count: Int) -> String {
-        switch count {
-        case 0: return "待机"
-        case 1: return "正在输出"
-        default: return "正在输出 · \(count) 个设备"
-        }
+    private var activeDeviceUIDs: Set<String> {
+        Set(manager.devices
+            .filter { manager.selectedIDs.contains($0.id) }
+            .map { $0.uid })
     }
 
     private func commitSave() {
@@ -179,214 +374,313 @@ struct MenuBarView: View {
         showSaveField = false
     }
 
-    private var footer: some View {
-        HStack(spacing: 10) {
-            Button { showingSettings = true } label: {
-                HStack(spacing: 5) {
-                    Image(systemName: "gearshape")
-                        .font(.system(size: 11, weight: .medium))
-                    Text("设置")
-                        .font(.system(size: 11, weight: .medium))
-                        .tracking(0.3)
-                    if updater.hasUpdate {
-                        Circle().fill(Color.armed).frame(width: 5, height: 5)
-                    }
+    private func cancelSave() {
+        presetName = ""
+        showSaveField = false
+    }
+}
+
+private struct SaveField: View {
+    @Binding var presetName: String
+    let onSubmit: () -> Void
+
+    var body: some View {
+        HStack(spacing: 7) {
+            TextField("预设名称", text: $presetName)
+                .textFieldStyle(.plain)
+                .font(.system(size: 12))
+                .foregroundStyle(Color.glassTextHi)
+                .padding(.horizontal, 9)
+                .padding(.vertical, 6)
+                .background(
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .fill(Color.white.opacity(0.10))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                .stroke(Color.white.opacity(0.18), lineWidth: 0.5)
+                        )
+                )
+                .onSubmit(onSubmit)
+
+            Button("保存", action: onSubmit)
+                .buttonStyle(AccentPillButton())
+                .keyboardShortcut(.defaultAction)
+        }
+    }
+}
+
+struct AccentPillButton: ButtonStyle {
+    @EnvironmentObject var prefs: AppearancePrefs
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.system(size: 11, weight: .semibold))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(
+                Capsule().fill(
+                    LinearGradient(
+                        colors: [
+                            prefs.accent.color.lighter(by: 0.20),
+                            prefs.accent.color
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+            )
+            .overlay(Capsule().stroke(Color.white.opacity(0.35), lineWidth: 0.5))
+            .opacity(configuration.isPressed ? 0.85 : 1)
+    }
+}
+
+// MARK: - Section head (chevron + label + trailing)
+
+private struct SectionHead<Trailing: View>: View {
+    let title: String
+    @Binding var folded: Bool
+    @ViewBuilder var trailing: () -> Trailing
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Button { withAnimation { folded.toggle() } } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 8, weight: .bold))
+                        .rotationEffect(.degrees(folded ? -90 : 0))
+                        .foregroundStyle(Color.glassTextLo)
+                    Text(title)
+                        .font(.system(size: 10.5, weight: .semibold))
+                        .tracking(1.2)
+                        .foregroundStyle(Color.glassTextLo)
+                        .textCase(.uppercase)
                 }
-                .foregroundStyle(Color.textMid)
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
 
             Spacer()
-
-            Button { NSApplication.shared.terminate(nil) } label: {
-                HStack(spacing: 5) {
-                    Image(systemName: "power")
-                        .font(.system(size: 10, weight: .semibold))
-                    Text("退出")
-                        .font(.system(size: 11, weight: .medium))
-                        .tracking(0.3)
-                }
-                .foregroundStyle(Color.textMid)
-            }
-            .buttonStyle(.plain)
+            trailing()
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 9)
+        .padding(.horizontal, 12)
+        .padding(.top, 8)
+        .padding(.bottom, 6)
     }
 }
 
-struct MasterRow: View {
-    @EnvironmentObject var manager: AudioDeviceManager
-
-    private var volume: Binding<Float> {
-        Binding(
-            get: { manager.masterVolume },
-            set: { manager.setMasterVolume($0) }
-        )
+extension SectionHead where Trailing == TrailingLabel {
+    init(title: String, trailing: String, folded: Binding<Bool>) {
+        self.init(title: title, folded: folded) {
+            TrailingLabel(text: trailing)
+        }
     }
+}
 
+private struct TrailingLabel: View {
+    let text: String
     var body: some View {
-        HStack(alignment: .top, spacing: 0) {
-            Rectangle().fill(Color.armed).frame(width: 2.5)
-            VStack(alignment: .leading, spacing: 0) {
-                HStack(spacing: 11) {
-                    Image(systemName: "slider.horizontal.3")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(Color.armed)
-                        .frame(width: 18, alignment: .center)
-                    Text(manager.isMuted ? "已静音" : "总音量")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(manager.isMuted ? Color.danger : Color.textHi)
-                    Spacer(minLength: 6)
-                    Button { manager.toggleMasterMute() } label: {
-                        Image(systemName: manager.isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(manager.isMuted ? Color.danger : Color.textMid)
-                            .frame(width: 26, height: 22)
-                            .background(
-                                RoundedRectangle(cornerRadius: 4)
-                                    .fill(manager.isMuted ? Color.danger.opacity(0.18) : Color.white.opacity(0.06))
-                            )
-                            .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    HStack(spacing: 1) {
-                        Text("\(Int(volume.wrappedValue * 100))")
-                            .font(.system(size: 11, weight: .semibold).monospacedDigit())
-                            .foregroundStyle(manager.isMuted ? Color.textLo : Color.textHi)
-                        Text("%")
-                            .font(.system(size: 9, weight: .medium))
-                            .foregroundStyle(Color.textLo)
-                            .padding(.leading, 1)
-                    }
-                }
-                .padding(.leading, 11)
-                .padding(.trailing, 14)
-                .padding(.vertical, 8)
-
-                LEDMeter(value: volume)
-                    .padding(.leading, 41)
-                    .padding(.trailing, 14)
-                    .padding(.bottom, 10)
-                    .padding(.top, 1)
-            }
-        }
-        .background(manager.isMuted ? Color.danger.opacity(0.08) : Color.armed.opacity(0.07))
+        Text(text)
+            .font(.system(size: 11, weight: .medium))
+            .foregroundStyle(Color.glassTextLo)
     }
 }
 
-struct DeviceRow: View {
+// MARK: - Device row
+
+private struct GlassDeviceRow: View {
     let device: AudioDevice
     let isSelected: Bool
     @EnvironmentObject var manager: AudioDeviceManager
+    @EnvironmentObject var prefs: AppearancePrefs
     @State private var hovering = false
 
-    private var volume: Binding<Float> {
+    private var volumeBinding: Binding<Float> {
         Binding(
             get: { manager.volumes[device.id] ?? 1.0 },
             set: { manager.setVolume($0, for: device.id) }
         )
     }
 
+    private var battery: Int? { manager.batteryLevels[device.id] }
+    private var lowBattery: Bool { (battery ?? 100) < 20 }
+
     var body: some View {
-        HStack(alignment: .top, spacing: 0) {
-            Rectangle()
-                .fill(isSelected ? Color.armed : Color.clear)
-                .frame(width: 2.5)
+        VStack(spacing: 0) {
+            Button { manager.toggle(device) } label: {
+                HStack(spacing: 11) {
+                    GlassIconBadge(
+                        symbol: device.symbolName,
+                        selected: isSelected,
+                        accent: prefs.accent.color
+                    )
 
-            VStack(alignment: .leading, spacing: 0) {
-                Button { manager.toggle(device) } label: {
-                    HStack(spacing: 11) {
-                        Image(systemName: device.symbolName)
-                            .font(.system(size: 12, weight: isSelected ? .semibold : .medium))
-                            .foregroundStyle(isSelected ? Color.armed : Color.textMid)
-                            .frame(width: 18, alignment: .center)
+                    Text(device.name)
+                        .font(.system(size: 13.5, weight: isSelected ? .semibold : .medium))
+                        .foregroundStyle(isSelected ? Color.glassTextHi : Color.glassTextLo)
+                        .lineLimit(1)
 
-                        Text(device.name)
-                            .font(.system(size: 13, weight: isSelected ? .medium : .regular))
-                            .foregroundStyle(isSelected ? Color.textHi : Color.textMid)
-                            .lineLimit(1)
+                    Spacer(minLength: 4)
 
-                        if let bat = manager.batteryLevels[device.id] {
-                            HStack(spacing: 2) {
-                                Image(systemName: batteryIcon(bat))
-                                    .font(.system(size: 9))
-                                Text("\(bat)%")
-                                    .font(.system(size: 9.5, weight: .medium, design: .monospaced))
-                            }
-                            .foregroundStyle(bat < 20 ? Color.danger : Color.textLo)
-                        }
-
-                        Spacer(minLength: 6)
-
-                        if isSelected {
-                            HStack(spacing: 1) {
-                                Text("\(Int(volume.wrappedValue * 100))")
-                                    .font(.system(size: 11, weight: .semibold).monospacedDigit())
-                                    .foregroundStyle(Color.textHi)
-                                Text("%")
-                                    .font(.system(size: 9, weight: .medium))
-                                    .foregroundStyle(Color.textLo)
-                                    .padding(.leading, 1)
-                            }
-                        }
+                    if let bat = battery {
+                        BatteryPill(percent: bat, low: lowBattery)
                     }
-                    .padding(.leading, 11)
-                    .padding(.trailing, 14)
-                    .padding(.vertical, 8)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
 
-                if isSelected {
-                    if device.canSetVolume {
-                        LEDMeter(value: volume)
-                            .padding(.leading, 41)
-                            .padding(.trailing, 14)
-                            .padding(.bottom, 10)
-                            .padding(.top, 1)
-                    } else {
-                        HStack(spacing: 5) {
-                            Image(systemName: "lock.fill")
-                                .font(.system(size: 8))
-                            Text("此设备不支持音量调节")
-                                .font(.system(size: 10))
-                        }
-                        .foregroundStyle(Color.textLo)
-                        .padding(.leading, 41)
-                        .padding(.bottom, 9)
-                        .padding(.top, 1)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    if !device.canSetVolume {
+                        Image(systemName: "lock.fill")
+                            .font(.system(size: 9))
+                            .foregroundStyle(Color.glassTextDim)
+                    } else if isSelected {
+                        CheckBadge(color: prefs.accent.color)
                     }
                 }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 8)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .background(rowBackground)
+            .overlay(
+                RoundedRectangle(cornerRadius: innerRowRadius, style: .continuous)
+                    .stroke(isSelected ? prefs.accent.color.opacity(0.35) : Color.clear,
+                            lineWidth: 0.5)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: innerRowRadius, style: .continuous))
+            .shadow(color: isSelected ? prefs.accent.color.opacity(0.22) : .clear,
+                    radius: 8, y: 3)
+            .onHover { hovering = $0 }
+
+            if isSelected && device.canSetVolume {
+                HStack(spacing: 8) {
+                    GlassSlider(value: volumeBinding,
+                                accent: prefs.accent.color,
+                                trackHeight: 4,
+                                knobSize: 11)
+                        .frame(height: 12)
+                    Text("\(Int(volumeBinding.wrappedValue * 100))")
+                        .font(.system(size: 11).monospacedDigit())
+                        .foregroundStyle(Color.glassTextMid)
+                        .frame(minWidth: 24, alignment: .trailing)
+                }
+                .padding(.leading, 51)
+                .padding(.trailing, 12)
+                .padding(.top, 2)
+                .padding(.bottom, 8)
+                .transition(.opacity)
             }
         }
-        .background(rowBackground)
-        .onHover { hovering = $0 }
     }
 
-    private var rowBackground: Color {
-        if isSelected { return Color.armed.opacity(0.07) }
-        if hovering { return Color.white.opacity(0.04) }
-        return Color.clear
+    @ViewBuilder
+    private var rowBackground: some View {
+        if isSelected {
+            LinearGradient(
+                colors: [
+                    prefs.accent.color.opacity(0.38),
+                    prefs.accent.color.opacity(0.18)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        } else if hovering {
+            Color.white.opacity(0.10)
+        } else {
+            Color.clear
+        }
     }
 }
 
-private func batteryIcon(_ pct: Int) -> String {
-    switch pct {
-    case 75...: return "battery.100"
-    case 50..<75: return "battery.75"
-    case 25..<50: return "battery.50"
-    case 10..<25: return "battery.25"
-    default: return "battery.0"
+// MARK: - Glass icon badge
+
+private struct GlassIconBadge: View {
+    let symbol: String
+    let selected: Bool
+    let accent: Color
+
+    private var gradient: LinearGradient {
+        let colors: [Color] = selected
+            ? [accent.lighter(by: 0.50), accent, accent.darker(by: 0.20)]
+            : [Color.white.opacity(0.22), Color.white.opacity(0.06)]
+        return LinearGradient(colors: colors, startPoint: .top, endPoint: .bottom)
+    }
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(gradient)
+                .overlay(
+                    Circle().stroke(Color.white.opacity(selected ? 0.55 : 0.30), lineWidth: 0.5)
+                )
+                .shadow(color: selected ? accent.opacity(0.40) : .clear, radius: 4, y: 1)
+                .frame(width: 30, height: 30)
+
+            Image(systemName: symbol)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(selected ? Color.white : Color.glassTextHi)
+        }
     }
 }
 
-struct PresetRow: View {
+private struct CheckBadge: View {
+    let color: Color
+
+    var body: some View {
+        ZStack {
+            Circle().fill(color)
+                .overlay(Circle().stroke(Color.white.opacity(0.5), lineWidth: 0.5))
+                .frame(width: 18, height: 18)
+                .shadow(color: .black.opacity(0.20), radius: 1, y: 1)
+            Image(systemName: "checkmark")
+                .font(.system(size: 9, weight: .bold))
+                .foregroundStyle(.white)
+        }
+    }
+}
+
+private struct BatteryPill: View {
+    let percent: Int
+    let low: Bool
+
+    var body: some View {
+        HStack(spacing: 3) {
+            Image(systemName: iconName)
+                .font(.system(size: 9))
+            Text("\(percent)")
+                .font(.system(size: 10.5, weight: .medium).monospacedDigit())
+        }
+        .foregroundStyle(low ? Color(red: 1.0, green: 0.70, blue: 0.68) : Color.glassTextHi.opacity(0.85))
+        .padding(.horizontal, 6)
+        .padding(.vertical, 2)
+        .background(
+            Capsule()
+                .fill(low ? Color.muteRed.opacity(0.22) : Color.white.opacity(0.14))
+        )
+        .overlay(
+            Capsule().stroke(Color.white.opacity(0.25), lineWidth: 0.5)
+        )
+        .shadow(color: low ? Color.muteRed.opacity(0.30) : .clear, radius: 5, y: 0)
+    }
+
+    private var iconName: String {
+        switch percent {
+        case 75...:     return "battery.100"
+        case 50..<75:   return "battery.75"
+        case 25..<50:   return "battery.50"
+        case 10..<25:   return "battery.25"
+        default:        return "battery.0"
+        }
+    }
+}
+
+// MARK: - Preset row
+
+private struct GlassPresetRow: View {
     let preset: Preset
+    let isActive: Bool
     @EnvironmentObject var manager: AudioDeviceManager
     @EnvironmentObject var presets: PresetStore
+    @EnvironmentObject var prefs: AppearancePrefs
     @State private var hovering = false
 
     var body: some View {
@@ -394,93 +688,129 @@ struct PresetRow: View {
             Button {
                 manager.applyPreset(uids: preset.deviceUIDs)
             } label: {
-                HStack(spacing: 11) {
-                    Image(systemName: "rectangle.stack.fill")
-                        .font(.system(size: 11))
-                        .foregroundStyle(Color.textLo)
-                        .frame(width: 18, alignment: .center)
+                HStack(spacing: 10) {
+                    GlassIconBadge(symbol: "slider.horizontal.3",
+                                   selected: isActive,
+                                   accent: prefs.accent.color)
+                        .scaleEffect(0.8)
+                        .frame(width: 24, height: 24)
                     Text(preset.name)
-                        .font(.system(size: 12))
-                        .foregroundStyle(Color.textMid)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(Color.glassTextHi)
                         .lineLimit(1)
                     Spacer()
-                    Text("\(preset.deviceUIDs.count)")
-                        .font(.system(size: 10, weight: .semibold).monospacedDigit())
-                        .foregroundStyle(Color.textLo)
-                        .padding(.trailing, hovering ? 22 : 0)
+                    Text(isActive ? "当前 · \(preset.deviceUIDs.count) 台"
+                                  : "\(preset.deviceUIDs.count) 台")
+                        .font(.system(size: 11).monospacedDigit())
+                        .foregroundStyle(isActive ? prefs.accent.color.lighter(by: 0.30) : Color.glassTextLo)
+                        .padding(.trailing, hovering ? 20 : 0)
                 }
-                .padding(.leading, 13.5)
-                .padding(.trailing, 14)
+                .padding(.horizontal, 10)
                 .padding(.vertical, 6)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .background(
+                Group {
+                    if isActive {
+                        LinearGradient(
+                            colors: [
+                                prefs.accent.color.opacity(0.32),
+                                prefs.accent.color.opacity(0.16)
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    } else if hovering {
+                        Color.white.opacity(0.08)
+                    } else {
+                        Color.clear
+                    }
+                }
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
             if hovering {
-                Button {
-                    presets.delete(preset)
-                } label: {
+                Button { presets.delete(preset) } label: {
                     Image(systemName: "xmark")
                         .font(.system(size: 9, weight: .semibold))
-                        .foregroundStyle(Color.danger.opacity(0.9))
+                        .foregroundStyle(Color.muteRed.opacity(0.85))
                         .frame(width: 22, height: 22)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .padding(.trailing, 6)
+                .padding(.trailing, 4)
             }
         }
-        .background(hovering ? Color.white.opacity(0.04) : Color.clear)
         .onHover { hovering = $0 }
     }
 }
 
-struct LEDMeter: View {
-    @Binding var value: Float
-    var segments: Int = 22
+// MARK: - Dock-style action capsule
+
+private struct DockCapsule: View {
+    @EnvironmentObject var prefs: AppearancePrefs
+    @Binding var showingSettings: Bool
+    @ObservedObject var updater: UpdateChecker
 
     var body: some View {
-        GeometryReader { geo in
-            HStack(spacing: 1.5) {
-                ForEach(0..<segments, id: \.self) { i in
-                    let frac = Float(i + 1) / Float(segments)
-                    let isOn = value >= frac * 0.96
-                    Rectangle()
-                        .fill(color(for: frac, on: isOn))
-                        .frame(maxWidth: .infinity)
+        GlassCapsule(cornerRadius: 18) {
+            HStack(spacing: 6) {
+                DockButton(symbol: "gearshape", title: "设置", weight: .medium) {
+                    withAnimation { showingSettings = true }
+                } trailing: {
+                    if updater.hasUpdate {
+                        Circle().fill(prefs.accent.color).frame(width: 5, height: 5)
+                    }
+                }
+
+                Rectangle()
+                    .fill(Color.white.opacity(0.20))
+                    .frame(width: 1, height: 14)
+
+                DockButton(symbol: "power", title: "退出", weight: .semibold) {
+                    NSApplication.shared.terminate(nil)
                 }
             }
-            .contentShape(Rectangle())
-            .gesture(
-                DragGesture(minimumDistance: 0)
-                    .onChanged { g in
-                        let v = max(0, min(1, g.location.x / geo.size.width))
-                        value = Float(v)
-                    }
-            )
+            .padding(6)
         }
-        .frame(height: 6)
-    }
-
-    private func color(for frac: Float, on: Bool) -> Color {
-        if !on { return Color.white.opacity(0.05) }
-        if frac > 0.88 { return Color.danger }
-        if frac > 0.72 { return Color.armed }
-        return Color.armed.opacity(0.9)
     }
 }
 
-struct ArmedButton: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.system(size: 11, weight: .semibold))
-            .foregroundStyle(Color.chassis)
-            .padding(.horizontal, 11)
-            .padding(.vertical, 6)
-            .background(
-                RoundedRectangle(cornerRadius: 4)
-                    .fill(configuration.isPressed ? Color.armedDim : Color.armed)
-            )
+private struct DockButton<Trailing: View>: View {
+    let symbol: String
+    let title: String
+    let weight: Font.Weight
+    let action: () -> Void
+    @ViewBuilder var trailing: () -> Trailing
+
+    init(symbol: String,
+         title: String,
+         weight: Font.Weight,
+         action: @escaping () -> Void,
+         @ViewBuilder trailing: @escaping () -> Trailing = { EmptyView() }) {
+        self.symbol = symbol
+        self.title = title
+        self.weight = weight
+        self.action = action
+        self.trailing = trailing
+    }
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 6) {
+                Image(systemName: symbol)
+                    .font(.system(size: 11.5, weight: weight))
+                Text(title)
+                    .font(.system(size: 12, weight: .medium))
+                trailing()
+            }
+            .foregroundStyle(Color.glassTextHi)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 7)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 }
