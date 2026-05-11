@@ -34,6 +34,10 @@ struct MenuBarView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 22)
                 } else {
+                    if manager.selectedIDs.count >= 2 {
+                        MasterRow()
+                        hairlineDivider()
+                    }
                     ForEach(manager.devices) { device in
                         DeviceRow(
                             device: device,
@@ -211,6 +215,54 @@ struct MenuBarView: View {
     }
 }
 
+struct MasterRow: View {
+    @EnvironmentObject var manager: AudioDeviceManager
+
+    private var volume: Binding<Float> {
+        Binding(
+            get: { manager.masterVolume },
+            set: { manager.setMasterVolume($0) }
+        )
+    }
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 0) {
+            Rectangle().fill(Color.armed).frame(width: 2.5)
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(spacing: 11) {
+                    Image(systemName: "slider.horizontal.3")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(Color.armed)
+                        .frame(width: 18, alignment: .center)
+                    Text("总音量")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(Color.textHi)
+                    Spacer(minLength: 6)
+                    HStack(spacing: 1) {
+                        Text("\(Int(volume.wrappedValue * 100))")
+                            .font(.system(size: 11, weight: .semibold).monospacedDigit())
+                            .foregroundStyle(Color.textHi)
+                        Text("%")
+                            .font(.system(size: 9, weight: .medium))
+                            .foregroundStyle(Color.textLo)
+                            .padding(.leading, 1)
+                    }
+                }
+                .padding(.leading, 11)
+                .padding(.trailing, 14)
+                .padding(.vertical, 8)
+
+                LEDMeter(value: volume)
+                    .padding(.leading, 41)
+                    .padding(.trailing, 14)
+                    .padding(.bottom, 10)
+                    .padding(.top, 1)
+            }
+        }
+        .background(Color.armed.opacity(0.07))
+    }
+}
+
 struct DeviceRow: View {
     let device: AudioDevice
     let isSelected: Bool
@@ -242,13 +294,6 @@ struct DeviceRow: View {
                             .font(.system(size: 13, weight: isSelected ? .medium : .regular))
                             .foregroundStyle(isSelected ? Color.textHi : Color.textMid)
                             .lineLimit(1)
-
-                        if let rate = manager.sampleRates[device.id], rate > 0 {
-                            Text(formatSampleRate(rate))
-                                .font(.system(size: 9.5, weight: .medium, design: .monospaced))
-                                .tracking(0.3)
-                                .foregroundStyle(Color.textLo)
-                        }
 
                         if let bat = manager.batteryLevels[device.id] {
                             HStack(spacing: 2) {
@@ -314,14 +359,6 @@ struct DeviceRow: View {
         if hovering { return Color.white.opacity(0.04) }
         return Color.clear
     }
-}
-
-private func formatSampleRate(_ hz: Double) -> String {
-    let k = hz / 1000
-    if k.truncatingRemainder(dividingBy: 1) == 0 {
-        return "\(Int(k))k"
-    }
-    return String(format: "%.1fk", k)
 }
 
 private func batteryIcon(_ pct: Int) -> String {

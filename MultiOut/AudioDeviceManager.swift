@@ -15,7 +15,6 @@ final class AudioDeviceManager: ObservableObject {
     @Published private(set) var devices: [AudioDevice] = []
     @Published private(set) var selectedIDs: Set<AudioDeviceID> = []
     @Published var volumes: [AudioDeviceID: Float] = [:]
-    @Published private(set) var sampleRates: [AudioDeviceID: Double] = [:]
     @Published private(set) var batteryLevels: [AudioDeviceID: Int] = [:]
     @Published private(set) var isActive = false {
         didSet { volumeKeyMonitor?.interceptEnabled = isActive }
@@ -54,6 +53,17 @@ final class AudioDeviceManager: ObservableObject {
     func setVolume(_ volume: Float, for id: AudioDeviceID) {
         volumes[id] = volume
         writeVolume(volume, to: id)
+    }
+
+    var masterVolume: Float {
+        selectedIDs.compactMap { volumes[$0] }.max() ?? 0
+    }
+
+    func setMasterVolume(_ value: Float) {
+        let delta = value - masterVolume
+        guard delta != 0 else { return }
+        preMuteVolumes = nil
+        adjustAllVolumes(by: delta)
     }
 
     func applyPreset(uids: [String]) {
@@ -154,17 +164,6 @@ final class AudioDeviceManager: ObservableObject {
 
         devices = newDevices
         let keepIDs = Set(newDevices.map { $0.id })
-
-        var newRates: [AudioDeviceID: Double] = [:]
-        for d in newDevices {
-            let r = readSampleRate(d.id)
-            if r > 0 {
-                newRates[d.id] = r
-            } else if let cached = sampleRates[d.id] {
-                newRates[d.id] = cached
-            }
-        }
-        if newRates != sampleRates { sampleRates = newRates }
         volumes = volumes.filter { keepIDs.contains($0.key) }
 
         let trulyGone = selectedIDs.subtracting(keepIDs)
@@ -174,14 +173,6 @@ final class AudioDeviceManager: ObservableObject {
         }
 
         syncSelectionToExternalDefault()
-    }
-
-    private func readSampleRate(_ id: AudioDeviceID) -> Double {
-        var addr = AudioObjectPropertyAddress(kAudioDevicePropertyNominalSampleRate)
-        var rate: Float64 = 0
-        var size = UInt32(MemoryLayout<Float64>.size)
-        guard AudioObjectGetPropertyData(id, &addr, 0, nil, &size, &rate) == noErr else { return 0 }
-        return rate
     }
 
     private func readTransportType(_ id: AudioDeviceID) -> UInt32 {
