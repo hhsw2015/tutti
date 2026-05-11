@@ -27,6 +27,7 @@ targets:
       PRODUCT_BUNDLE_IDENTIFIER: com.multiout.app
       SWIFT_VERSION: "5.9"
       MACOSX_DEPLOYMENT_TARGET: "13.0"
-      CODE_SIGN_STYLE: Automatic
+      CODE_SIGN_STYLE: Manual
+      CODE_SIGN_IDENTITY: "MultiOut Local"
       DEVELOPMENT_TEAM: ""
       ENABLE_HARDENED_RUNTIME: NO
