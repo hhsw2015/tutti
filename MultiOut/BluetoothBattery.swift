@@ -1,6 +1,14 @@
 import Foundation
 
 enum BluetoothBattery {
+    // Exclude case battery — for headphones it can be very low while the buds
+    // themselves are full, which would be misleading as a single readout.
+    private static let batteryKeys = [
+        "device_batteryLevelMain",
+        "device_batteryLevelLeft",
+        "device_batteryLevelRight"
+    ]
+
     static func fetch() async -> [String: Int] {
         await Task.detached(priority: .utility) {
             let process = Process()
@@ -8,7 +16,9 @@ enum BluetoothBattery {
             process.arguments = ["SPBluetoothDataType", "-json"]
             let pipe = Pipe()
             process.standardOutput = pipe
-            process.standardError = Pipe()
+            // Drop stderr to /dev/null — a 16KB pipe buffer left undrained would
+            // deadlock waitUntilExit().
+            process.standardError = FileHandle.nullDevice
             do {
                 try process.run()
                 process.waitUntilExit()
@@ -44,16 +54,8 @@ enum BluetoothBattery {
         return result
     }
 
-    // Exclude case battery — for headphones it can be very low while the buds
-    // themselves are full, which would be misleading as a single readout.
     private static func lowestBatteryPercent(in dict: [String: Any]) -> Int? {
-        let keys = [
-            "device_batteryLevelMain",
-            "device_batteryLevelLeft",
-            "device_batteryLevelRight"
-        ]
-        let values = keys.compactMap { dict[$0] as? String }.compactMap(parsePercent)
-        return values.min()
+        batteryKeys.compactMap { dict[$0] as? String }.compactMap(parsePercent).min()
     }
 
     private static func parsePercent(_ s: String) -> Int? {

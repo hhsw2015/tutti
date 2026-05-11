@@ -63,6 +63,8 @@ final class AudioDeviceManager: ObservableObject {
 
     func cleanup() {
         destroyAggregate()
+        batteryTask?.cancel()
+        permissionTimer?.cancel()
     }
 
     // MARK: - Aggregate lifecycle
@@ -143,25 +145,29 @@ final class AudioDeviceManager: ObservableObject {
 
         let freshIDs = Set(newDevices.map { $0.id })
 
-        // Selected devices that vanished from CoreAudio are likely sub-devices absorbed
-        // by our aggregate — keep them visible while the aggregate is alive. Outside
-        // of aggregate mode, a vanished device is genuinely gone (e.g., Bluetooth
-        // disconnect) and should be removed from the list.
+        // Sub-devices absorbed into our aggregate disappear from CoreAudio's list;
+        // keep them visible while the aggregate is alive.
         let preserved: [AudioDevice] = aggregateID != nil
             ? devices.filter { selectedIDs.contains($0.id) && !freshIDs.contains($0.id) }
             : []
         newDevices += preserved
 
         devices = newDevices
+        let keepIDs = Set(newDevices.map { $0.id })
 
         var newRates: [AudioDeviceID: Double] = [:]
         for d in newDevices {
             let r = readSampleRate(d.id)
-            newRates[d.id] = r > 0 ? r : sampleRates[d.id] ?? 0
+            if r > 0 {
+                newRates[d.id] = r
+            } else if let cached = sampleRates[d.id] {
+                newRates[d.id] = cached
+            }
         }
-        sampleRates = newRates
+        if newRates != sampleRates { sampleRates = newRates }
+        volumes = volumes.filter { keepIDs.contains($0.key) }
 
-        let trulyGone = selectedIDs.subtracting(Set(newDevices.map { $0.id }))
+        let trulyGone = selectedIDs.subtracting(keepIDs)
         if !trulyGone.isEmpty {
             selectedIDs = selectedIDs.subtracting(trulyGone)
             updateAggregate()
@@ -312,9 +318,6 @@ final class AudioDeviceManager: ObservableObject {
         syncSelectionToExternalDefault()
     }
 
-    // Follow macOS when something external (Bluetooth auto-switch, Control Center,
-    // System Settings) changes the default output, and on startup so the menu shows
-    // whatever is currently producing sound.
     private func syncSelectionToExternalDefault() {
         guard aggregateID == nil else { return }
         guard let id = readDefault(),
@@ -324,13 +327,8 @@ final class AudioDeviceManager: ObservableObject {
         selectedIDs = [id]
     }
 
-    // MARK: - System volume key handling
+    // MARK: - Battery polling
 
-    // Aggregate devices don't expose master volume to CoreAudio, so the system
-    // volume slider is greyed out when our aggregate is the default. We intercept
-    // the hardware volume keys globally and apply the change to all sub-devices.
-    // SwiftUI Timer.publish in a MenuBarExtra popover isn't reliable — alt-tab-macos
-    // uses a DispatchSourceTimer on a background queue for the same reason.
     private func startBatteryPolling() {
         batteryTask = Task { @MainActor [weak self] in
             while !Task.isCancelled {
@@ -353,9 +351,16 @@ final class AudioDeviceManager: ObservableObject {
                 newLevels[d.id] = level
             }
         }
-        batteryLevels = newLevels
+        if newLevels != batteryLevels { batteryLevels = newLevels }
     }
 
+    // MARK: - System volume key handling
+
+    // Aggregate devices don't expose master volume to CoreAudio, so the system
+    // volume slider is greyed out when our aggregate is the default. We intercept
+    // the hardware volume keys globally and apply the change to all sub-devices.
+    // SwiftUI Timer.publish in a MenuBarExtra popover isn't reliable — alt-tab-macos
+    // uses a DispatchSourceTimer on a background queue for the same reason.
     private func startPermissionPolling() {
         let timer = DispatchSource.makeTimerSource(queue: DispatchQueue.global(qos: .utility))
         timer.schedule(deadline: .now(), repeating: 1.0)
