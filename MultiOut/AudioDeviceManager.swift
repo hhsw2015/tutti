@@ -144,8 +144,12 @@ final class AudioDeviceManager: ObservableObject {
         let freshIDs = Set(newDevices.map { $0.id })
 
         // Selected devices that vanished from CoreAudio are likely sub-devices absorbed
-        // by our aggregate — keep them visible and selected so the UI stays consistent.
-        let preserved = devices.filter { selectedIDs.contains($0.id) && !freshIDs.contains($0.id) }
+        // by our aggregate — keep them visible while the aggregate is alive. Outside
+        // of aggregate mode, a vanished device is genuinely gone (e.g., Bluetooth
+        // disconnect) and should be removed from the list.
+        let preserved: [AudioDevice] = aggregateID != nil
+            ? devices.filter { selectedIDs.contains($0.id) && !freshIDs.contains($0.id) }
+            : []
         newDevices += preserved
 
         devices = newDevices
@@ -162,6 +166,8 @@ final class AudioDeviceManager: ObservableObject {
             selectedIDs = selectedIDs.subtracting(trulyGone)
             updateAggregate()
         }
+
+        syncSelectionToExternalDefault()
     }
 
     private func readSampleRate(_ id: AudioDeviceID) -> Double {
@@ -291,17 +297,31 @@ final class AudioDeviceManager: ObservableObject {
     }
 
     private func handleExternalDefaultChange() {
-        guard let aggID = aggregateID,
-              let currentDefault = readDefault(),
-              currentDefault != aggID else { return }
-        // System default changed away from our aggregate externally — reset state
-        AudioHardwareDestroyAggregateDevice(aggID)
-        aggregateID = nil
-        savedDefaultID = nil
-        selectedIDs = []
-        isActive = false
-        // refreshDevices() will be called by the kAudioHardwarePropertyDevices
-        // notification that fires when the aggregate is destroyed
+        if let aggID = aggregateID,
+           let currentDefault = readDefault(),
+           currentDefault != aggID {
+            // System default changed away from our aggregate externally — reset state
+            AudioHardwareDestroyAggregateDevice(aggID)
+            aggregateID = nil
+            savedDefaultID = nil
+            selectedIDs = []
+            isActive = false
+            // refreshDevices() will be called by the kAudioHardwarePropertyDevices
+            // notification that fires when the aggregate is destroyed
+        }
+        syncSelectionToExternalDefault()
+    }
+
+    // Follow macOS when something external (Bluetooth auto-switch, Control Center,
+    // System Settings) changes the default output, and on startup so the menu shows
+    // whatever is currently producing sound.
+    private func syncSelectionToExternalDefault() {
+        guard aggregateID == nil else { return }
+        guard let id = readDefault(),
+              devices.contains(where: { $0.id == id }) else { return }
+        if selectedIDs == [id] { return }
+        if volumes[id] == nil { volumes[id] = readVolume(id) ?? 1.0 }
+        selectedIDs = [id]
     }
 
     // MARK: - System volume key handling
