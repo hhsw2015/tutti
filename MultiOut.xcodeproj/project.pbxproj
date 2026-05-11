@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		128AE493FB160722FCC031B5 /* VolumeKeyMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9270F8BF75E51F3DA44082 /* VolumeKeyMonitor.swift */; };
 		4D056E8727A338AC81DB818F /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6286319B0DDC32754BAA659 /* MenuBarView.swift */; };
 		B4C6E25B8124E019B35C2B09 /* AudioDeviceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD226AD2040EF54E50809C60 /* AudioDeviceManager.swift */; };
 		C81A05ED29D0C84CF9BB54DF /* AudioDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC805762F40B542A79306F98 /* AudioDevice.swift */; };
@@ -20,6 +21,7 @@
 		B289E924C3C67CD1C0A05897 /* MultiOut.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MultiOut.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5B116B2B801BC96C445E3C0 /* MultiOutApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiOutApp.swift; sourceTree = "<group>"; };
 		D4C504EF5388F67ECB465DAB /* PresetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetStore.swift; sourceTree = "<group>"; };
+		DB9270F8BF75E51F3DA44082 /* VolumeKeyMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeKeyMonitor.swift; sourceTree = "<group>"; };
 		E6286319B0DDC32754BAA659 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -40,6 +42,7 @@
 				E6286319B0DDC32754BAA659 /* MenuBarView.swift */,
 				B5B116B2B801BC96C445E3C0 /* MultiOutApp.swift */,
 				D4C504EF5388F67ECB465DAB /* PresetStore.swift */,
+				DB9270F8BF75E51F3DA44082 /* VolumeKeyMonitor.swift */,
 			);
 			path = MultiOut;
 			sourceTree = "<group>";
@@ -116,6 +119,7 @@
 				4D056E8727A338AC81DB818F /* MenuBarView.swift in Sources */,
 				E2C79F79A1FD4DE5EA6F1C6A /* MultiOutApp.swift in Sources */,
 				DF9C26DD22839D42A45F14D5 /* PresetStore.swift in Sources */,
+				128AE493FB160722FCC031B5 /* VolumeKeyMonitor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

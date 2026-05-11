@@ -14,15 +14,21 @@ final class AudioDeviceManager: ObservableObject {
     @Published private(set) var devices: [AudioDevice] = []
     @Published private(set) var selectedIDs: Set<AudioDeviceID> = []
     @Published var volumes: [AudioDeviceID: Float] = [:]
-    @Published private(set) var isActive = false
+    @Published private(set) var isActive = false {
+        didSet { volumeKeyMonitor?.interceptEnabled = isActive }
+    }
 
     private var aggregateID: AudioDeviceID?
     private var savedDefaultID: AudioDeviceID?
+
+    private var volumeKeyMonitor: VolumeKeyMonitor?
+    private var preMuteVolumes: [AudioDeviceID: Float]?
 
     init() {
         cleanupOrphans()
         refreshDevices()
         startListening()
+        startVolumeKeyMonitoring()
     }
 
     func toggle(_ device: AudioDevice) {
@@ -275,4 +281,53 @@ final class AudioDeviceManager: ObservableObject {
         // notification that fires when the aggregate is destroyed
     }
 
+    // MARK: - System volume key handling
+
+    // Aggregate devices don't expose master volume to CoreAudio, so the system
+    // volume slider is greyed out when our aggregate is the default. We intercept
+    // the hardware volume keys globally and apply the change to all sub-devices.
+    private func startVolumeKeyMonitoring() {
+        volumeKeyMonitor = VolumeKeyMonitor { [weak self] action in
+            Task { @MainActor [weak self] in
+                self?.handleVolumeKey(action)
+            }
+        }
+        volumeKeyMonitor?.start(promptForPermission: true)
+    }
+
+    private func handleVolumeKey(_ action: VolumeKeyAction) {
+        guard isActive else { return }
+
+        switch action {
+        case .up(let fine):
+            preMuteVolumes = nil
+            adjustAllVolumes(by: fine ? 1.0/64.0 : 1.0/16.0)
+        case .down(let fine):
+            preMuteVolumes = nil
+            adjustAllVolumes(by: fine ? -1.0/64.0 : -1.0/16.0)
+        case .mute:
+            toggleMute()
+        }
+    }
+
+    private func adjustAllVolumes(by delta: Float) {
+        for id in selectedIDs {
+            let current = volumes[id] ?? 1.0
+            setVolume(max(0, min(1, current + delta)), for: id)
+        }
+    }
+
+    private func toggleMute() {
+        if let saved = preMuteVolumes {
+            for (id, v) in saved where selectedIDs.contains(id) {
+                setVolume(v, for: id)
+            }
+            preMuteVolumes = nil
+        } else {
+            preMuteVolumes = volumes
+            for id in selectedIDs {
+                setVolume(0, for: id)
+            }
+        }
+    }
 }
