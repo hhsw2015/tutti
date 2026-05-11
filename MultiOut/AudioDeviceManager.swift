@@ -16,6 +16,7 @@ final class AudioDeviceManager: ObservableObject {
     @Published private(set) var selectedIDs: Set<AudioDeviceID> = []
     @Published var volumes: [AudioDeviceID: Float] = [:]
     @Published private(set) var sampleRates: [AudioDeviceID: Double] = [:]
+    @Published private(set) var batteryLevels: [AudioDeviceID: Int] = [:]
     @Published private(set) var isActive = false {
         didSet { volumeKeyMonitor?.interceptEnabled = isActive }
     }
@@ -27,6 +28,7 @@ final class AudioDeviceManager: ObservableObject {
     private var volumeKeyMonitor: VolumeKeyMonitor?
     private var preMuteVolumes: [AudioDeviceID: Float]?
     private var permissionTimer: DispatchSourceTimer?
+    private var batteryTask: Task<Void, Never>?
 
     init() {
         cleanupOrphans()
@@ -34,6 +36,7 @@ final class AudioDeviceManager: ObservableObject {
         startListening()
         startVolumeKeyMonitoring()
         startPermissionPolling()
+        startBatteryPolling()
     }
 
     func toggle(_ device: AudioDevice) {
@@ -308,6 +311,31 @@ final class AudioDeviceManager: ObservableObject {
     // the hardware volume keys globally and apply the change to all sub-devices.
     // SwiftUI Timer.publish in a MenuBarExtra popover isn't reliable — alt-tab-macos
     // uses a DispatchSourceTimer on a background queue for the same reason.
+    private func startBatteryPolling() {
+        batteryTask = Task { @MainActor [weak self] in
+            while !Task.isCancelled {
+                await self?.refreshBatteryLevels()
+                try? await Task.sleep(for: .seconds(60))
+            }
+        }
+    }
+
+    private func refreshBatteryLevels() async {
+        let bluetoothDevices = devices.filter { $0.isBluetooth }
+        guard !bluetoothDevices.isEmpty else {
+            if !batteryLevels.isEmpty { batteryLevels = [:] }
+            return
+        }
+        let byName = await BluetoothBattery.fetch()
+        var newLevels: [AudioDeviceID: Int] = [:]
+        for d in bluetoothDevices {
+            if let level = byName[BluetoothBattery.normalize(d.name)] {
+                newLevels[d.id] = level
+            }
+        }
+        batteryLevels = newLevels
+    }
+
     private func startPermissionPolling() {
         let timer = DispatchSource.makeTimerSource(queue: DispatchQueue.global(qos: .utility))
         timer.schedule(deadline: .now(), repeating: 1.0)

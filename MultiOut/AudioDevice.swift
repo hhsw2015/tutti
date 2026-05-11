@@ -8,6 +8,11 @@ struct AudioDevice: Identifiable, Hashable {
     let canSetVolume: Bool
     let transportType: UInt32
 
+    var isBluetooth: Bool {
+        transportType == kAudioDeviceTransportTypeBluetooth ||
+        transportType == kAudioDeviceTransportTypeBluetoothLE
+    }
+
     var symbolName: String {
         switch transportType {
         case kAudioDeviceTransportTypeBluetooth,

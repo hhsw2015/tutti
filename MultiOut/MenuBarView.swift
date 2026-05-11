@@ -242,6 +242,16 @@ struct DeviceRow: View {
                                 .foregroundStyle(Color.textLo)
                         }
 
+                        if let bat = manager.batteryLevels[device.id] {
+                            HStack(spacing: 2) {
+                                Image(systemName: batteryIcon(bat))
+                                    .font(.system(size: 9))
+                                Text("\(bat)%")
+                                    .font(.system(size: 9.5, weight: .medium, design: .monospaced))
+                            }
+                            .foregroundStyle(bat < 20 ? Color.danger : Color.textLo)
+                        }
+
                         Spacer(minLength: 6)
 
                         if isSelected {
@@ -304,6 +314,16 @@ private func formatSampleRate(_ hz: Double) -> String {
         return "\(Int(k))k"
     }
     return String(format: "%.1fk", k)
+}
+
+private func batteryIcon(_ pct: Int) -> String {
+    switch pct {
+    case 75...: return "battery.100"
+    case 50..<75: return "battery.75"
+    case 25..<50: return "battery.50"
+    case 10..<25: return "battery.25"
+    default: return "battery.0"
+    }
 }
 
 struct PresetRow: View {
