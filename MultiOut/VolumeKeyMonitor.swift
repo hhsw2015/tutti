@@ -6,9 +6,12 @@ private let NX_KEYTYPE_SOUND_UP: UInt32 = 0
 private let NX_KEYTYPE_SOUND_DOWN: UInt32 = 1
 private let NX_KEYTYPE_MUTE: UInt32 = 7
 
+// Matches macOS native step: 1/16 normal, 1/64 with Shift+Option.
+private let coarseStep: Float = 1.0 / 16
+private let fineStep: Float = 1.0 / 64
+
 enum VolumeKeyAction {
-    case up(fine: Bool)
-    case down(fine: Bool)
+    case adjust(delta: Float)
     case mute
 }
 
@@ -18,8 +21,6 @@ final class VolumeKeyMonitor {
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
 
-    // Read from event tap callback thread, written from main thread. Bool access is
-    // atomic on Apple platforms, and worst case we miss exactly one keypress.
     var interceptEnabled: Bool = false
 
     private let onKey: (VolumeKeyAction) -> Void
@@ -33,7 +34,7 @@ final class VolumeKeyMonitor {
         guard eventTap == nil else { return true }
 
         let trusted = AXIsProcessTrustedWithOptions([
-            "AXTrustedCheckOptionPrompt": promptForPermission
+            kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: promptForPermission
         ] as CFDictionary)
         guard trusted else { return false }
 
@@ -60,14 +61,15 @@ final class VolumeKeyMonitor {
     }
 
     func stop() {
-        if let tap = eventTap {
-            CGEvent.tapEnable(tap: tap, enable: false)
-        }
         if let source = runLoopSource {
             CFRunLoopRemoveSource(CFRunLoopGetMain(), source, .commonModes)
         }
-        eventTap = nil
+        if let tap = eventTap {
+            CGEvent.tapEnable(tap: tap, enable: false)
+            CFMachPortInvalidate(tap)
+        }
         runLoopSource = nil
+        eventTap = nil
     }
 
     deinit { stop() }
@@ -86,12 +88,13 @@ final class VolumeKeyMonitor {
         let isKeyDown = ((keyFlags & 0xFF00) >> 8) == 0xA
         guard isKeyDown else { return Unmanaged.passUnretained(event) }
 
-        let fine = nsEvent.modifierFlags.contains(.shift) && nsEvent.modifierFlags.contains(.option)
+        let step = (nsEvent.modifierFlags.contains(.shift) && nsEvent.modifierFlags.contains(.option))
+                   ? fineStep : coarseStep
 
         let action: VolumeKeyAction
         switch keyCode {
-        case NX_KEYTYPE_SOUND_UP:   action = .up(fine: fine)
-        case NX_KEYTYPE_SOUND_DOWN: action = .down(fine: fine)
+        case NX_KEYTYPE_SOUND_UP:   action = .adjust(delta: step)
+        case NX_KEYTYPE_SOUND_DOWN: action = .adjust(delta: -step)
         case NX_KEYTYPE_MUTE:       action = .mute
         default: return Unmanaged.passUnretained(event)
         }

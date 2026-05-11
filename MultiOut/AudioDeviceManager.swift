@@ -15,7 +15,14 @@ final class AudioDeviceManager: ObservableObject {
     @Published private(set) var selectedIDs: Set<AudioDeviceID> = []
     @Published var volumes: [AudioDeviceID: Float] = [:]
     @Published private(set) var isActive = false {
-        didSet { volumeKeyMonitor?.interceptEnabled = isActive }
+        didSet {
+            volumeKeyMonitor?.interceptEnabled = isActive
+            // Defer the Accessibility prompt until first activation so the request
+            // has clear context (user just opted into multi-output).
+            if isActive && !oldValue {
+                volumeKeyMonitor?.start(promptForPermission: true)
+            }
+        }
     }
 
     private var aggregateID: AudioDeviceID?
@@ -292,19 +299,15 @@ final class AudioDeviceManager: ObservableObject {
                 self?.handleVolumeKey(action)
             }
         }
-        volumeKeyMonitor?.start(promptForPermission: true)
+        volumeKeyMonitor?.start(promptForPermission: false)
     }
 
     private func handleVolumeKey(_ action: VolumeKeyAction) {
         guard isActive else { return }
-
         switch action {
-        case .up(let fine):
+        case .adjust(let delta):
             preMuteVolumes = nil
-            adjustAllVolumes(by: fine ? 1.0/64.0 : 1.0/16.0)
-        case .down(let fine):
-            preMuteVolumes = nil
-            adjustAllVolumes(by: fine ? -1.0/64.0 : -1.0/16.0)
+            adjustAllVolumes(by: delta)
         case .mute:
             toggleMute()
         }
