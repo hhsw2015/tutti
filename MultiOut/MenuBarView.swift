@@ -64,26 +64,26 @@ struct MenuBarView: View {
     }
 
     private var statusHeader: some View {
-        HStack(spacing: 9) {
+        let count = manager.selectedIDs.count
+        let lit = count > 0
+        return HStack(spacing: 9) {
             ZStack {
-                if manager.isActive {
+                if lit {
                     Circle()
                         .fill(Color.signal.opacity(0.45))
                         .frame(width: 16, height: 16)
                         .blur(radius: 3.5)
                 }
                 Circle()
-                    .fill(manager.isActive ? Color.signal : Color.white.opacity(0.18))
+                    .fill(lit ? Color.signal : Color.white.opacity(0.18))
                     .frame(width: 7, height: 7)
             }
             .frame(width: 16, height: 16)
 
-            Text(manager.isActive
-                 ? "正在输出 · \(manager.selectedIDs.count) 个设备"
-                 : "待机")
+            Text(statusLabel(count: count))
                 .font(.system(size: 10.5, weight: .semibold))
                 .tracking(0.5)
-                .foregroundStyle(manager.isActive ? Color.textHi : Color.textMid)
+                .foregroundStyle(lit ? Color.textHi : Color.textMid)
 
             Spacer()
 
@@ -155,6 +155,14 @@ struct MenuBarView: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 9)
+    }
+
+    private func statusLabel(count: Int) -> String {
+        switch count {
+        case 0: return "待机"
+        case 1: return "正在输出"
+        default: return "正在输出 · \(count) 个设备"
+        }
     }
 
     private func commitSave() {
