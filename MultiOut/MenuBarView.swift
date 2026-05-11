@@ -234,14 +234,26 @@ struct MasterRow: View {
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(Color.armed)
                         .frame(width: 18, alignment: .center)
-                    Text("总音量")
+                    Text(manager.isMuted ? "已静音" : "总音量")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(Color.textHi)
+                        .foregroundStyle(manager.isMuted ? Color.danger : Color.textHi)
                     Spacer(minLength: 6)
+                    Button { manager.toggleMasterMute() } label: {
+                        Image(systemName: manager.isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(manager.isMuted ? Color.danger : Color.textMid)
+                            .frame(width: 26, height: 22)
+                            .background(
+                                RoundedRectangle(cornerRadius: 4)
+                                    .fill(manager.isMuted ? Color.danger.opacity(0.18) : Color.white.opacity(0.06))
+                            )
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
                     HStack(spacing: 1) {
                         Text("\(Int(volume.wrappedValue * 100))")
                             .font(.system(size: 11, weight: .semibold).monospacedDigit())
-                            .foregroundStyle(Color.textHi)
+                            .foregroundStyle(manager.isMuted ? Color.textLo : Color.textHi)
                         Text("%")
                             .font(.system(size: 9, weight: .medium))
                             .foregroundStyle(Color.textLo)
@@ -259,7 +271,7 @@ struct MasterRow: View {
                     .padding(.top, 1)
             }
         }
-        .background(Color.armed.opacity(0.07))
+        .background(manager.isMuted ? Color.danger.opacity(0.08) : Color.armed.opacity(0.07))
     }
 }
 

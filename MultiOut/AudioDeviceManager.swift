@@ -59,12 +59,16 @@ final class AudioDeviceManager: ObservableObject {
         selectedIDs.compactMap { volumes[$0] }.max() ?? 0
     }
 
+    var isMuted: Bool { preMuteVolumes != nil }
+
     func setMasterVolume(_ value: Float) {
         let delta = value - masterVolume
         guard delta != 0 else { return }
         preMuteVolumes = nil
         adjustAllVolumes(by: delta)
     }
+
+    func toggleMasterMute() { toggleMute() }
 
     func applyPreset(uids: [String]) {
         selectedIDs = Set(devices.filter { uids.contains($0.uid) }.map { $0.id })
