@@ -75,6 +75,12 @@ final class AudioDeviceManager: ObservableObject {
         !selectedIDs.isEmpty && selectedIDs.allSatisfy { (volumes[$0] ?? 0) == 0 }
     }
 
+    var silentCount: Int {
+        selectedIDs.reduce(into: 0) { acc, id in
+            if (volumes[id] ?? 0) == 0 { acc += 1 }
+        }
+    }
+
     func setMasterVolume(_ value: Float) {
         let delta = value - masterVolume
         guard delta != 0 else { return }

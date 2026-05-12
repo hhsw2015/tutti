@@ -78,6 +78,7 @@ extension Color {
     static let glassHoverBg     = Color.primary.opacity(0.06)
 
     static let statusGreen  = Color(red: 0.188, green: 0.820, blue: 0.345)
+    static let statusAmber  = Color(red: 1.00,  green: 0.667, blue: 0.000)
     static let muteRed      = Color(red: 1.00,  green: 0.271, blue: 0.227)
 
     static let panelBackdrop = Color(red: 0.06, green: 0.05, blue: 0.10)

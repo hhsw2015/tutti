@@ -53,21 +53,23 @@ private struct StatusCapsule: View {
     @State private var gearHovering = false
 
     private var count: Int { manager.selectedIDs.count }
+    private var silent: Int { manager.silentCount }
+    private var playing: Int { count - silent }
     private var isMuted: Bool { manager.isMuted }
 
     private var statusText: String {
-        if isMuted { return "已静音 · \(count) 个设备待命" }
-        switch count {
-        case 0:  return "待机"
-        case 1:  return "正在输出"
-        default: return "正在输出 · \(count) 个设备"
-        }
+        if count == 0 { return "待机" }
+        if isMuted    { return "已静音 · \(count) 个设备" }
+        if silent > 0 { return "\(playing) 个输出中 · \(silent) 个静音" }
+        if count == 1 { return "正在输出" }
+        return "正在输出 · \(count) 个设备"
     }
 
     private var dotColor: Color {
-        if isMuted { return .muteRed }
-        if count > 0 { return .statusGreen }
-        return Color.primary.opacity(0.25)
+        if count == 0 { return Color.primary.opacity(0.25) }
+        if isMuted    { return .muteRed }
+        if silent > 0 { return .statusAmber }
+        return .statusGreen
     }
 
     var body: some View {
