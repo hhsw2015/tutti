@@ -52,7 +52,7 @@ struct SettingsView: View {
 
             Spacer()
 
-            Text("MULTIOUT")
+            Text("TUTTI")
                 .font(.system(size: 10, weight: .semibold))
                 .tracking(2.2)
                 .foregroundStyle(Color.glassTextLo)

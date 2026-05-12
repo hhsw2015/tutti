@@ -1,33 +1,33 @@
-name: MultiOut
+name: Tutti
 options:
-  bundleIdPrefix: com.multiout
+  bundleIdPrefix: com.recents
   deploymentTarget:
     macOS: "13.0"
   createIntermediateGroups: false
 
 targets:
-  MultiOut:
+  Tutti:
     type: application
     platform: macOS
     sources:
-      - path: MultiOut
+      - path: Tutti
         excludes:
           - "**/*.plist"
           - "**/*.entitlements"
     info:
-      path: MultiOut/Info.plist
+      path: Tutti/Info.plist
       properties:
-        CFBundleName: MultiOut
-        CFBundleDisplayName: MultiOut
+        CFBundleName: Tutti
+        CFBundleDisplayName: Tutti
         CFBundleShortVersionString: "0.1.0"
         CFBundleVersion: "1"
         LSUIElement: YES
         NSHumanReadableCopyright: ""
     settings:
-      PRODUCT_BUNDLE_IDENTIFIER: com.multiout.app
+      PRODUCT_BUNDLE_IDENTIFIER: com.recents.tutti
       SWIFT_VERSION: "5.9"
       MACOSX_DEPLOYMENT_TARGET: "13.0"
       CODE_SIGN_STYLE: Manual
-      CODE_SIGN_IDENTITY: "MultiOut Local"
+      CODE_SIGN_IDENTITY: "Tutti Local"
       DEVELOPMENT_TEAM: ""
       ENABLE_HARDENED_RUNTIME: NO

@@ -161,8 +161,8 @@ final class AudioDeviceManager: ObservableObject {
             ["uid": d.uid, "drift": i == 0 ? 0 : 1]
         }
         let desc: [String: Any] = [
-            "name": "MultiOut",
-            "uid": "com.multiout.aggregate",
+            "name": "Tutti",
+            "uid": "com.recents.tutti.aggregate",
             "subdevices": subs,
             "master": selected[0].uid,
             "stacked": 1
@@ -187,7 +187,7 @@ final class AudioDeviceManager: ObservableObject {
             guard isOutputDevice(id),
                   let name = stringProp(id, kAudioObjectPropertyName),
                   let uid = stringProp(id, kAudioDevicePropertyDeviceUID),
-                  uid != "com.multiout.aggregate" else { continue }
+                  uid != "com.recents.tutti.aggregate" else { continue }
             let transport = readTransportType(id)
             // AirPlay devices can't be aggregated — Audio MIDI Setup hides them too.
             if transport == kAudioDeviceTransportTypeAirPlay { continue }
@@ -317,7 +317,9 @@ final class AudioDeviceManager: ObservableObject {
         var ids = [AudioDeviceID](repeating: 0, count: count)
         AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject), &addr, 0, nil, &size, &ids)
         for id in ids {
-            if let uid = stringProp(id, kAudioDevicePropertyDeviceUID), uid == "com.multiout.aggregate" {
+            guard let uid = stringProp(id, kAudioDevicePropertyDeviceUID) else { continue }
+            // Also destroy leftover MultiOut aggregate from before the rename
+            if uid == "com.recents.tutti.aggregate" || uid == "com.multiout.aggregate" {
                 AudioHardwareDestroyAggregateDevice(id)
             }
         }

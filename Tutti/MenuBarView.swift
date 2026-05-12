@@ -108,7 +108,7 @@ private struct StatusCapsule: View {
                     .foregroundStyle(Color.glassTextHi)
                     .lineLimit(1)
                 Spacer(minLength: 6)
-                Text("MULTIOUT")
+                Text("TUTTI")
                     .font(.system(size: 10, weight: .semibold))
                     .tracking(2.2)
                     .foregroundStyle(Color.glassTextLo)

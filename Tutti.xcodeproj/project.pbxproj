@@ -1,0 +1,330 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		049A43CCF8FA870994CEC175 /* TuttiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8113BFFF98933926FEFF511 /* TuttiApp.swift */; };
+		1C507C89A97FBBF2A60844DB /* AudioDeviceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3386723232B8F37159A4FAC /* AudioDeviceManager.swift */; };
+		2AFB272468FD2CE85346B347 /* BluetoothBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = E33C0B6BD8AF332DE818A1A0 /* BluetoothBattery.swift */; };
+		376CD799764D432BEE436015 /* PresetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C260B983310AB17CA60157E /* PresetStore.swift */; };
+		3C859E0EBABE04384253AF6A /* VolumeKeyMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01E0A1B8444B840EC7520D3 /* VolumeKeyMonitor.swift */; };
+		7226802E3EEAC600C9B6EF9F /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67375A0E29E56D83E7C8D944 /* MenuBarView.swift */; };
+		79A08DC7B987E829175C7862 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3685C7D65C9EB34FAB266678 /* Theme.swift */; };
+		C16F31402213E8291C44501C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEE4624F35F7EDEB969BFBB /* SettingsView.swift */; };
+		D8C670DC2B1D9DCB55D7678E /* AudioDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = F597D2465B350C16DC6AA182 /* AudioDevice.swift */; };
+		FF395EB3ABC222770735F64E /* UpdateChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72B9AF269E35B6238432956 /* UpdateChecker.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		3685C7D65C9EB34FAB266678 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		67375A0E29E56D83E7C8D944 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		6C260B983310AB17CA60157E /* PresetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetStore.swift; sourceTree = "<group>"; };
+		7E6A3882847B1553494B1C00 /* Tutti.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tutti.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3386723232B8F37159A4FAC /* AudioDeviceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDeviceManager.swift; sourceTree = "<group>"; };
+		DCEE4624F35F7EDEB969BFBB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		E01E0A1B8444B840EC7520D3 /* VolumeKeyMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeKeyMonitor.swift; sourceTree = "<group>"; };
+		E33C0B6BD8AF332DE818A1A0 /* BluetoothBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothBattery.swift; sourceTree = "<group>"; };
+		F597D2465B350C16DC6AA182 /* AudioDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDevice.swift; sourceTree = "<group>"; };
+		F72B9AF269E35B6238432956 /* UpdateChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateChecker.swift; sourceTree = "<group>"; };
+		F8113BFFF98933926FEFF511 /* TuttiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TuttiApp.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		7B643D2573EBB02FFACFDDD2 /* Tutti */ = {
+			isa = PBXGroup;
+			children = (
+				F597D2465B350C16DC6AA182 /* AudioDevice.swift */,
+				C3386723232B8F37159A4FAC /* AudioDeviceManager.swift */,
+				E33C0B6BD8AF332DE818A1A0 /* BluetoothBattery.swift */,
+				67375A0E29E56D83E7C8D944 /* MenuBarView.swift */,
+				6C260B983310AB17CA60157E /* PresetStore.swift */,
+				DCEE4624F35F7EDEB969BFBB /* SettingsView.swift */,
+				3685C7D65C9EB34FAB266678 /* Theme.swift */,
+				F8113BFFF98933926FEFF511 /* TuttiApp.swift */,
+				F72B9AF269E35B6238432956 /* UpdateChecker.swift */,
+				E01E0A1B8444B840EC7520D3 /* VolumeKeyMonitor.swift */,
+			);
+			path = Tutti;
+			sourceTree = "<group>";
+		};
+		A46816F907156223EA4BDE0B = {
+			isa = PBXGroup;
+			children = (
+				7B643D2573EBB02FFACFDDD2 /* Tutti */,
+				ACC910B6F1F3928E8A4057E8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		ACC910B6F1F3928E8A4057E8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7E6A3882847B1553494B1C00 /* Tutti.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9B9D5A4BDF85F98661DB0BF7 /* Tutti */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0E7F3461017415E46C3D7572 /* Build configuration list for PBXNativeTarget "Tutti" */;
+			buildPhases = (
+				FFEC022758F3F527E1AFB0FC /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Tutti;
+			packageProductDependencies = (
+			);
+			productName = Tutti;
+			productReference = 7E6A3882847B1553494B1C00 /* Tutti.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CEA519F00D7A840940AF870A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					9B9D5A4BDF85F98661DB0BF7 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = 1AB94D8A194F0A7B55DAAEE7 /* Build configuration list for PBXProject "Tutti" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = A46816F907156223EA4BDE0B;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = ACC910B6F1F3928E8A4057E8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9B9D5A4BDF85F98661DB0BF7 /* Tutti */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FFEC022758F3F527E1AFB0FC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D8C670DC2B1D9DCB55D7678E /* AudioDevice.swift in Sources */,
+				1C507C89A97FBBF2A60844DB /* AudioDeviceManager.swift in Sources */,
+				2AFB272468FD2CE85346B347 /* BluetoothBattery.swift in Sources */,
+				7226802E3EEAC600C9B6EF9F /* MenuBarView.swift in Sources */,
+				376CD799764D432BEE436015 /* PresetStore.swift in Sources */,
+				C16F31402213E8291C44501C /* SettingsView.swift in Sources */,
+				79A08DC7B987E829175C7862 /* Theme.swift in Sources */,
+				049A43CCF8FA870994CEC175 /* TuttiApp.swift in Sources */,
+				FF395EB3ABC222770735F64E /* UpdateChecker.swift in Sources */,
+				3C859E0EBABE04384253AF6A /* VolumeKeyMonitor.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0897C94399D4433118D5CFF5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		4DE2B9F22184BC82CD048CB6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Tutti Local";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = NO;
+				INFOPLIST_FILE = Tutti/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.recents.tutti;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		9FDA081405C68AADBDF5BFE0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Tutti Local";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = NO;
+				INFOPLIST_FILE = Tutti/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.recents.tutti;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		D77CF51768ED944D8C0B0719 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0E7F3461017415E46C3D7572 /* Build configuration list for PBXNativeTarget "Tutti" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4DE2B9F22184BC82CD048CB6 /* Debug */,
+				9FDA081405C68AADBDF5BFE0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		1AB94D8A194F0A7B55DAAEE7 /* Build configuration list for PBXProject "Tutti" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D77CF51768ED944D8C0B0719 /* Debug */,
+				0897C94399D4433118D5CFF5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CEA519F00D7A840940AF870A /* Project object */;
+}

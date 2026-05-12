@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct MultiOutApp: App {
+struct TuttiApp: App {
     @StateObject private var manager = AudioDeviceManager()
     @StateObject private var presets = PresetStore()
 
@@ -11,7 +11,7 @@ struct MultiOutApp: App {
                 .environmentObject(manager)
                 .environmentObject(presets)
         } label: {
-            Label("MultiOut", systemImage: manager.isActive ? "speaker.wave.2.fill" : "speaker.fill")
+            Label("Tutti", systemImage: manager.isActive ? "speaker.wave.2.fill" : "speaker.fill")
                 .labelStyle(.iconOnly)
         }
         .menuBarExtraStyle(.window)
