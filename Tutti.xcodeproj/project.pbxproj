@@ -16,11 +16,13 @@
 		79A08DC7B987E829175C7862 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3685C7D65C9EB34FAB266678 /* Theme.swift */; };
 		C16F31402213E8291C44501C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEE4624F35F7EDEB969BFBB /* SettingsView.swift */; };
 		D8C670DC2B1D9DCB55D7678E /* AudioDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = F597D2465B350C16DC6AA182 /* AudioDevice.swift */; };
+		E703A025B69AC28F76DC9104 /* TuttiPulseIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8174A1619533BDEF90EC63 /* TuttiPulseIcon.swift */; };
 		FF395EB3ABC222770735F64E /* UpdateChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72B9AF269E35B6238432956 /* UpdateChecker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3685C7D65C9EB34FAB266678 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		5F8174A1619533BDEF90EC63 /* TuttiPulseIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TuttiPulseIcon.swift; sourceTree = "<group>"; };
 		67375A0E29E56D83E7C8D944 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
 		6C260B983310AB17CA60157E /* PresetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetStore.swift; sourceTree = "<group>"; };
 		7E6A3882847B1553494B1C00 /* Tutti.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tutti.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -45,6 +47,7 @@
 				DCEE4624F35F7EDEB969BFBB /* SettingsView.swift */,
 				3685C7D65C9EB34FAB266678 /* Theme.swift */,
 				F8113BFFF98933926FEFF511 /* TuttiApp.swift */,
+				5F8174A1619533BDEF90EC63 /* TuttiPulseIcon.swift */,
 				F72B9AF269E35B6238432956 /* UpdateChecker.swift */,
 				E01E0A1B8444B840EC7520D3 /* VolumeKeyMonitor.swift */,
 			);
@@ -134,6 +137,7 @@
 				C16F31402213E8291C44501C /* SettingsView.swift in Sources */,
 				79A08DC7B987E829175C7862 /* Theme.swift in Sources */,
 				049A43CCF8FA870994CEC175 /* TuttiApp.swift in Sources */,
+				E703A025B69AC28F76DC9104 /* TuttiPulseIcon.swift in Sources */,
 				FF395EB3ABC222770735F64E /* UpdateChecker.swift in Sources */,
 				3C859E0EBABE04384253AF6A /* VolumeKeyMonitor.swift in Sources */,
 			);

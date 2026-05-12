@@ -11,8 +11,7 @@ struct TuttiApp: App {
                 .environmentObject(manager)
                 .environmentObject(presets)
         } label: {
-            Label("Tutti", systemImage: manager.isActive ? "speaker.wave.2.fill" : "speaker.fill")
-                .labelStyle(.iconOnly)
+            Image(nsImage: TuttiPulseIcon.image(active: !manager.isMuted))
         }
         .menuBarExtraStyle(.window)
     }
