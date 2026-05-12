@@ -313,18 +313,17 @@ private struct PresetsCapsule: View {
         GlassCapsule {
             VStack(spacing: 0) {
                 SectionHead(title: "预设", folded: $folded) {
-                    if canSave {
+                    if canSave && !showSaveField {
                         Button {
-                            withAnimation { showSaveField.toggle() }
-                            if !showSaveField { presetName = "" }
+                            withAnimation { showSaveField = true }
                         } label: {
                             HStack(spacing: 3) {
-                                Image(systemName: showSaveField ? "xmark" : "plus")
+                                Image(systemName: "plus")
                                     .font(.system(size: 9, weight: .bold))
-                                Text(showSaveField ? "取消" : "保存当前")
+                                Text("保存当前")
                                     .font(.system(size: 11, weight: .semibold))
                             }
-                            .foregroundStyle(showSaveField ? Color.glassTextMid : prefs.accentColor)
+                            .foregroundStyle(prefs.accentColor)
                         }
                         .buttonStyle(.plain)
                     }
@@ -332,7 +331,9 @@ private struct PresetsCapsule: View {
 
                 if !folded {
                     if showSaveField {
-                        SaveField(presetName: $presetName, onSubmit: commitSave)
+                        SaveField(presetName: $presetName,
+                                  onSubmit: commitSave,
+                                  onCancel: cancelSave)
                             .padding(.horizontal, 8)
                             .padding(.bottom, 8)
                             .transition(.opacity)
@@ -381,11 +382,13 @@ private struct PresetsCapsule: View {
 }
 
 private struct SaveField: View {
+    @EnvironmentObject var prefs: AppearancePrefs
     @Binding var presetName: String
     let onSubmit: () -> Void
+    let onCancel: () -> Void
 
     var body: some View {
-        HStack(spacing: 7) {
+        HStack(spacing: 4) {
             TextField("预设名称", text: $presetName)
                 .textFieldStyle(.plain)
                 .font(.system(size: 12))
@@ -402,9 +405,27 @@ private struct SaveField: View {
                 )
                 .onSubmit(onSubmit)
 
-            Button("保存", action: onSubmit)
-                .buttonStyle(AccentPillButton())
-                .keyboardShortcut(.defaultAction)
+            Button(action: onCancel) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(Color.glassTextMid)
+                    .frame(width: 24, height: 24)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .keyboardShortcut(.cancelAction)
+            .help("取消")
+
+            Button(action: onSubmit) {
+                Image(systemName: "checkmark")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(presetName.isEmpty ? Color.glassTextLo : prefs.accentColor)
+                    .frame(width: 24, height: 24)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .disabled(presetName.isEmpty)
+            .help("保存")
         }
     }
 }
