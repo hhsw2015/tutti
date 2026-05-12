@@ -67,6 +67,9 @@ struct SettingsView: View {
                 .font(.system(size: 10, design: .monospaced))
                 .foregroundStyle(Color.glassTextLo)
             Spacer()
+            Text("One sound, every speaker")
+                .font(.system(size: 10, design: .monospaced))
+                .foregroundStyle(Color.glassTextLo)
         }
         .padding(.horizontal, 4)
     }
