@@ -51,6 +51,7 @@ final class AudioDeviceManager: ObservableObject {
     }
 
     func setVolume(_ volume: Float, for id: AudioDeviceID) {
+        guard volumes[id] != volume else { return }
         volumes[id] = volume
         writeVolume(volume, to: id)
     }
