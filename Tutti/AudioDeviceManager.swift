@@ -71,8 +71,10 @@ final class AudioDeviceManager: ObservableObject {
         selectedIDs.compactMap { volumes[$0] }.max() ?? 0
     }
 
+    /// "Muted" means audible silence: volume is 0. `preMuteVolumes` is only a
+    /// hint about what to restore to, not the source of truth.
     func isMuted(_ id: AudioDeviceID) -> Bool {
-        preMuteVolumes[id] != nil
+        (volumes[id] ?? 0) == 0
     }
 
     /// True only when every selected device is silent. Per-device muting of a
@@ -90,17 +92,16 @@ final class AudioDeviceManager: ObservableObject {
     func setMasterVolume(_ value: Float) {
         let delta = value - masterVolume
         guard delta != 0 else { return }
-        preMuteVolumes.removeAll()
         adjustAllVolumes(by: delta)
     }
 
     func toggleMute(deviceID id: AudioDeviceID) {
-        if let saved = preMuteVolumes[id] {
-            preMuteVolumes.removeValue(forKey: id)
-            setVolume(saved, for: id)
+        if isMuted(id) {
+            // Restore from saved hint if we have one, otherwise pick a sensible default.
+            let restoreTo = preMuteVolumes[id] ?? 0.5
+            setVolume(restoreTo, for: id)
         } else {
             let current = volumes[id] ?? 1.0
-            guard current > 0 else { return }
             preMuteVolumes[id] = current
             setVolume(0, for: id)
         }
@@ -108,11 +109,11 @@ final class AudioDeviceManager: ObservableObject {
 
     func toggleMasterMute() {
         if isMuted {
-            for id in selectedIDs where preMuteVolumes[id] != nil {
+            for id in selectedIDs {
                 toggleMute(deviceID: id)
             }
         } else {
-            for id in selectedIDs where preMuteVolumes[id] == nil {
+            for id in selectedIDs where (volumes[id] ?? 0) > 0 {
                 toggleMute(deviceID: id)
             }
         }
@@ -195,10 +196,13 @@ final class AudioDeviceManager: ObservableObject {
 
         let freshIDs = Set(newDevices.map { $0.id })
 
-        // Sub-devices absorbed into our aggregate disappear from CoreAudio's list;
-        // keep them visible while the aggregate is alive.
+        // Sub-devices absorbed into our aggregate disappear from CoreAudio's
+        // global list, so we re-inject them. But only those still active in the
+        // aggregate — a Bluetooth device that physically disconnects also falls
+        // out of the global list, and we must NOT preserve those.
+        let stillActive = activeSubdeviceIDs()
         let preserved: [AudioDevice] = aggregateID != nil
-            ? devices.filter { selectedIDs.contains($0.id) && !freshIDs.contains($0.id) }
+            ? devices.filter { selectedIDs.contains($0.id) && !freshIDs.contains($0.id) && stillActive.contains($0.id) }
             : []
         newDevices += preserved
 
@@ -226,6 +230,17 @@ final class AudioDeviceManager: ObservableObject {
         var ids = [AudioDeviceID](repeating: 0, count: count)
         AudioObjectGetPropertyData(systemObject, &addr, 0, nil, &size, &ids)
         return ids
+    }
+
+    private func activeSubdeviceIDs() -> Set<AudioDeviceID> {
+        guard let agg = aggregateID else { return [] }
+        var addr = AudioObjectPropertyAddress(kAudioAggregateDevicePropertyActiveSubDeviceList)
+        var size: UInt32 = 0
+        guard AudioObjectGetPropertyDataSize(agg, &addr, 0, nil, &size) == noErr, size > 0 else { return [] }
+        let count = Int(size) / MemoryLayout<AudioDeviceID>.size
+        var ids = [AudioDeviceID](repeating: 0, count: count)
+        guard AudioObjectGetPropertyData(agg, &addr, 0, nil, &size, &ids) == noErr else { return [] }
+        return Set(ids)
     }
 
     private func readTransportType(_ id: AudioDeviceID) -> UInt32 {
@@ -460,7 +475,6 @@ final class AudioDeviceManager: ObservableObject {
         guard isActive else { return }
         switch action {
         case .adjust(let delta):
-            preMuteVolumes.removeAll()
             adjustAllVolumes(by: delta)
         case .mute:
             toggleMasterMute()
@@ -470,7 +484,14 @@ final class AudioDeviceManager: ObservableObject {
     private func adjustAllVolumes(by delta: Float) {
         for id in selectedIDs {
             let current = volumes[id] ?? 1.0
-            setVolume(max(0, min(1, current + delta)), for: id)
+            let newVol = max(0, min(1, current + delta))
+            // When a downward drag forces a device to 0, remember its pre-drag
+            // volume so a follow-up mute-toggle can restore it. Raising past 0
+            // is handled by setVolume's existing clear logic.
+            if newVol == 0 && current > 0 {
+                preMuteVolumes[id] = current
+            }
+            setVolume(newVol, for: id)
         }
     }
 }
