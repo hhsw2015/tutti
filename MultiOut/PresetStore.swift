@@ -21,6 +21,13 @@ final class PresetStore: ObservableObject {
         presets.removeAll { $0.id == preset.id }
     }
 
+    func rename(_ preset: Preset, to newName: String) {
+        let trimmed = newName.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty,
+              let idx = presets.firstIndex(where: { $0.id == preset.id }) else { return }
+        presets[idx].name = trimmed
+    }
+
     private func save() {
         if let data = try? JSONEncoder().encode(presets) {
             UserDefaults.standard.set(data, forKey: "presets")

@@ -678,10 +678,20 @@ private struct GlassPresetRow: View {
     @EnvironmentObject var presets: PresetStore
     @EnvironmentObject var prefs: AppearancePrefs
     @State private var hovering = false
+    @State private var renaming = false
+    @State private var draftName = ""
+    @FocusState private var nameFieldFocused: Bool
+
+    private var trailingReserve: CGFloat {
+        if renaming { return 26 }
+        if hovering { return 44 }
+        return 0
+    }
 
     var body: some View {
         ZStack(alignment: .trailing) {
             Button {
+                guard !renaming else { return }
                 manager.applyPreset(uids: preset.deviceUIDs)
             } label: {
                 HStack(spacing: 10) {
@@ -690,16 +700,28 @@ private struct GlassPresetRow: View {
                                    accent: prefs.accent.color)
                         .scaleEffect(0.8)
                         .frame(width: 24, height: 24)
-                    Text(preset.name)
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(Color.glassTextHi)
-                        .lineLimit(1)
+
+                    if renaming {
+                        TextField("名称", text: $draftName)
+                            .textFieldStyle(.plain)
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(Color.glassTextHi)
+                            .focused($nameFieldFocused)
+                            .onSubmit { commitRename() }
+                            .onExitCommand { cancelRename() }
+                    } else {
+                        Text(preset.name)
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(Color.glassTextHi)
+                            .lineLimit(1)
+                    }
+
                     Spacer()
                     Text(isActive ? "当前 · \(preset.deviceUIDs.count) 台"
                                   : "\(preset.deviceUIDs.count) 台")
                         .font(.system(size: 11).monospacedDigit())
                         .foregroundStyle(isActive ? prefs.accent.color : Color.glassTextLo)
-                        .padding(.trailing, hovering ? 20 : 0)
+                        .padding(.trailing, trailingReserve)
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
@@ -720,19 +742,61 @@ private struct GlassPresetRow: View {
             )
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
-            if hovering {
-                Button { presets.delete(preset) } label: {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 9, weight: .semibold))
-                        .foregroundStyle(Color.muteRed.opacity(0.85))
+            if renaming {
+                Button { commitRename() } label: {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(prefs.accent.color)
                         .frame(width: 22, height: 22)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .help("确认重命名")
+                .padding(.trailing, 4)
+            } else if hovering {
+                HStack(spacing: 0) {
+                    Button { beginRename() } label: {
+                        Image(systemName: "pencil")
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundStyle(Color.glassTextMid)
+                            .frame(width: 22, height: 22)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .help("重命名")
+
+                    Button { presets.delete(preset) } label: {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 9, weight: .semibold))
+                            .foregroundStyle(Color.muteRed.opacity(0.85))
+                            .frame(width: 22, height: 22)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .help("删除")
+                }
                 .padding(.trailing, 4)
             }
         }
         .onHover { hovering = $0 }
+        .onChange(of: nameFieldFocused) { focused in
+            if !focused && renaming { commitRename() }
+        }
+    }
+
+    private func beginRename() {
+        draftName = preset.name
+        renaming = true
+        DispatchQueue.main.async { nameFieldFocused = true }
+    }
+
+    private func commitRename() {
+        presets.rename(preset, to: draftName)
+        renaming = false
+    }
+
+    private func cancelRename() {
+        renaming = false
     }
 }
 
