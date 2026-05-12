@@ -69,13 +69,10 @@ final class AudioDeviceManager: ObservableObject {
         preMuteVolumes[id] != nil
     }
 
-    /// True as soon as *any* selected device is muted. The master button
-    /// treats partial-mute as "muted" so a second tap always unmutes
-    /// everything — without this, individually muting one device first would
-    /// flip the master into the "mute everything else" branch on click 1 and
-    /// then never see all-selected-muted by click 2.
+    /// True only when every selected device is silent. Per-device muting of a
+    /// single output doesn't count as "muted" while other devices still play.
     var isMuted: Bool {
-        selectedIDs.contains { preMuteVolumes[$0] != nil }
+        !selectedIDs.isEmpty && selectedIDs.allSatisfy { (volumes[$0] ?? 0) == 0 }
     }
 
     func setMasterVolume(_ value: Float) {
