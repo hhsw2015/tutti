@@ -11,8 +11,8 @@ struct SettingsView: View {
         VStack(spacing: 8) {
             header
 
-            SettingsCapsule(title: "外观") {
-                AccentPicker()
+            SettingsCapsule(title: "主题") {
+                ThemePicker()
             }
 
             SettingsCapsule(title: "权限") {
@@ -97,78 +97,64 @@ private struct SettingsCapsule<Content: View>: View {
     }
 }
 
-struct AccentPicker: View {
+struct ThemePicker: View {
     @EnvironmentObject var prefs: AppearancePrefs
 
     var body: some View {
-        HStack(spacing: 10) {
-            ForEach(AccentChoice.allCases) { choice in
-                AccentSwatch(
-                    choice: choice,
-                    selected: prefs.accent == choice
+        HStack(spacing: 0) {
+            ForEach(Array(ThemeChoice.allCases.enumerated()), id: \.element) { idx, choice in
+                let selected = prefs.theme == choice
+                let prevSelected = idx > 0 && prefs.theme == ThemeChoice.allCases[idx - 1]
+
+                ThemeSegment(
+                    label: choice.label,
+                    symbol: choice.symbol,
+                    selected: selected,
+                    accent: prefs.accentColor
                 ) {
-                    prefs.accent = choice
+                    prefs.theme = choice
+                }
+                .overlay(alignment: .leading) {
+                    if idx > 0 && !selected && !prevSelected {
+                        Rectangle()
+                            .fill(Color.primary.opacity(0.15))
+                            .frame(width: 1, height: 14)
+                    }
                 }
             }
-            Spacer(minLength: 0)
         }
-        .padding(.vertical, 2)
+        .background(
+            RoundedRectangle(cornerRadius: 9, style: .continuous)
+                .fill(Color.primary.opacity(0.07))
+        )
     }
 }
 
-private struct AccentSwatch: View {
-    let choice: AccentChoice
+private struct ThemeSegment: View {
+    let label: String
+    let symbol: String
     let selected: Bool
+    let accent: Color
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            ZStack {
-                swatchFill
-                    .frame(width: 26, height: 26)
-                    .overlay(Circle().stroke(Color.white.opacity(0.45), lineWidth: 0.5))
-                    .shadow(color: choice.color.opacity(selected ? 0.55 : 0.0),
-                            radius: 6, y: 1)
-
-                if selected {
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundStyle(Color.white)
-                }
+            HStack(spacing: 5) {
+                Image(systemName: symbol)
+                    .font(.system(size: 11, weight: .medium))
+                Text(label)
+                    .font(.system(size: 12, weight: .medium))
             }
-            .scaleEffect(selected ? 1.08 : 1.0)
+            .foregroundStyle(selected ? Color.white : Color.glassTextHi)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 6)
+            .background(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(selected ? accent : Color.clear)
+            )
+            .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         }
         .buttonStyle(.plain)
-        .animation(.easeOut(duration: 0.15), value: selected)
-        .help(choice == .system ? "跟随系统" : "")
-    }
-
-    @ViewBuilder
-    private var swatchFill: some View {
-        if choice == .system {
-            Circle()
-                .fill(
-                    AngularGradient(
-                        gradient: Gradient(colors: [
-                            .red, .orange, .yellow, .green, .blue, .purple, .red
-                        ]),
-                        center: .center
-                    )
-                )
-        } else {
-            Circle()
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            choice.color.lighter(by: 0.30),
-                            choice.color,
-                            choice.color.darker(by: 0.20)
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                )
-        }
     }
 }
 
@@ -191,7 +177,7 @@ struct PermissionRow: View {
                 Button { openAccessibilitySettings() } label: {
                     Text("去授权")
                         .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(prefs.accent.color)
+                        .foregroundStyle(prefs.accentColor)
                 }
                 .buttonStyle(.plain)
             }
@@ -231,7 +217,7 @@ private struct AccentCheckboxRow: View {
                         .frame(width: 15, height: 15)
                     if isOn {
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(prefs.accent.color)
+                            .fill(prefs.accentColor)
                             .frame(width: 15, height: 15)
                         Image(systemName: "checkmark")
                             .font(.system(size: 9, weight: .bold))
@@ -292,13 +278,13 @@ struct UpdatesSection: View {
         case .updateAvailable(let version, let url):
             HStack(spacing: 5) {
                 Text("新版本 \(version)")
-                    .foregroundStyle(prefs.accent.color)
+                    .foregroundStyle(prefs.accentColor)
                 Button {
                     NSWorkspace.shared.open(url)
                 } label: {
                     Text("下载")
                         .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(prefs.accent.color)
+                        .foregroundStyle(prefs.accentColor)
                         .underline()
                 }
                 .buttonStyle(.plain)

@@ -38,8 +38,9 @@ struct MenuBarView: View {
             .animation(.easeOut(duration: 0.22), value: showingSettings)
         }
         .frame(width: panelWidth)
-        .background(TransparentWindow())
+        .background(TransparentWindow(theme: prefs.theme))
         .environmentObject(prefs)
+        .preferredColorScheme(prefs.theme.colorScheme)
     }
 
     private var mainView: some View {
@@ -148,7 +149,7 @@ private struct MasterCapsule: View {
                 HStack(spacing: 10) {
                     MuteButton(muted: muted) { manager.toggleMasterMute() }
                     GlassSlider(value: volumeBinding,
-                                accent: prefs.accent.color,
+                                accent: prefs.accentColor,
                                 muted: muted)
                         .frame(height: 16)
                 }
@@ -323,7 +324,7 @@ private struct PresetsCapsule: View {
                                 Text(showSaveField ? "取消" : "保存当前")
                                     .font(.system(size: 11, weight: .semibold))
                             }
-                            .foregroundStyle(showSaveField ? Color.glassTextMid : prefs.accent.color)
+                            .foregroundStyle(showSaveField ? Color.glassTextMid : prefs.accentColor)
                         }
                         .buttonStyle(.plain)
                     }
@@ -421,8 +422,8 @@ struct AccentPillButton: ButtonStyle {
                 Capsule().fill(
                     LinearGradient(
                         colors: [
-                            prefs.accent.color.lighter(by: 0.20),
-                            prefs.accent.color
+                            prefs.accentColor.lighter(by: 0.20),
+                            prefs.accentColor
                         ],
                         startPoint: .top,
                         endPoint: .bottom
@@ -522,7 +523,7 @@ private struct GlassDeviceRow: View {
                         symbol: muted ? "speaker.slash.fill" : device.symbolName,
                         selected: isSelected,
                         muted: muted,
-                        accent: prefs.accent.color
+                        accent: prefs.accentColor
                     )
                 }
                 .buttonStyle(.plain)
@@ -546,7 +547,7 @@ private struct GlassDeviceRow: View {
                                 .font(.system(size: 9))
                                 .foregroundStyle(Color.glassTextDim)
                         } else if isSelected {
-                            CheckBadge(color: prefs.accent.color)
+                            CheckBadge(color: prefs.accentColor)
                         }
                     }
                     .contentShape(Rectangle())
@@ -563,7 +564,7 @@ private struct GlassDeviceRow: View {
             if isSelected && device.canSetVolume {
                 HStack(spacing: 8) {
                     GlassSlider(value: volumeBinding,
-                                accent: prefs.accent.color,
+                                accent: prefs.accentColor,
                                 trackHeight: 4,
                                 knobSize: 11)
                         .frame(height: 12)
@@ -584,7 +585,7 @@ private struct GlassDeviceRow: View {
     @ViewBuilder
     private var rowBackground: some View {
         if isSelected {
-            prefs.accent.color.opacity(0.18)
+            prefs.accentColor.opacity(0.18)
         } else if hovering {
             Color.glassHoverBg
         } else {
@@ -697,7 +698,7 @@ private struct GlassPresetRow: View {
                 HStack(spacing: 10) {
                     GlassIconBadge(symbol: "slider.horizontal.3",
                                    selected: isActive,
-                                   accent: prefs.accent.color)
+                                   accent: prefs.accentColor)
                         .scaleEffect(0.8)
                         .frame(width: 24, height: 24)
 
@@ -720,7 +721,7 @@ private struct GlassPresetRow: View {
                     Text(isActive ? "当前 · \(preset.deviceUIDs.count) 台"
                                   : "\(preset.deviceUIDs.count) 台")
                         .font(.system(size: 11).monospacedDigit())
-                        .foregroundStyle(isActive ? prefs.accent.color : Color.glassTextLo)
+                        .foregroundStyle(isActive ? prefs.accentColor : Color.glassTextLo)
                         .padding(.trailing, trailingReserve)
                 }
                 .padding(.horizontal, 10)
@@ -732,7 +733,7 @@ private struct GlassPresetRow: View {
             .background(
                 Group {
                     if isActive {
-                        prefs.accent.color.opacity(0.18)
+                        prefs.accentColor.opacity(0.18)
                     } else if hovering {
                         Color.glassHoverBg
                     } else {
@@ -746,7 +747,7 @@ private struct GlassPresetRow: View {
                 Button { commitRename() } label: {
                     Image(systemName: "checkmark")
                         .font(.system(size: 11, weight: .bold))
-                        .foregroundStyle(prefs.accent.color)
+                        .foregroundStyle(prefs.accentColor)
                         .frame(width: 22, height: 22)
                         .contentShape(Rectangle())
                 }
@@ -814,7 +815,7 @@ private struct DockCapsule: View {
                     withAnimation { showingSettings = true }
                 } trailing: {
                     if updater.hasUpdate {
-                        Circle().fill(prefs.accent.color).frame(width: 5, height: 5)
+                        Circle().fill(prefs.accentColor).frame(width: 5, height: 5)
                     }
                 }
 

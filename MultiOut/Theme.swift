@@ -1,20 +1,32 @@
 import SwiftUI
 import AppKit
 
-enum AccentChoice: String, CaseIterable, Identifiable {
-    case system, orange, blue, purple, red, green, yellow
+enum ThemeChoice: String, CaseIterable, Identifiable {
+    case system, light, dark
 
     var id: String { rawValue }
 
-    var color: Color {
+    var colorScheme: ColorScheme? {
         switch self {
-        case .system: return Color(nsColor: .controlAccentColor)
-        case .orange: return Color(red: 1.00, green: 0.624, blue: 0.039)
-        case .blue:   return Color(red: 0.039, green: 0.518, blue: 0.996)
-        case .purple: return Color(red: 0.749, green: 0.353, blue: 0.949)
-        case .red:    return Color(red: 1.00, green: 0.271, blue: 0.227)
-        case .green:  return Color(red: 0.188, green: 0.820, blue: 0.345)
-        case .yellow: return Color(red: 1.00, green: 0.839, blue: 0.039)
+        case .system: return nil
+        case .light:  return .light
+        case .dark:   return .dark
+        }
+    }
+
+    var label: String {
+        switch self {
+        case .system: return "系统"
+        case .light:  return "浅色"
+        case .dark:   return "深色"
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .system: return "laptopcomputer"
+        case .light:  return "sun.max"
+        case .dark:   return "moon"
         }
     }
 }
@@ -23,28 +35,29 @@ enum AccentChoice: String, CaseIterable, Identifiable {
 final class AppearancePrefs: ObservableObject {
     static let shared = AppearancePrefs()
 
-    private static let accentKey = "accentChoice"
+    private static let themeKey = "themeChoice"
 
-    @Published var accent: AccentChoice {
-        didSet { UserDefaults.standard.set(accent.rawValue, forKey: Self.accentKey) }
+    @Published var theme: ThemeChoice {
+        didSet { UserDefaults.standard.set(theme.rawValue, forKey: Self.themeKey) }
     }
+
+    /// macOS system accent. Republishes via the observer below when the user
+    /// changes it in System Settings.
+    var accentColor: Color { Color(nsColor: .controlAccentColor) }
 
     private var systemColorObserver: NSObjectProtocol?
 
     private init() {
-        let raw = UserDefaults.standard.string(forKey: Self.accentKey) ?? ""
-        self.accent = AccentChoice(rawValue: raw) ?? .system
+        let raw = UserDefaults.standard.string(forKey: Self.themeKey) ?? ""
+        self.theme = ThemeChoice(rawValue: raw) ?? .system
 
-        // System accent can change at any time via System Settings.
-        // Republish when the user is on .system so accent-tinted views refresh.
         systemColorObserver = NotificationCenter.default.addObserver(
             forName: NSColor.systemColorsDidChangeNotification,
             object: nil,
             queue: .main
         ) { [weak self] _ in
             DispatchQueue.main.async {
-                guard let self, self.accent == .system else { return }
-                self.objectWillChange.send()
+                self?.objectWillChange.send()
             }
         }
     }
@@ -142,8 +155,12 @@ struct StatusDot: View {
 
 /// Makes the hosting NSWindow fully transparent and hides the system-added
 /// NSVisualEffectView, so the desktop wallpaper shows through the gaps
-/// between glass capsules.
+/// between glass capsules. Also applies the theme override so materials
+/// (which key off the NSWindow's appearance, not SwiftUI's color scheme)
+/// switch alongside semantic foreground colors.
 struct TransparentWindow: NSViewRepresentable {
+    let theme: ThemeChoice
+
     func makeNSView(context: Context) -> NSView {
         let v = NSView()
         v.setAccessibilityHidden(true)
@@ -161,6 +178,12 @@ struct TransparentWindow: NSViewRepresentable {
         window.backgroundColor = .clear
         window.hasShadow = true
         hideEffectViews(window.contentView)
+
+        switch theme {
+        case .system: window.appearance = nil
+        case .light:  window.appearance = NSAppearance(named: .aqua)
+        case .dark:   window.appearance = NSAppearance(named: .darkAqua)
+        }
     }
 
     private func hideEffectViews(_ view: NSView?) {
