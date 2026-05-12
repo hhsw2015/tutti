@@ -10,19 +10,12 @@ private let capsuleGap: CGFloat = 8
 
 struct MenuBarView: View {
     @EnvironmentObject var manager: AudioDeviceManager
-    @EnvironmentObject var presets: PresetStore
     @StateObject private var updater = UpdateChecker()
     @StateObject private var prefs = AppearancePrefs.shared
-    @State private var showSaveField = false
-    @State private var presetName = ""
     @State private var showingSettings = false
     @State private var devicesFolded = false
-    @State private var presetsFolded = false
 
     private var showMaster: Bool { manager.selectedIDs.count >= 2 }
-    private var showPresetsSection: Bool {
-        !presets.presets.isEmpty || manager.selectedIDs.count >= 2
-    }
 
     var body: some View {
         ZStack {
@@ -54,15 +47,6 @@ struct MenuBarView: View {
 
             DevicesCapsule(folded: $devicesFolded)
 
-            if showPresetsSection {
-                PresetsCapsule(
-                    folded: $presetsFolded,
-                    showSaveField: $showSaveField,
-                    presetName: $presetName
-                )
-                .transition(.scale(scale: 0.96).combined(with: .opacity))
-            }
-
             DockCapsule(showingSettings: $showingSettings, updater: updater)
                 .padding(.top, 2)
         }
@@ -70,9 +54,7 @@ struct MenuBarView: View {
         .padding(.top, 12)
         .padding(.bottom, 14)
         .animation(.easeOut(duration: 0.20), value: showMaster)
-        .animation(.easeOut(duration: 0.20), value: showPresetsSection)
         .animation(.easeOut(duration: 0.20), value: devicesFolded)
-        .animation(.easeOut(duration: 0.20), value: presetsFolded)
     }
 }
 
@@ -293,139 +275,6 @@ private struct DevicesCapsule: View {
                 }
             }
             .padding(4)
-        }
-    }
-}
-
-// MARK: - Presets capsule
-
-private struct PresetsCapsule: View {
-    @EnvironmentObject var manager: AudioDeviceManager
-    @EnvironmentObject var presets: PresetStore
-    @EnvironmentObject var prefs: AppearancePrefs
-    @Binding var folded: Bool
-    @Binding var showSaveField: Bool
-    @Binding var presetName: String
-
-    private var canSave: Bool { manager.selectedIDs.count >= 2 }
-
-    var body: some View {
-        GlassCapsule {
-            VStack(spacing: 0) {
-                SectionHead(title: "预设", folded: $folded) {
-                    if canSave && !showSaveField {
-                        Button {
-                            withAnimation { showSaveField = true }
-                        } label: {
-                            HStack(spacing: 3) {
-                                Image(systemName: "plus")
-                                    .font(.system(size: 9, weight: .bold))
-                                Text("保存当前")
-                                    .font(.system(size: 11, weight: .semibold))
-                            }
-                            .foregroundStyle(prefs.accentColor)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-
-                if !folded {
-                    if showSaveField {
-                        SaveField(presetName: $presetName,
-                                  onSubmit: commitSave,
-                                  onCancel: cancelSave)
-                            .padding(.horizontal, 8)
-                            .padding(.bottom, 8)
-                            .transition(.opacity)
-                    }
-
-                    if !presets.presets.isEmpty {
-                        let activeUIDs = activeDeviceUIDs
-                        VStack(spacing: 1) {
-                            ForEach(presets.presets) { preset in
-                                GlassPresetRow(
-                                    preset: preset,
-                                    isActive: Set(preset.deviceUIDs) == activeUIDs
-                                )
-                            }
-                        }
-                        .padding(.horizontal, 4)
-                        .padding(.bottom, 6)
-                    }
-                }
-            }
-            .padding(4)
-            .animation(.easeOut(duration: 0.18), value: showSaveField)
-        }
-    }
-
-    private var activeDeviceUIDs: Set<String> {
-        Set(manager.devices
-            .filter { manager.selectedIDs.contains($0.id) }
-            .map { $0.uid })
-    }
-
-    private func commitSave() {
-        guard !presetName.isEmpty else { return }
-        let uids = manager.devices
-            .filter { manager.selectedIDs.contains($0.id) }
-            .map { $0.uid }
-        presets.add(name: presetName, uids: uids)
-        presetName = ""
-        showSaveField = false
-    }
-
-    private func cancelSave() {
-        presetName = ""
-        showSaveField = false
-    }
-}
-
-private struct SaveField: View {
-    @EnvironmentObject var prefs: AppearancePrefs
-    @Binding var presetName: String
-    let onSubmit: () -> Void
-    let onCancel: () -> Void
-
-    var body: some View {
-        HStack(spacing: 4) {
-            TextField("预设名称", text: $presetName)
-                .textFieldStyle(.plain)
-                .font(.system(size: 12))
-                .foregroundStyle(Color.glassTextHi)
-                .padding(.horizontal, 9)
-                .padding(.vertical, 6)
-                .background(
-                    RoundedRectangle(cornerRadius: 6, style: .continuous)
-                        .fill(Color.glassInnerFill)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                .stroke(Color.glassInnerStroke, lineWidth: 0.5)
-                        )
-                )
-                .onSubmit(onSubmit)
-
-            Button(action: onCancel) {
-                Image(systemName: "xmark")
-                    .font(.system(size: 10, weight: .semibold))
-                    .foregroundStyle(Color.glassTextMid)
-                    .frame(width: 24, height: 24)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .keyboardShortcut(.cancelAction)
-            .help("取消")
-
-            Button(action: onSubmit) {
-                Image(systemName: "checkmark")
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundStyle(presetName.isEmpty ? Color.glassTextLo : prefs.accentColor)
-                    .frame(width: 24, height: 24)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .disabled(presetName.isEmpty)
-            .help("保存")
         }
     }
 }
@@ -688,137 +537,6 @@ private struct BatteryPill: View {
         case 10..<25:   return "battery.25"
         default:        return "battery.0"
         }
-    }
-}
-
-// MARK: - Preset row
-
-private struct GlassPresetRow: View {
-    let preset: Preset
-    let isActive: Bool
-    @EnvironmentObject var manager: AudioDeviceManager
-    @EnvironmentObject var presets: PresetStore
-    @EnvironmentObject var prefs: AppearancePrefs
-    @State private var hovering = false
-    @State private var renaming = false
-    @State private var draftName = ""
-    @FocusState private var nameFieldFocused: Bool
-
-    private var trailingReserve: CGFloat {
-        if renaming { return 26 }
-        if hovering { return 44 }
-        return 0
-    }
-
-    var body: some View {
-        ZStack(alignment: .trailing) {
-            Button {
-                guard !renaming else { return }
-                manager.applyPreset(uids: preset.deviceUIDs)
-            } label: {
-                HStack(spacing: 10) {
-                    GlassIconBadge(symbol: "slider.horizontal.3",
-                                   selected: isActive,
-                                   accent: prefs.accentColor)
-                        .scaleEffect(0.8)
-                        .frame(width: 24, height: 24)
-
-                    if renaming {
-                        TextField("名称", text: $draftName)
-                            .textFieldStyle(.plain)
-                            .font(.system(size: 13, weight: .medium))
-                            .foregroundStyle(Color.glassTextHi)
-                            .focused($nameFieldFocused)
-                            .onSubmit { commitRename() }
-                            .onExitCommand { cancelRename() }
-                    } else {
-                        Text(preset.name)
-                            .font(.system(size: 13, weight: .medium))
-                            .foregroundStyle(Color.glassTextHi)
-                            .lineLimit(1)
-                    }
-
-                    Spacer()
-                    Text(isActive ? "当前 · \(preset.deviceUIDs.count) 台"
-                                  : "\(preset.deviceUIDs.count) 台")
-                        .font(.system(size: 11).monospacedDigit())
-                        .foregroundStyle(isActive ? prefs.accentColor : Color.glassTextLo)
-                        .padding(.trailing, trailingReserve)
-                }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 6)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .background(
-                Group {
-                    if isActive {
-                        prefs.accentColor.opacity(0.18)
-                    } else if hovering {
-                        Color.glassHoverBg
-                    } else {
-                        Color.clear
-                    }
-                }
-            )
-            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-
-            if renaming {
-                Button { commitRename() } label: {
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundStyle(prefs.accentColor)
-                        .frame(width: 22, height: 22)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .help("确认重命名")
-                .padding(.trailing, 4)
-            } else if hovering {
-                HStack(spacing: 0) {
-                    Button { beginRename() } label: {
-                        Image(systemName: "pencil")
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundStyle(Color.glassTextMid)
-                            .frame(width: 22, height: 22)
-                            .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .help("重命名")
-
-                    Button { presets.delete(preset) } label: {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 9, weight: .semibold))
-                            .foregroundStyle(Color.muteRed.opacity(0.85))
-                            .frame(width: 22, height: 22)
-                            .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .help("删除")
-                }
-                .padding(.trailing, 4)
-            }
-        }
-        .onHover { hovering = $0 }
-        .onChange(of: nameFieldFocused) { focused in
-            if !focused && renaming { commitRename() }
-        }
-    }
-
-    private func beginRename() {
-        draftName = preset.name
-        renaming = true
-        DispatchQueue.main.async { nameFieldFocused = true }
-    }
-
-    private func commitRename() {
-        presets.rename(preset, to: draftName)
-        renaming = false
-    }
-
-    private func cancelRename() {
-        renaming = false
     }
 }
 

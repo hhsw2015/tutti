@@ -10,7 +10,6 @@
 		049A43CCF8FA870994CEC175 /* TuttiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8113BFFF98933926FEFF511 /* TuttiApp.swift */; };
 		1C507C89A97FBBF2A60844DB /* AudioDeviceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3386723232B8F37159A4FAC /* AudioDeviceManager.swift */; };
 		2AFB272468FD2CE85346B347 /* BluetoothBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = E33C0B6BD8AF332DE818A1A0 /* BluetoothBattery.swift */; };
-		376CD799764D432BEE436015 /* PresetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C260B983310AB17CA60157E /* PresetStore.swift */; };
 		3C859E0EBABE04384253AF6A /* VolumeKeyMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01E0A1B8444B840EC7520D3 /* VolumeKeyMonitor.swift */; };
 		7226802E3EEAC600C9B6EF9F /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67375A0E29E56D83E7C8D944 /* MenuBarView.swift */; };
 		79A08DC7B987E829175C7862 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3685C7D65C9EB34FAB266678 /* Theme.swift */; };
@@ -24,7 +23,6 @@
 		3685C7D65C9EB34FAB266678 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		5F8174A1619533BDEF90EC63 /* TuttiPulseIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TuttiPulseIcon.swift; sourceTree = "<group>"; };
 		67375A0E29E56D83E7C8D944 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
-		6C260B983310AB17CA60157E /* PresetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetStore.swift; sourceTree = "<group>"; };
 		7E6A3882847B1553494B1C00 /* Tutti.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tutti.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3386723232B8F37159A4FAC /* AudioDeviceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDeviceManager.swift; sourceTree = "<group>"; };
 		DCEE4624F35F7EDEB969BFBB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -43,7 +41,6 @@
 				C3386723232B8F37159A4FAC /* AudioDeviceManager.swift */,
 				E33C0B6BD8AF332DE818A1A0 /* BluetoothBattery.swift */,
 				67375A0E29E56D83E7C8D944 /* MenuBarView.swift */,
-				6C260B983310AB17CA60157E /* PresetStore.swift */,
 				DCEE4624F35F7EDEB969BFBB /* SettingsView.swift */,
 				3685C7D65C9EB34FAB266678 /* Theme.swift */,
 				F8113BFFF98933926FEFF511 /* TuttiApp.swift */,
@@ -133,7 +130,6 @@
 				1C507C89A97FBBF2A60844DB /* AudioDeviceManager.swift in Sources */,
 				2AFB272468FD2CE85346B347 /* BluetoothBattery.swift in Sources */,
 				7226802E3EEAC600C9B6EF9F /* MenuBarView.swift in Sources */,
-				376CD799764D432BEE436015 /* PresetStore.swift in Sources */,
 				C16F31402213E8291C44501C /* SettingsView.swift in Sources */,
 				79A08DC7B987E829175C7862 /* Theme.swift in Sources */,
 				049A43CCF8FA870994CEC175 /* TuttiApp.swift in Sources */,

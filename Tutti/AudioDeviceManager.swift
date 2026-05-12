@@ -109,11 +109,6 @@ final class AudioDeviceManager: ObservableObject {
         }
     }
 
-    func applyPreset(uids: [String]) {
-        selectedIDs = Set(devices.filter { uids.contains($0.uid) }.map { $0.id })
-        updateAggregate()
-    }
-
     func cleanup() {
         destroyAggregate()
         batteryTask?.cancel()
