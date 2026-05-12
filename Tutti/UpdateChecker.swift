@@ -37,7 +37,10 @@ final class UpdateChecker: ObservableObject {
 
     func check() async {
         status = .checking
-        let endpoint = URL(string: "https://api.github.com/repos/\(githubRepo)/releases/latest")!
+        guard let endpoint = URL(string: "https://api.github.com/repos/\(githubRepo)/releases/latest") else {
+            status = .error("无效的更新地址")
+            return
+        }
         do {
             var request = URLRequest(url: endpoint)
             request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")

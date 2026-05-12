@@ -10,11 +10,15 @@ private extension AudioObjectPropertyAddress {
     }
 }
 
+private let aggregateUID = "com.recents.tutti.aggregate"
+private let legacyMultiOutUID = "com.multiout.aggregate"
+private let systemObject = AudioObjectID(kAudioObjectSystemObject)
+
 @MainActor
 final class AudioDeviceManager: ObservableObject {
     @Published private(set) var devices: [AudioDevice] = []
     @Published private(set) var selectedIDs: Set<AudioDeviceID> = []
-    @Published var volumes: [AudioDeviceID: Float] = [:]
+    @Published private(set) var volumes: [AudioDeviceID: Float] = [:]
     @Published private(set) var batteryLevels: [AudioDeviceID: Int] = [:]
     @Published private(set) var isActive = false {
         didSet { volumeKeyMonitor?.interceptEnabled = isActive }
@@ -25,7 +29,8 @@ final class AudioDeviceManager: ObservableObject {
     private var savedDefaultID: AudioDeviceID?
 
     private var volumeKeyMonitor: VolumeKeyMonitor?
-    @Published private(set) var preMuteVolumes: [AudioDeviceID: Float] = [:]
+    private var preMuteVolumes: [AudioDeviceID: Float] = [:]
+    private var volumeAddressCache: [AudioDeviceID: AudioObjectPropertyAddress] = [:]
     private var permissionTimer: DispatchSourceTimer?
     private var batteryTask: Task<Void, Never>?
 
@@ -54,8 +59,8 @@ final class AudioDeviceManager: ObservableObject {
         guard volumes[id] != volume else { return }
         volumes[id] = volume
         writeVolume(volume, to: id)
-        // Non-zero manual change unmutes the device. (Zero writes come from
-        // toggleMute itself; they must leave the stored pre-mute volume alone.)
+        // Raising a device past 0 invalidates any saved restore hint — the
+        // user has explicitly chosen a new volume.
         if volume > 0 {
             preMuteVolumes.removeValue(forKey: id)
         }
@@ -160,7 +165,7 @@ final class AudioDeviceManager: ObservableObject {
         }
         let desc: [String: Any] = [
             "name": "Tutti",
-            "uid": "com.recents.tutti.aggregate",
+            "uid": aggregateUID,
             "subdevices": subs,
             "master": selected[0].uid,
             "stacked": 1
@@ -173,19 +178,12 @@ final class AudioDeviceManager: ObservableObject {
     // MARK: - Enumeration
 
     func refreshDevices() {
-        var addr = AudioObjectPropertyAddress(kAudioHardwarePropertyDevices)
-        var size: UInt32 = 0
-        AudioObjectGetPropertyDataSize(AudioObjectID(kAudioObjectSystemObject), &addr, 0, nil, &size)
-        let count = Int(size) / MemoryLayout<AudioDeviceID>.size
-        var ids = [AudioDeviceID](repeating: 0, count: count)
-        AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject), &addr, 0, nil, &size, &ids)
-
         var newDevices: [AudioDevice] = []
-        for id in ids {
+        for id in allDeviceIDs() {
             guard isOutputDevice(id),
                   let name = stringProp(id, kAudioObjectPropertyName),
                   let uid = stringProp(id, kAudioDevicePropertyDeviceUID),
-                  uid != "com.recents.tutti.aggregate" else { continue }
+                  uid != aggregateUID else { continue }
             let transport = readTransportType(id)
             // AirPlay devices can't be aggregated — Audio MIDI Setup hides them too.
             if transport == kAudioDeviceTransportTypeAirPlay { continue }
@@ -203,10 +201,12 @@ final class AudioDeviceManager: ObservableObject {
             : []
         newDevices += preserved
 
-        devices = newDevices
+        if newDevices != devices { devices = newDevices }
         let keepIDs = Set(newDevices.map { $0.id })
-        volumes = volumes.filter { keepIDs.contains($0.key) }
+        let filteredVolumes = volumes.filter { keepIDs.contains($0.key) }
+        if filteredVolumes != volumes { volumes = filteredVolumes }
         preMuteVolumes = preMuteVolumes.filter { keepIDs.contains($0.key) }
+        volumeAddressCache = volumeAddressCache.filter { keepIDs.contains($0.key) }
 
         let trulyGone = selectedIDs.subtracting(keepIDs)
         if !trulyGone.isEmpty {
@@ -215,6 +215,16 @@ final class AudioDeviceManager: ObservableObject {
         }
 
         syncSelectionToExternalDefault()
+    }
+
+    private func allDeviceIDs() -> [AudioDeviceID] {
+        var addr = AudioObjectPropertyAddress(kAudioHardwarePropertyDevices)
+        var size: UInt32 = 0
+        AudioObjectGetPropertyDataSize(systemObject, &addr, 0, nil, &size)
+        let count = Int(size) / MemoryLayout<AudioDeviceID>.size
+        var ids = [AudioDeviceID](repeating: 0, count: count)
+        AudioObjectGetPropertyData(systemObject, &addr, 0, nil, &size, &ids)
+        return ids
     }
 
     private func readTransportType(_ id: AudioDeviceID) -> UInt32 {
@@ -248,7 +258,7 @@ final class AudioDeviceManager: ObservableObject {
         var addr = AudioObjectPropertyAddress(kAudioHardwarePropertyDefaultOutputDevice)
         var id: AudioDeviceID = 0
         var size = UInt32(MemoryLayout<AudioDeviceID>.size)
-        guard AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject), &addr, 0, nil, &size, &id) == noErr,
+        guard AudioObjectGetPropertyData(systemObject, &addr, 0, nil, &size, &id) == noErr,
               id != 0 else { return nil }
         return id
     }
@@ -256,7 +266,7 @@ final class AudioDeviceManager: ObservableObject {
     private func setDefault(_ id: AudioDeviceID) {
         var addr = AudioObjectPropertyAddress(kAudioHardwarePropertyDefaultOutputDevice)
         var devID = id
-        AudioObjectSetPropertyData(AudioObjectID(kAudioObjectSystemObject), &addr, 0, nil,
+        AudioObjectSetPropertyData(systemObject, &addr, 0, nil,
                                    UInt32(MemoryLayout<AudioDeviceID>.size), &devID)
     }
 
@@ -265,8 +275,10 @@ final class AudioDeviceManager: ObservableObject {
     // Returns the first element (0 or 1) that actually has the volume property,
     // and is settable. Using AudioObjectHasProperty before IsPropertySettable
     // avoids false positives on built-in devices where IsPropertySettable
-    // returns true but writes are silently ignored.
+    // returns true but writes are silently ignored. Cached because slider drags
+    // probe this dozens of times per second per device.
     private func settableVolumeAddress(for id: AudioDeviceID) -> AudioObjectPropertyAddress? {
+        if let cached = volumeAddressCache[id] { return cached }
         for element: AudioObjectPropertyElement in [kAudioObjectPropertyElementMain, 1] {
             var addr = AudioObjectPropertyAddress(kAudioDevicePropertyVolumeScalar,
                                                   kAudioDevicePropertyScopeOutput,
@@ -275,6 +287,7 @@ final class AudioDeviceManager: ObservableObject {
             var settable: DarwinBoolean = false
             guard AudioObjectIsPropertySettable(id, &addr, &settable) == noErr,
                   settable.boolValue else { continue }
+            volumeAddressCache[id] = addr
             return addr
         }
         return nil
@@ -308,16 +321,10 @@ final class AudioDeviceManager: ObservableObject {
     // MARK: - Orphan cleanup & device listener
 
     private func cleanupOrphans() {
-        var addr = AudioObjectPropertyAddress(kAudioHardwarePropertyDevices)
-        var size: UInt32 = 0
-        AudioObjectGetPropertyDataSize(AudioObjectID(kAudioObjectSystemObject), &addr, 0, nil, &size)
-        let count = Int(size) / MemoryLayout<AudioDeviceID>.size
-        var ids = [AudioDeviceID](repeating: 0, count: count)
-        AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject), &addr, 0, nil, &size, &ids)
-        for id in ids {
+        for id in allDeviceIDs() {
             guard let uid = stringProp(id, kAudioDevicePropertyDeviceUID) else { continue }
             // Also destroy leftover MultiOut aggregate from before the rename
-            if uid == "com.recents.tutti.aggregate" || uid == "com.multiout.aggregate" {
+            if uid == aggregateUID || uid == legacyMultiOutUID {
                 AudioHardwareDestroyAggregateDevice(id)
             }
         }
@@ -325,14 +332,14 @@ final class AudioDeviceManager: ObservableObject {
 
     private func startListening() {
         var devAddr = AudioObjectPropertyAddress(kAudioHardwarePropertyDevices)
-        AudioObjectAddPropertyListenerBlock(AudioObjectID(kAudioObjectSystemObject), &devAddr, nil) { [weak self] _, _ in
+        AudioObjectAddPropertyListenerBlock(systemObject, &devAddr, nil) { [weak self] _, _ in
             Task { @MainActor [weak self] in self?.refreshDevices() }
         }
 
         // Detect when something external (System Settings, Control Center) changes
         // the default output away from our aggregate device
         var defAddr = AudioObjectPropertyAddress(kAudioHardwarePropertyDefaultOutputDevice)
-        AudioObjectAddPropertyListenerBlock(AudioObjectID(kAudioObjectSystemObject), &defAddr, nil) { [weak self] _, _ in
+        AudioObjectAddPropertyListenerBlock(systemObject, &defAddr, nil) { [weak self] _, _ in
             Task { @MainActor [weak self] in self?.handleExternalDefaultChange() }
         }
     }
@@ -414,9 +421,16 @@ final class AudioDeviceManager: ObservableObject {
         let axTrusted = AXIsProcessTrustedWithOptions([
             kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: false
         ] as CFDictionary)
-        let now = axTrusted || (volumeKeyMonitor?.isRunning ?? false)
+        let tapRunning = volumeKeyMonitor?.isRunning ?? false
+        let now = axTrusted || tapRunning
         if now != hasAccessibilityPermission {
             hasAccessibilityPermission = now
+        }
+        // Revocation requires app restart anyway, so once we've confirmed both
+        // signals are positive we can stop polling.
+        if now && tapRunning {
+            permissionTimer?.cancel()
+            permissionTimer = nil
         }
     }
 

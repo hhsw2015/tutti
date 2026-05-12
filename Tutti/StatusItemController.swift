@@ -7,6 +7,7 @@ final class StatusItemController: NSObject {
     private let popover: TuttiPopover
     private let manager: AudioDeviceManager
     private var cancellable: AnyCancellable?
+    private var currentLevel: Int = -1
 
     init(manager: AudioDeviceManager, popover: TuttiPopover) {
         self.manager = manager
@@ -16,11 +17,11 @@ final class StatusItemController: NSObject {
         item.button?.target = self
         item.button?.action = #selector(handleClick(_:))
         updateIcon()
+        // objectWillChange fires before any @Published mutates; defer to the next
+        // runloop tick so reads see the post-change state.
         cancellable = manager.objectWillChange
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                DispatchQueue.main.async { self?.updateIcon() }
-            }
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in self?.updateIcon() }
     }
 
     @objc private func handleClick(_ sender: Any?) {
@@ -38,6 +39,8 @@ final class StatusItemController: NSObject {
             else if v > 0.5 { level = 2 }
             else { level = 1 }
         }
+        guard level != currentLevel else { return }
+        currentLevel = level
         item.button?.image = TuttiPulseIcon.image(level: level)
     }
 }
