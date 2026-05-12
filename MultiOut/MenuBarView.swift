@@ -504,41 +504,58 @@ private struct GlassDeviceRow: View {
     private var battery: Int? { manager.batteryLevels[device.id] }
     private var lowBattery: Bool { (battery ?? 100) < 20 }
 
+    private var muted: Bool { manager.isMuted(device.id) }
+
+    private var canMute: Bool { isSelected && device.canSetVolume }
+
     var body: some View {
         VStack(spacing: 0) {
-            Button { manager.toggle(device) } label: {
-                HStack(spacing: 11) {
+            HStack(spacing: 11) {
+                Button {
+                    if canMute {
+                        manager.toggleMute(deviceID: device.id)
+                    } else {
+                        manager.toggle(device)
+                    }
+                } label: {
                     GlassIconBadge(
-                        symbol: device.symbolName,
+                        symbol: muted ? "speaker.slash.fill" : device.symbolName,
                         selected: isSelected,
+                        muted: muted,
                         accent: prefs.accent.color
                     )
-
-                    Text(device.name)
-                        .font(.system(size: 13.5, weight: isSelected ? .semibold : .medium))
-                        .foregroundStyle(Color.glassTextHi)
-                        .lineLimit(1)
-
-                    Spacer(minLength: 4)
-
-                    if let bat = battery {
-                        BatteryPill(percent: bat, low: lowBattery)
-                    }
-
-                    if !device.canSetVolume {
-                        Image(systemName: "lock.fill")
-                            .font(.system(size: 9))
-                            .foregroundStyle(Color.glassTextDim)
-                    } else if isSelected {
-                        CheckBadge(color: prefs.accent.color)
-                    }
                 }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 8)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .contentShape(Rectangle())
+                .buttonStyle(.plain)
+                .help(canMute ? (muted ? "取消静音" : "静音此设备") : "")
+
+                Button { manager.toggle(device) } label: {
+                    HStack(spacing: 11) {
+                        Text(device.name)
+                            .font(.system(size: 13.5, weight: isSelected ? .semibold : .medium))
+                            .foregroundStyle(Color.glassTextHi)
+                            .lineLimit(1)
+
+                        Spacer(minLength: 4)
+
+                        if let bat = battery {
+                            BatteryPill(percent: bat, low: lowBattery)
+                        }
+
+                        if !device.canSetVolume {
+                            Image(systemName: "lock.fill")
+                                .font(.system(size: 9))
+                                .foregroundStyle(Color.glassTextDim)
+                        } else if isSelected {
+                            CheckBadge(color: prefs.accent.color)
+                        }
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .background(rowBackground)
             .clipShape(RoundedRectangle(cornerRadius: innerRowRadius, style: .continuous))
             .onHover { hovering = $0 }
@@ -581,19 +598,28 @@ private struct GlassDeviceRow: View {
 private struct GlassIconBadge: View {
     let symbol: String
     let selected: Bool
+    var muted: Bool = false
     let accent: Color
+
+    private var fill: Color {
+        if muted { return .muteRed }
+        if selected { return accent }
+        return Color.primary.opacity(0.10)
+    }
+
+    private var symbolColor: Color {
+        (muted || selected) ? .white : .glassTextHi
+    }
 
     var body: some View {
         ZStack {
             Circle()
-                .fill(selected
-                      ? AnyShapeStyle(accent)
-                      : AnyShapeStyle(Color.primary.opacity(0.10)))
+                .fill(fill)
                 .frame(width: 30, height: 30)
 
             Image(systemName: symbol)
                 .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(selected ? Color.white : Color.glassTextHi)
+                .foregroundStyle(symbolColor)
         }
     }
 }

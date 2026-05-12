@@ -25,7 +25,7 @@ final class AudioDeviceManager: ObservableObject {
     private var savedDefaultID: AudioDeviceID?
 
     private var volumeKeyMonitor: VolumeKeyMonitor?
-    private var preMuteVolumes: [AudioDeviceID: Float]?
+    @Published private(set) var preMuteVolumes: [AudioDeviceID: Float] = [:]
     private var permissionTimer: DispatchSourceTimer?
     private var batteryTask: Task<Void, Never>?
 
@@ -54,22 +54,60 @@ final class AudioDeviceManager: ObservableObject {
         guard volumes[id] != volume else { return }
         volumes[id] = volume
         writeVolume(volume, to: id)
+        // Non-zero manual change unmutes the device. (Zero writes come from
+        // toggleMute itself; they must leave the stored pre-mute volume alone.)
+        if volume > 0 {
+            preMuteVolumes.removeValue(forKey: id)
+        }
     }
 
     var masterVolume: Float {
         selectedIDs.compactMap { volumes[$0] }.max() ?? 0
     }
 
-    var isMuted: Bool { preMuteVolumes != nil }
+    func isMuted(_ id: AudioDeviceID) -> Bool {
+        preMuteVolumes[id] != nil
+    }
+
+    /// True as soon as *any* selected device is muted. The master button
+    /// treats partial-mute as "muted" so a second tap always unmutes
+    /// everything — without this, individually muting one device first would
+    /// flip the master into the "mute everything else" branch on click 1 and
+    /// then never see all-selected-muted by click 2.
+    var isMuted: Bool {
+        selectedIDs.contains { preMuteVolumes[$0] != nil }
+    }
 
     func setMasterVolume(_ value: Float) {
         let delta = value - masterVolume
         guard delta != 0 else { return }
-        preMuteVolumes = nil
+        preMuteVolumes.removeAll()
         adjustAllVolumes(by: delta)
     }
 
-    func toggleMasterMute() { toggleMute() }
+    func toggleMute(deviceID id: AudioDeviceID) {
+        if let saved = preMuteVolumes[id] {
+            preMuteVolumes.removeValue(forKey: id)
+            setVolume(saved, for: id)
+        } else {
+            let current = volumes[id] ?? 1.0
+            guard current > 0 else { return }
+            preMuteVolumes[id] = current
+            setVolume(0, for: id)
+        }
+    }
+
+    func toggleMasterMute() {
+        if isMuted {
+            for id in selectedIDs where preMuteVolumes[id] != nil {
+                toggleMute(deviceID: id)
+            }
+        } else {
+            for id in selectedIDs where preMuteVolumes[id] == nil {
+                toggleMute(deviceID: id)
+            }
+        }
+    }
 
     func applyPreset(uids: [String]) {
         selectedIDs = Set(devices.filter { uids.contains($0.uid) }.map { $0.id })
@@ -170,6 +208,7 @@ final class AudioDeviceManager: ObservableObject {
         devices = newDevices
         let keepIDs = Set(newDevices.map { $0.id })
         volumes = volumes.filter { keepIDs.contains($0.key) }
+        preMuteVolumes = preMuteVolumes.filter { keepIDs.contains($0.key) }
 
         let trulyGone = selectedIDs.subtracting(keepIDs)
         if !trulyGone.isEmpty {
@@ -394,10 +433,10 @@ final class AudioDeviceManager: ObservableObject {
         guard isActive else { return }
         switch action {
         case .adjust(let delta):
-            preMuteVolumes = nil
+            preMuteVolumes.removeAll()
             adjustAllVolumes(by: delta)
         case .mute:
-            toggleMute()
+            toggleMasterMute()
         }
     }
 
@@ -405,20 +444,6 @@ final class AudioDeviceManager: ObservableObject {
         for id in selectedIDs {
             let current = volumes[id] ?? 1.0
             setVolume(max(0, min(1, current + delta)), for: id)
-        }
-    }
-
-    private func toggleMute() {
-        if let saved = preMuteVolumes {
-            for (id, v) in saved where selectedIDs.contains(id) {
-                setVolume(v, for: id)
-            }
-            preMuteVolumes = nil
-        } else {
-            preMuteVolumes = volumes
-            for id in selectedIDs {
-                setVolume(0, for: id)
-            }
         }
     }
 }

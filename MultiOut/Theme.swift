@@ -99,7 +99,11 @@ private struct GlassMaterialBackground: ViewModifier {
         let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
         content
             .background(.regularMaterial, in: shape)
-            .overlay(shape.fill(tint?.opacity(0.14) ?? .clear))
+            .overlay(
+                shape
+                    .fill(tint?.opacity(0.14) ?? .clear)
+                    .allowsHitTesting(false)
+            )
     }
 }
 
