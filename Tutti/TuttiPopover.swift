@@ -11,6 +11,7 @@ final class TuttiPopover: NSObject, NSWindowDelegate {
     private var panel: TuttiPanel?
     var behavior: Behavior = .transient
     var contentViewController: NSViewController?
+    var onVisibilityChange: ((Bool) -> Void)?
 
     var isVisible: Bool { panel?.isVisible == true }
 
@@ -60,11 +61,14 @@ final class TuttiPopover: NSObject, NSWindowDelegate {
         position(panel: panel, below: button)
         panel.makeKeyAndOrderFront(nil)
         self.panel = panel
+        onVisibilityChange?(true)
     }
 
     func close() {
+        guard panel != nil else { return }
         panel?.orderOut(nil)
         panel = nil
+        onVisibilityChange?(false)
     }
 
     private func position(panel: NSPanel, below button: NSStatusBarButton) {

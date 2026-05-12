@@ -33,6 +33,7 @@ final class AudioDeviceManager: ObservableObject {
     private var volumeAddressCache: [AudioDeviceID: AudioObjectPropertyAddress] = [:]
     private var permissionTimer: DispatchSourceTimer?
     private var batteryTask: Task<Void, Never>?
+    private var popoverIsOpen = false
 
     init() {
         cleanupOrphans()
@@ -371,11 +372,23 @@ final class AudioDeviceManager: ObservableObject {
 
     // MARK: - Battery polling
 
+    /// `system_profiler SPBluetoothDataType` is a 1-3s subprocess; polling every
+    /// 60s while the popover is closed is mostly wasted. Run fast (60s) only while
+    /// the user is looking at the panel; coast at 10min in the background so
+    /// numbers stay roughly current without burning CPU.
+    func setPopoverVisible(_ visible: Bool) {
+        guard popoverIsOpen != visible else { return }
+        popoverIsOpen = visible
+        startBatteryPolling()
+    }
+
     private func startBatteryPolling() {
+        batteryTask?.cancel()
+        let interval: Duration = popoverIsOpen ? .seconds(60) : .seconds(600)
         batteryTask = Task { @MainActor [weak self] in
             while !Task.isCancelled {
                 await self?.refreshBatteryLevels()
-                try? await Task.sleep(for: .seconds(60))
+                try? await Task.sleep(for: interval)
             }
         }
     }

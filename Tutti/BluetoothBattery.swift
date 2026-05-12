@@ -1,13 +1,12 @@
 import Foundation
 
 enum BluetoothBattery {
-    // Exclude case battery — for headphones it can be very low while the buds
-    // themselves are full, which would be misleading as a single readout.
-    private static let batteryKeys = [
-        "device_batteryLevelMain",
-        "device_batteryLevelLeft",
-        "device_batteryLevelRight"
-    ]
+    // AirPods report case battery separately from the buds; case can be near-empty
+    // while the earbuds are full, which would mislead as a single readout. Earlier
+    // releases used a "Main" key — that key never exists in SPBluetoothDataType
+    // JSON, so battery silently returned empty. Real keys are Left/Right/Case.
+    private static let prefix = "device_batteryLevel"
+    private static let excludedSuffix = "Case"
 
     static func fetch() async -> [String: Int] {
         await Task.detached(priority: .utility) {
@@ -55,7 +54,12 @@ enum BluetoothBattery {
     }
 
     private static func lowestBatteryPercent(in dict: [String: Any]) -> Int? {
-        batteryKeys.compactMap { dict[$0] as? String }.compactMap(parsePercent).min()
+        dict.compactMap { (key, value) -> Int? in
+            guard key.hasPrefix(prefix),
+                  !key.hasSuffix(excludedSuffix),
+                  let s = value as? String else { return nil }
+            return parsePercent(s)
+        }.min()
     }
 
     private static func parsePercent(_ s: String) -> Int? {

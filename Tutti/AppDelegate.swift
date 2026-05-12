@@ -18,6 +18,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         let host = NSHostingController(rootView: rootView)
         popover.contentViewController = host
+        popover.onVisibilityChange = { [weak manager] visible in
+            manager?.setPopoverVisible(visible)
+        }
 
         statusItem = StatusItemController(manager: manager, popover: popover)
     }
