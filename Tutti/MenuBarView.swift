@@ -10,51 +10,38 @@ private let capsuleGap: CGFloat = 8
 
 struct MenuBarView: View {
     @EnvironmentObject var manager: AudioDeviceManager
-    @StateObject private var updater = UpdateChecker()
     @StateObject private var prefs = AppearancePrefs.shared
-    @State private var showingSettings = false
     @State private var devicesFolded = false
+    @Environment(\.tuttiPopover) private var popoverHost
 
     private var showMaster: Bool { manager.selectedIDs.count >= 2 }
 
     var body: some View {
-        ZStack {
-            Group {
-                if showingSettings {
-                    SettingsView(visible: $showingSettings, updater: updater)
-                        .transition(.move(edge: .trailing).combined(with: .opacity))
-                } else {
-                    mainView
-                        .transition(.move(edge: .leading).combined(with: .opacity))
-                }
-            }
-            .animation(.easeOut(duration: 0.22), value: showingSettings)
-        }
-        .frame(width: panelWidth)
-        .background(TransparentWindow(theme: prefs.theme))
-        .environmentObject(prefs)
-        .preferredColorScheme(prefs.theme.colorScheme)
-    }
-
-    private var mainView: some View {
         VStack(spacing: capsuleGap) {
             StatusCapsule()
 
             if showMaster {
                 MasterCapsule()
-                    .transition(.scale(scale: 0.96).combined(with: .opacity))
             }
 
             DevicesCapsule(folded: $devicesFolded)
-
-            DockCapsule(showingSettings: $showingSettings, updater: updater)
-                .padding(.top, 2)
         }
         .padding(.horizontal, 12)
         .padding(.top, 12)
         .padding(.bottom, 14)
-        .animation(.easeOut(duration: 0.20), value: showMaster)
-        .animation(.easeOut(duration: 0.20), value: devicesFolded)
+        .frame(width: panelWidth)
+        .background(
+            GeometryReader { proxy in
+                Color.clear
+                    .onAppear { popoverHost?.updateContentSize(proxy.size) }
+                    .onChange(of: proxy.size) { newSize in
+                        popoverHost?.updateContentSize(newSize)
+                    }
+            }
+        )
+        .background(TransparentWindow(theme: prefs.theme))
+        .environmentObject(prefs)
+        .preferredColorScheme(prefs.theme.colorScheme)
     }
 }
 
@@ -62,6 +49,8 @@ struct MenuBarView: View {
 
 private struct StatusCapsule: View {
     @EnvironmentObject var manager: AudioDeviceManager
+    @Environment(\.openTuttiSettings) private var openSettings
+    @State private var gearHovering = false
 
     private var count: Int { manager.selectedIDs.count }
     private var isMuted: Bool { manager.isMuted }
@@ -94,10 +83,31 @@ private struct StatusCapsule: View {
                     .font(.system(size: 10, weight: .semibold))
                     .tracking(2.2)
                     .foregroundStyle(Color.glassTextLo)
+                gearButton
             }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 10)
+            .padding(.leading, 14)
+            .padding(.trailing, 8)
+            .padding(.vertical, 8)
         }
+    }
+
+    private var gearButton: some View {
+        Button {
+            openSettings()
+        } label: {
+            Image(systemName: "gearshape")
+                .font(.system(size: 11, weight: .medium))
+                .foregroundStyle(Color.glassTextMid)
+                .frame(width: 24, height: 24)
+                .background(
+                    Circle()
+                        .fill(Color.primary.opacity(gearHovering ? 0.10 : 0.05))
+                )
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .onHover { gearHovering = $0 }
+        .help("设置")
     }
 }
 
@@ -540,70 +550,3 @@ private struct BatteryPill: View {
     }
 }
 
-// MARK: - Dock-style action capsule
-
-private struct DockCapsule: View {
-    @EnvironmentObject var prefs: AppearancePrefs
-    @Binding var showingSettings: Bool
-    @ObservedObject var updater: UpdateChecker
-
-    var body: some View {
-        GlassCapsule(cornerRadius: 18) {
-            HStack(spacing: 6) {
-                DockButton(symbol: "gearshape", title: "设置", weight: .medium) {
-                    withAnimation { showingSettings = true }
-                } trailing: {
-                    if updater.hasUpdate {
-                        Circle().fill(prefs.accentColor).frame(width: 5, height: 5)
-                    }
-                }
-
-                Rectangle()
-                    .fill(Color.primary.opacity(0.20))
-                    .frame(width: 1, height: 14)
-
-                DockButton(symbol: "power", title: "退出", weight: .semibold) {
-                    NSApplication.shared.terminate(nil)
-                }
-            }
-            .padding(6)
-        }
-    }
-}
-
-private struct DockButton<Trailing: View>: View {
-    let symbol: String
-    let title: String
-    let weight: Font.Weight
-    let action: () -> Void
-    @ViewBuilder var trailing: () -> Trailing
-
-    init(symbol: String,
-         title: String,
-         weight: Font.Weight,
-         action: @escaping () -> Void,
-         @ViewBuilder trailing: @escaping () -> Trailing = { EmptyView() }) {
-        self.symbol = symbol
-        self.title = title
-        self.weight = weight
-        self.action = action
-        self.trailing = trailing
-    }
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 6) {
-                Image(systemName: symbol)
-                    .font(.system(size: 11.5, weight: weight))
-                Text(title)
-                    .font(.system(size: 12, weight: .medium))
-                trailing()
-            }
-            .foregroundStyle(Color.glassTextHi)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 7)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-    }
-}

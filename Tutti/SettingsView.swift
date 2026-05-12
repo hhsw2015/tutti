@@ -2,100 +2,117 @@ import SwiftUI
 import ApplicationServices
 import ServiceManagement
 
-struct SettingsView: View {
-    @Binding var visible: Bool
+struct TuttiSettingsView: View {
+    @StateObject private var updater = UpdateChecker()
+    @StateObject private var prefs = AppearancePrefs.shared
+
+    var body: some View {
+        TabView {
+            GeneralTab(updater: updater)
+                .tabItem { Label("通用", systemImage: "gearshape") }
+                .tag(0)
+
+            AboutTab(updater: updater)
+                .tabItem { Label("关于", systemImage: "info.circle") }
+                .tag(1)
+        }
+        .environmentObject(prefs)
+        .frame(width: 480, height: 500)
+    }
+}
+
+private struct GeneralTab: View {
+    @ObservedObject var updater: UpdateChecker
+
+    var body: some View {
+        Form {
+            Section("主题") { ThemePicker() }
+            Section("权限") { PermissionRow() }
+            Section("启动") { AutoLaunchRow() }
+            Section("更新") { UpdatesSection(updater: updater) }
+        }
+        .formStyle(.grouped)
+        .scrollContentBackground(.hidden)
+    }
+}
+
+private struct AboutTab: View {
     @ObservedObject var updater: UpdateChecker
     @EnvironmentObject var prefs: AppearancePrefs
 
     var body: some View {
-        VStack(spacing: 8) {
-            header
+        VStack(spacing: 18) {
+            Spacer(minLength: 8)
 
-            SettingsCapsule(title: "主题") {
-                ThemePicker()
+            Image(nsImage: TuttiPulseIcon.image(level: 2, size: 64))
+                .resizable()
+                .frame(width: 64, height: 64)
+                .foregroundStyle(prefs.accentColor)
+
+            VStack(spacing: 6) {
+                Text("Tutti")
+                    .font(.system(size: 24, weight: .semibold))
+                Text("One sound, every speaker")
+                    .font(.system(size: 13, design: .monospaced))
+                    .foregroundStyle(.secondary)
+                Text("v\(updater.currentVersion)")
+                    .font(.system(size: 11, design: .monospaced))
+                    .foregroundStyle(.tertiary)
             }
 
-            SettingsCapsule(title: "权限") {
-                PermissionRow()
-            }
-
-            SettingsCapsule(title: "启动") {
-                AutoLaunchRow()
-            }
-
-            SettingsCapsule(title: "更新") {
-                UpdatesSection(updater: updater)
-            }
-
-            footer
-        }
-        .padding(.horizontal, 12)
-        .padding(.top, 12)
-        .padding(.bottom, 14)
-        .frame(width: 320)
-    }
-
-    private var header: some View {
-        HStack(spacing: 9) {
-            Button {
-                withAnimation { visible = false }
-            } label: {
-                HStack(spacing: 4) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 11, weight: .semibold))
-                    Text("设置")
-                        .font(.system(size: 13, weight: .semibold))
+            HStack(spacing: 10) {
+                Button {
+                    Task { await updater.check() }
+                } label: {
+                    Text(updater.status == .checking ? "检查中…" : "检查更新")
+                        .frame(minWidth: 88)
                 }
-                .foregroundStyle(Color.glassTextHi)
+                .controlSize(.regular)
+                .disabled(updater.status == .checking)
+
+                Button(role: .destructive) {
+                    NSApplication.shared.terminate(nil)
+                } label: {
+                    Text("退出 Tutti")
+                        .frame(minWidth: 88)
+                }
+                .controlSize(.regular)
             }
-            .buttonStyle(.plain)
+
+            updateStatus
+                .font(.system(size: 11))
+                .foregroundStyle(.secondary)
+                .frame(height: 16)
 
             Spacer()
-
-            Text("TUTTI")
-                .font(.system(size: 10, weight: .semibold))
-                .tracking(2.2)
-                .foregroundStyle(Color.glassTextLo)
         }
-        .padding(.horizontal, 4)
-        .padding(.vertical, 4)
+        .padding(.horizontal, 32)
+        .padding(.vertical, 24)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    private var footer: some View {
-        HStack {
-            Text("v\(updater.currentVersion)")
-                .font(.system(size: 10, design: .monospaced))
-                .foregroundStyle(Color.glassTextLo)
-            Spacer()
-            Text("One sound, every speaker")
-                .font(.system(size: 10, design: .monospaced))
-                .foregroundStyle(Color.glassTextLo)
-        }
-        .padding(.horizontal, 4)
-    }
-}
-
-private struct SettingsCapsule<Content: View>: View {
-    let title: String
-    @ViewBuilder var content: () -> Content
-
-    var body: some View {
-        GlassCapsule {
-            VStack(alignment: .leading, spacing: 0) {
-                Text(title)
-                    .font(.system(size: 10.5, weight: .semibold))
-                    .tracking(1.2)
-                    .foregroundStyle(Color.glassTextLo)
-                    .textCase(.uppercase)
-                    .padding(.horizontal, 14)
-                    .padding(.top, 10)
-                    .padding(.bottom, 6)
-
-                content()
-                    .padding(.horizontal, 12)
-                    .padding(.bottom, 12)
+    @ViewBuilder
+    private var updateStatus: some View {
+        switch updater.status {
+        case .idle, .checking:
+            EmptyView()
+        case .upToDate:
+            Text("已是最新版本")
+        case .updateAvailable(let version, let url):
+            HStack(spacing: 5) {
+                Text("新版本 \(version)")
+                    .foregroundStyle(prefs.accentColor)
+                Button {
+                    NSWorkspace.shared.open(url)
+                } label: {
+                    Text("下载")
+                        .underline()
+                        .foregroundStyle(prefs.accentColor)
+                }
+                .buttonStyle(.plain)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+        case .error(let message):
+            Text(message).foregroundStyle(Color.muteRed.opacity(0.85))
         }
     }
 }
@@ -126,6 +143,7 @@ struct ThemePicker: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity)
         .background(
             RoundedRectangle(cornerRadius: 9, style: .continuous)
                 .fill(Color.primary.opacity(0.07))
@@ -142,13 +160,13 @@ private struct ThemeSegment: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 5) {
+            HStack(spacing: 6) {
                 Image(systemName: symbol)
-                    .font(.system(size: 11, weight: .medium))
+                    .font(.system(size: 12, weight: .medium))
                 Text(label)
                     .font(.system(size: 12, weight: .medium))
             }
-            .foregroundStyle(selected ? Color.white : Color.glassTextHi)
+            .foregroundStyle(selected ? Color.white : Color.primary)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 6)
             .background(
@@ -163,26 +181,16 @@ private struct ThemeSegment: View {
 
 struct PermissionRow: View {
     @EnvironmentObject var manager: AudioDeviceManager
-    @EnvironmentObject var prefs: AppearancePrefs
 
     var body: some View {
         let granted = manager.hasAccessibilityPermission
         HStack(spacing: 9) {
-            StatusDot(color: granted ? .statusGreen : .muteRed)
-
+            Image(systemName: granted ? "checkmark.circle.fill" : "exclamationmark.circle.fill")
+                .foregroundStyle(granted ? Color.statusGreen : Color.muteRed)
             Text(granted ? "辅助功能已授权" : "辅助功能未授权")
-                .font(.system(size: 12))
-                .foregroundStyle(Color.glassTextHi)
-
             Spacer()
-
             if !granted {
-                Button { openAccessibilitySettings() } label: {
-                    Text("去授权")
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(prefs.accentColor)
-                }
-                .buttonStyle(.plain)
+                Button("去授权") { openAccessibilitySettings() }
             }
         }
     }
@@ -192,7 +200,10 @@ struct AutoLaunchRow: View {
     @State private var enabled: Bool = SMAppService.mainApp.status == .enabled
 
     var body: some View {
-        AccentCheckboxRow(title: "开机自动启动", isOn: enabled, toggle: toggle)
+        Toggle("开机自动启动", isOn: Binding(
+            get: { enabled },
+            set: { _ in toggle() }
+        ))
     }
 
     private func toggle() {
@@ -205,96 +216,11 @@ struct AutoLaunchRow: View {
     }
 }
 
-private struct AccentCheckboxRow: View {
-    let title: String
-    let isOn: Bool
-    let toggle: () -> Void
-    @EnvironmentObject var prefs: AppearancePrefs
-
-    var body: some View {
-        Button(action: toggle) {
-            HStack(spacing: 9) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 4)
-                        .stroke(Color.glassInnerStroke, lineWidth: 0.8)
-                        .frame(width: 15, height: 15)
-                    if isOn {
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(prefs.accentColor)
-                            .frame(width: 15, height: 15)
-                        Image(systemName: "checkmark")
-                            .font(.system(size: 9, weight: .bold))
-                            .foregroundStyle(.white)
-                    }
-                }
-                Text(title)
-                    .font(.system(size: 12))
-                    .foregroundStyle(Color.glassTextHi)
-                Spacer()
-            }
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-    }
-}
-
 struct UpdatesSection: View {
     @ObservedObject var updater: UpdateChecker
-    @EnvironmentObject var prefs: AppearancePrefs
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            AccentCheckboxRow(
-                title: "启动时自动检查更新",
-                isOn: updater.autoCheckEnabled
-            ) { updater.autoCheckEnabled.toggle() }
-
-            HStack(spacing: 8) {
-                Button {
-                    Task { await updater.check() }
-                } label: {
-                    Text(isChecking ? "检查中…" : "检查更新")
-                }
-                .buttonStyle(AccentPillButton())
-                .disabled(isChecking)
-
-                statusView
-                    .font(.system(size: 11))
-                    .foregroundStyle(Color.glassTextMid)
-
-                Spacer()
-            }
-        }
-    }
-
-    private var isChecking: Bool {
-        updater.status == .checking
-    }
-
-    @ViewBuilder
-    private var statusView: some View {
-        switch updater.status {
-        case .idle, .checking:
-            EmptyView()
-        case .upToDate:
-            Text("已是最新版本").foregroundStyle(Color.glassTextMid)
-        case .updateAvailable(let version, let url):
-            HStack(spacing: 5) {
-                Text("新版本 \(version)")
-                    .foregroundStyle(prefs.accentColor)
-                Button {
-                    NSWorkspace.shared.open(url)
-                } label: {
-                    Text("下载")
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(prefs.accentColor)
-                        .underline()
-                }
-                .buttonStyle(.plain)
-            }
-        case .error(let message):
-            Text(message).foregroundStyle(Color.muteRed.opacity(0.85))
-        }
+        Toggle("启动时自动检查更新", isOn: $updater.autoCheckEnabled)
     }
 }
 
