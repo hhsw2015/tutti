@@ -76,7 +76,7 @@ private struct LicenseTab: View {
                         }
                     }
                 } footer: {
-                    Text("免费版可同时输出到 2 台设备。Pro 解锁同时输出 3 台或更多，单 key 最多激活 3 台设备。")
+                    Text("免费版可同时输出到 2 台设备。Pro 解锁同时输出 3 台或更多，单 key 最多激活 2 台 Mac。")
                         .font(.system(size: 11))
                         .foregroundStyle(.secondary)
                 }

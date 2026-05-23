@@ -24,7 +24,7 @@ final class LicenseManager: ObservableObject {
             case .invalidKey:
                 return "license key 无效或已被吊销"
             case .activationLimitReached:
-                return "已达激活上限（3 台设备）。请在旧设备的 Tutti 设置里停用后再试。"
+                return "已达激活上限（2 台设备）。请在旧设备的 Tutti 设置里停用后再试。"
             case .network(let msg):
                 return "网络错误：\(msg)"
             case .noLicense:
