@@ -138,13 +138,18 @@ final class AppearancePrefs: ObservableObject {
     }
 
     /// Quit + relaunch via `open -n`. Called when the user accepts the
-    /// restart prompt after switching language.
+    /// restart prompt after switching language. If the spawn fails we leave
+    /// the current process running so the user isn't stranded.
     func relaunch() {
-        let bundlePath = Bundle.main.bundlePath
         let task = Process()
         task.launchPath = "/usr/bin/open"
-        task.arguments = ["-n", bundlePath]
-        try? task.run()
+        task.arguments = ["-n", Bundle.main.bundlePath]
+        do {
+            try task.run()
+        } catch {
+            NSLog("Tutti relaunch failed: \(error)")
+            return
+        }
         NSApp.terminate(nil)
     }
 }

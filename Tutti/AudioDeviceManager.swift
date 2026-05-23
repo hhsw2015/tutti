@@ -1,6 +1,7 @@
 import Foundation
 import CoreAudio
 import ApplicationServices
+import Combine
 
 private extension AudioObjectPropertyAddress {
     init(_ sel: AudioObjectPropertySelector,
@@ -37,6 +38,7 @@ final class AudioDeviceManager: ObservableObject {
     private var permissionTimer: DispatchSourceTimer?
     private var batteryTask: Task<Void, Never>?
     private var popoverIsOpen = false
+    private var licenseObserver: AnyCancellable?
 
     init() {
         cleanupOrphans()
@@ -45,6 +47,28 @@ final class AudioDeviceManager: ObservableObject {
         startVolumeKeyMonitoring()
         startPermissionPolling()
         startBatteryPolling()
+        startLicenseObserver()
+    }
+
+    /// Watch the license status; if Pro expires while a 3+ device aggregate
+    /// is running, demote the selection to the free-tier ceiling so the user
+    /// can't keep using Pro features indefinitely without re-toggling.
+    private func startLicenseObserver() {
+        enforceFreeTierLimit()
+        licenseObserver = LicenseManager.shared.$status
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.enforceFreeTierLimit()
+            }
+    }
+
+    private func enforceFreeTierLimit() {
+        guard !LicenseManager.shared.isPro, selectedIDs.count > 2 else { return }
+        // Keep the first two in stable AudioDeviceID order; the user can
+        // re-pick which two they want from the popover.
+        let keep = Set(selectedIDs.sorted().prefix(2))
+        selectedIDs = keep
+        updateAggregate()
     }
 
     func toggle(_ device: AudioDevice) {

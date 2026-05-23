@@ -151,7 +151,7 @@ private struct LicenseTab: View {
         do {
             try await license.activate(licenseKey: inputKey)
             inputKey = ""
-            infoMessage = "激活成功"
+            infoMessage = String(localized: "激活成功")
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -164,7 +164,7 @@ private struct LicenseTab: View {
         defer { isWorking = false }
         do {
             try await license.deactivate()
-            infoMessage = "已停用此设备"
+            infoMessage = String(localized: "已停用此设备")
         } catch {
             errorMessage = error.localizedDescription
         }

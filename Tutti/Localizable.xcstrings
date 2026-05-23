@@ -158,6 +158,58 @@
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "尚未啟用" } }
       }
     },
+    "解码失败：%@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Dekodierung fehlgeschlagen: %@" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Decoding failed: %@" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Error al decodificar: %@" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Échec du décodage : %@" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Decodifica non riuscita: %@" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "デコードに失敗：%@" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "디코딩 실패: %@" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "解碼失敗：%@" } }
+      }
+    },
+    "无效响应" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ungültige Antwort" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Invalid response" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Respuesta no válida" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réponse invalide" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Risposta non valida" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "無効な応答" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "잘못된 응답" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "無效回應" } }
+      }
+    },
+    "Keychain 写入失败 (%lld)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keychain-Schreibfehler (%lld)" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Keychain write failed (%lld)" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Error al escribir en Keychain (%lld)" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Échec d'écriture Keychain (%lld)" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Scrittura Keychain non riuscita (%lld)" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Keychain 書き込み失敗 (%lld)" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Keychain 쓰기 실패 (%lld)" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "Keychain 寫入失敗 (%lld)" } }
+      }
+    },
+    "Keychain 更新失败 (%lld)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keychain-Aktualisierungsfehler (%lld)" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Keychain update failed (%lld)" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Error al actualizar Keychain (%lld)" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Échec de mise à jour Keychain (%lld)" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Aggiornamento Keychain non riuscito (%lld)" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Keychain 更新失敗 (%lld)" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Keychain 업데이트 실패 (%lld)" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "Keychain 更新失敗 (%lld)" } }
+      }
+    },
     "通用" : {
       "extractionState" : "manual",
       "localizations" : {

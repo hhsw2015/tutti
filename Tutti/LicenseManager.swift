@@ -1,6 +1,7 @@
 import Foundation
 import IOKit
 import Security
+import SystemConfiguration
 
 @MainActor
 final class LicenseManager: ObservableObject {
@@ -73,6 +74,18 @@ final class LicenseManager: ObservableObject {
         let key = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !key.isEmpty else { throw LicenseError.invalidKey }
 
+        // Free any previously-bound instance on this Mac before claiming a new
+        // one — otherwise repeated activate() calls (rebinds, retries after a
+        // partial failure) silently leak activation slots on the server.
+        if let oldKey = readKeychain(service: keychainServiceKey),
+           let oldInstance = readKeychain(service: keychainServiceInstance) {
+            let cleanup: [String: String] = [
+                "license_key": oldKey,
+                "license_key_instance_id": oldInstance,
+            ]
+            _ = try? await postEmpty("/licenses/deactivate", body: cleanup)
+        }
+
         struct Response: Decodable { let id: String }
         let body: [String: String] = ["license_key": key, "name": deviceName()]
         let response: Response = try await post("/licenses/activate", body: body)
@@ -136,11 +149,14 @@ final class LicenseManager: ObservableObject {
         updateMaskedKey(key)
 
         let lastValidated = (UserDefaults.standard.object(forKey: lastValidatedKey) as? Date) ?? .distantPast
-        let days = daysBetween(lastValidated, Date())
+        // Clamp future timestamps to 0 so clock skew (manual change or NTP
+        // correction) can't extend the grace period.
+        let days = max(0, daysBetween(lastValidated, Date()))
         if days <= activeWindowDays {
             status = .activated
         } else if days <= gracePeriodDays {
-            status = .offlineGrace(daysLeft: gracePeriodDays - days)
+            // +1 so the last legal grace day reads "1 day left", not "0".
+            status = .offlineGrace(daysLeft: gracePeriodDays - days + 1)
         } else {
             status = .expired
         }
@@ -170,7 +186,7 @@ final class LicenseManager: ObservableObject {
         do {
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
-            throw LicenseError.network("解码失败：\(error.localizedDescription)")
+            throw LicenseError.network(String(localized: "解码失败：\(error.localizedDescription)"))
         }
     }
 
@@ -193,7 +209,7 @@ final class LicenseManager: ObservableObject {
         }
 
         guard let http = response as? HTTPURLResponse else {
-            throw LicenseError.network("无效响应")
+            throw LicenseError.network(String(localized: "无效响应"))
         }
         guard (200..<300).contains(http.statusCode) else {
             throw parseError(data: data, status: http.statusCode)
@@ -202,20 +218,41 @@ final class LicenseManager: ObservableObject {
     }
 
     private func parseError(data: Data, status: Int) -> LicenseError {
-        let raw = (String(data: data, encoding: .utf8) ?? "").lowercased()
-        if raw.contains("limit") || raw.contains("max") {
+        // Prefer the structured error code DodoPayments returns so we don't
+        // misclassify on substring collisions like "invalid token" (auth) or
+        // "rate limit" (throttle).
+        struct ErrorBody: Decodable { let code: String? }
+        let code = (try? JSONDecoder().decode(ErrorBody.self, from: data))?.code ?? ""
+
+        switch code {
+        case "LICENSE_KEY_LIMIT_REACHED":
             return .activationLimitReached
+        case "LICENSE_KEY_NOT_FOUND",
+             "LICENSE_KEY_INVALID",
+             "LICENSE_KEY_REVOKED",
+             "LICENSE_KEY_EXPIRED":
+            return .invalidKey
+        default:
+            break
         }
-        if raw.contains("invalid") || raw.contains("not found") || status == 404 || status == 400 {
+
+        // No structured code — fall back to status-only classification. 404 is
+        // the only one DodoPayments uses for "key not found" reliably; treat
+        // 400 the same since the server returns it for empty/malformed keys.
+        if status == 404 || status == 400 {
             return .invalidKey
         }
-        return .network("HTTP \(status)")
+        return .network(String(localized: "HTTP \(status)"))
     }
 
     // MARK: - Device identity
 
     private func deviceName() -> String {
-        let host = Host.current().localizedName ?? "Mac"
+        // SCDynamicStoreCopyComputerName returns the user-set "Computer Name"
+        // from System Settings → General → About, which is the same name shown
+        // in the DodoPayments dashboard for the activation. ProcessInfo's
+        // hostName can return a network-derived "localhost.local" form.
+        let host = (SCDynamicStoreCopyComputerName(nil, nil) as String?) ?? "Mac"
         let uuid = ioPlatformUUID()?.prefix(8) ?? "unknown"
         return "\(host) (\(uuid))"
     }
@@ -245,10 +282,10 @@ final class LicenseManager: ObservableObject {
             addQuery[kSecValueData as String] = data
             let addStatus = SecItemAdd(addQuery as CFDictionary, nil)
             guard addStatus == errSecSuccess else {
-                throw LicenseError.network("Keychain 写入失败 (\(addStatus))")
+                throw LicenseError.network(String(localized: "Keychain 写入失败 (\(Int(addStatus)))"))
             }
         } else if status != errSecSuccess {
-            throw LicenseError.network("Keychain 更新失败 (\(status))")
+            throw LicenseError.network(String(localized: "Keychain 更新失败 (\(Int(status)))"))
         }
     }
 
