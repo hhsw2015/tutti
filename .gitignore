@@ -4,3 +4,9 @@ xcuserdata/
 DerivedData/
 .build/
 build/
+
+# Local-only progress tracking, not for upstream
+TODO.md
+
+# Certificate Signing Requests should never be committed
+*.certSigningRequest
