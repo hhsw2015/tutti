@@ -38,12 +38,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             .environmentObject(manager)
         let host = NSHostingController(rootView: view)
         let win = NSWindow(contentViewController: host)
-        win.styleMask = [.titled, .closable]
+        win.styleMask = [.titled, .closable, .fullSizeContentView]
+        win.titlebarAppearsTransparent = true
+        win.titleVisibility = .hidden
         win.title = String(localized: "Tutti 设置")
         win.isReleasedWhenClosed = false
         win.delegate = self
-        win.setContentSize(NSSize(width: 480, height: 500))
+        win.setContentSize(NSSize(width: 720, height: 600))
         win.center()
+        win.isMovableByWindowBackground = true
+        // Hide the standalone zoom and miniaturize buttons — Settings is a
+        // fixed-size panel, only Close (red) needs to be visible.
+        win.standardWindowButton(.miniaturizeButton)?.isHidden = true
+        win.standardWindowButton(.zoomButton)?.isHidden = true
         settingsWindow = win
 
         NSApp.activate(ignoringOtherApps: true)

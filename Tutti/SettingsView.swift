@@ -1,395 +1,883 @@
 import SwiftUI
+import AppKit
 import ApplicationServices
 import ServiceManagement
+
+// MARK: - Tabs
+
+enum SettingsTab: String, CaseIterable, Identifiable {
+    case general, license, about
+    var id: String { rawValue }
+    var label: LocalizedStringKey {
+        switch self {
+        case .general: return "通用"
+        case .license: return "许可"
+        case .about:   return "关于"
+        }
+    }
+}
+
+// MARK: - Root
 
 struct TuttiSettingsView: View {
     @StateObject private var updater = UpdateChecker()
     @StateObject private var prefs = AppearancePrefs.shared
+    @StateObject private var license = LicenseManager.shared
+    @State private var selectedTab: SettingsTab = .general
+    @State private var showDeactivateConfirm = false
 
     var body: some View {
-        TabView {
-            GeneralTab(updater: updater)
-                .tabItem { Label("通用", systemImage: "gearshape") }
-                .tag(0)
+        ZStack {
+            SettingsGlassBackground()
 
-            LicenseTab()
-                .tabItem { Label("许可证", systemImage: "key.fill") }
-                .tag(1)
+            VStack(spacing: 0) {
+                HeaderBar(selectedTab: $selectedTab)
+                    .padding(.bottom, 18)
 
-            AboutTab(updater: updater)
-                .tabItem { Label("关于", systemImage: "info.circle") }
-                .tag(2)
+                ScrollView(.vertical, showsIndicators: false) {
+                    Group {
+                        switch selectedTab {
+                        case .general: GeneralTab(updater: updater)
+                        case .license: LicenseTab(showDeactivateConfirm: $showDeactivateConfirm)
+                        case .about:   AboutTab(updater: updater)
+                        }
+                    }
+                    .padding(.bottom, 4)
+                }
+            }
+            .padding(.horizontal, 22)
+            .padding(.top, 16)
+            .padding(.bottom, 22)
         }
+        .frame(width: 720, height: 600)
         .environmentObject(prefs)
-        .frame(width: 480, height: 500)
+        .preferredColorScheme(prefs.theme.colorScheme)
         .alert("切换语言需要重启 Tutti", isPresented: $prefs.languageRestartPending) {
             Button("立即重启") { prefs.relaunch() }
             Button("稍后", role: .cancel) {}
+        } message: {
+            Text("重启后菜单栏、面板以及系统通知会切换为新语言。")
+        }
+        .confirmationDialog(
+            "停用这台 Mac?",
+            isPresented: $showDeactivateConfirm,
+            titleVisibility: .visible
+        ) {
+            Button("停用", role: .destructive) {
+                Task { try? await license.deactivate() }
+            }
+            Button("取消", role: .cancel) {}
+        } message: {
+            Text("释放 1 台设备名额。停用后会回到免费版（2 个设备上限），可随时用同一密钥重新激活。")
         }
     }
 }
 
-private struct LicenseTab: View {
-    @StateObject private var license = LicenseManager.shared
-    @State private var inputKey = ""
-    @State private var isWorking = false
-    @State private var errorMessage: String?
-    @State private var infoMessage: String?
+// MARK: - Background
+
+private struct SettingsGlassBackground: View {
+    var body: some View {
+        Rectangle()
+            .fill(.regularMaterial)
+            .overlay(Color.designGlassTint)
+            .ignoresSafeArea()
+    }
+}
+
+// MARK: - Header
+
+private struct HeaderBar: View {
+    @Binding var selectedTab: SettingsTab
 
     var body: some View {
-        Form {
-            Section("状态") {
-                statusRow
-            }
+        ZStack {
+            // Centered tab pill
+            HStack { Spacer(); PillTabs(selected: $selectedTab); Spacer() }
 
-            if license.isPro {
-                Section {
-                    Button("停用此设备") {
-                        Task { await runDeactivate() }
-                    }
-                    .disabled(isWorking)
-                } footer: {
-                    Text("停用后此 license 可在其他设备上激活。")
-                        .font(.system(size: 11))
-                        .foregroundStyle(.secondary)
-                }
-            } else {
-                Section("输入 License Key") {
-                    TextField("", text: $inputKey, prompt: Text("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"))
-                        .labelsHidden()
-                        .textFieldStyle(.roundedBorder)
-                        .disableAutocorrection(true)
-                    HStack {
-                        Spacer()
-                        Button("激活") {
-                            Task { await runActivate() }
-                        }
-                        .disabled(isWorking || inputKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                    }
-                }
-
-                Section {
-                    Link(destination: license.purchaseURL) {
-                        HStack {
-                            Image(systemName: "cart.fill")
-                            Text("购买 Tutti Pro · $4.99")
-                                .fontWeight(.semibold)
-                            Spacer()
-                            Image(systemName: "arrow.up.right")
-                                .font(.system(size: 10))
-                        }
-                    }
-                } footer: {
-                    Text("免费版可同时输出到 2 台设备。Pro 解锁同时输出 3 台或更多，单 key 最多激活 2 台 Mac。")
-                        .font(.system(size: 11))
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            if let msg = errorMessage {
-                Section {
-                    Label(msg, systemImage: "exclamationmark.triangle.fill")
-                        .font(.system(size: 12))
-                        .foregroundStyle(Color.muteRed)
-                }
-            }
-            if let msg = infoMessage {
-                Section {
-                    Label(msg, systemImage: "checkmark.circle.fill")
-                        .font(.system(size: 12))
-                        .foregroundStyle(Color.statusGreen)
-                }
+            // Left-edge title, padded to clear traffic-light controls.
+            HStack {
+                Text("设置")
+                    .font(.system(size: 22, weight: .bold))
+                    .padding(.leading, 72)
+                Spacer()
             }
         }
-        .formStyle(.grouped)
-        .scrollContentBackground(.hidden)
-    }
-
-    @ViewBuilder
-    private var statusRow: some View {
-        switch license.status {
-        case .inactive:
-            HStack(spacing: 9) {
-                Image(systemName: "lock.fill").foregroundStyle(.secondary)
-                Text("免费版（最多 2 台设备）")
-            }
-        case .activated:
-            HStack(spacing: 9) {
-                Image(systemName: "checkmark.seal.fill").foregroundStyle(Color.statusGreen)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Tutti Pro 已激活")
-                    if let key = license.maskedKey {
-                        Text(key)
-                            .font(.system(size: 10, design: .monospaced))
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            }
-        case .offlineGrace(let days):
-            HStack(spacing: 9) {
-                Image(systemName: "wifi.exclamationmark").foregroundStyle(Color.statusAmber)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Tutti Pro · 离线模式")
-                    Text("还可离线使用 \(days) 天")
-                        .font(.system(size: 11))
-                        .foregroundStyle(.secondary)
-                }
-            }
-        case .expired:
-            HStack(spacing: 9) {
-                Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(Color.muteRed)
-                Text("Pro 已过期，请联网验证或重新激活")
-            }
-        }
-    }
-
-    private func runActivate() async {
-        errorMessage = nil
-        infoMessage = nil
-        isWorking = true
-        defer { isWorking = false }
-        do {
-            try await license.activate(licenseKey: inputKey)
-            inputKey = ""
-            infoMessage = String(localized: "激活成功")
-        } catch {
-            errorMessage = error.localizedDescription
-        }
-    }
-
-    private func runDeactivate() async {
-        errorMessage = nil
-        infoMessage = nil
-        isWorking = true
-        defer { isWorking = false }
-        do {
-            try await license.deactivate()
-            infoMessage = String(localized: "已停用此设备")
-        } catch {
-            errorMessage = error.localizedDescription
-        }
+        .frame(height: 36)
     }
 }
+
+private struct PillTabs: View {
+    @Binding var selected: SettingsTab
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(SettingsTab.allCases) { tab in
+                let isActive = selected == tab
+                Button {
+                    withAnimation(.easeOut(duration: 0.14)) { selected = tab }
+                } label: {
+                    Text(tab.label)
+                        .font(.system(size: 13.5, weight: .semibold))
+                        .foregroundStyle(isActive ? Color.designPillActiveFg : Color.secondary)
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 6)
+                        .background(
+                            Capsule()
+                                .fill(isActive ? Color.designPillActiveBg : Color.clear)
+                                .shadow(color: isActive ? Color.black.opacity(0.18) : .clear,
+                                        radius: 3, y: 1)
+                        )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(4)
+        .background(
+            Capsule()
+                .fill(Color.designBtnBg)
+                .overlay(Capsule().stroke(Color.designBtnEdge, lineWidth: 0.5))
+        )
+    }
+}
+
+// MARK: - Card row primitive
+
+private struct CardRow<Trailing: View>: View {
+    let title: LocalizedStringKey
+    let subtitle: LocalizedStringKey?
+    @ViewBuilder let trailing: () -> Trailing
+
+    init(_ title: LocalizedStringKey,
+         subtitle: LocalizedStringKey? = nil,
+         @ViewBuilder trailing: @escaping () -> Trailing) {
+        self.title = title
+        self.subtitle = subtitle
+        self.trailing = trailing
+    }
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 16) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title)
+                    .font(.system(size: 14, weight: .semibold))
+                if let subtitle {
+                    Text(subtitle)
+                        .font(.system(size: 12.5))
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            Spacer(minLength: 12)
+            trailing()
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 18)
+        .background(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(Color.designCardBg)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .stroke(Color.designCardEdge, lineWidth: 0.5)
+                )
+        )
+    }
+}
+
+// MARK: - General tab
 
 private struct GeneralTab: View {
     @ObservedObject var updater: UpdateChecker
+    @EnvironmentObject var prefs: AppearancePrefs
+    @EnvironmentObject var audio: AudioDeviceManager
+    @State private var autoLaunchEnabled: Bool = SMAppService.mainApp.status == .enabled
 
     var body: some View {
-        Form {
-            Section("主题") { ThemePicker() }
-            Section("语言") { LanguageRow() }
-            Section("权限") { PermissionRow() }
-            Section("启动") { AutoLaunchRow() }
-            Section("更新") { UpdatesSection(updater: updater) }
+        VStack(spacing: 10) {
+            CardRow("语言",
+                    subtitle: "切换后需重启 Tutti 才会全部生效。") {
+                LanguageSelect()
+            }
+
+            CardRow("外观",
+                    subtitle: "跟随系统时，会随浅/深色切换菜单栏与所有面板。") {
+                ThemeSegmented()
+            }
+
+            CardRow("开机自动启动",
+                    subtitle: "登录系统时静默打开 Tutti，并以菜单栏图标方式驻留。") {
+                Toggle("", isOn: Binding(
+                    get: { autoLaunchEnabled },
+                    set: { _ in toggleAutoLaunch() }
+                ))
+                .toggleStyle(.switch)
+                .labelsHidden()
+                .tint(Color.designAccent)
+            }
+
+            CardRow("辅助功能权限",
+                    subtitle: "授权后，键盘音量键能直接控制聚合输出。") {
+                if audio.hasAccessibilityPermission {
+                    StatusPill(label: "已授权", tone: .accent)
+                } else {
+                    Button("去授权") { openAccessibilitySettings() }
+                        .buttonStyle(GhostButtonStyle())
+                }
+            }
+
+            VStack(spacing: 0) {
+                CardRow("自动检查更新",
+                        subtitle: "从 GitHub Releases 拉取，仅在有新版本时通知一次。") {
+                    HStack(spacing: 10) {
+                        Text("v\(updater.currentVersion)")
+                            .font(.system(size: 12, design: .monospaced))
+                            .foregroundStyle(.secondary)
+                        Button {
+                            Task { await updater.check() }
+                        } label: {
+                            Text(updater.status == .checking ? "检查中…" : "检查更新")
+                        }
+                        .buttonStyle(GhostButtonStyle())
+                        .disabled(updater.status == .checking)
+                        Toggle("", isOn: $updater.autoCheckEnabled)
+                            .toggleStyle(.switch)
+                            .labelsHidden()
+                            .tint(Color.designAccent)
+                    }
+                }
+                UpdateStatusInline(updater: updater)
+            }
+
+            CardRow("退出 Tutti",
+                    subtitle: "完全退出应用，不再驻留菜单栏。") {
+                Button {
+                    NSApplication.shared.terminate(nil)
+                } label: {
+                    Text("退出")
+                }
+                .buttonStyle(DangerGhostButtonStyle())
+            }
         }
-        .formStyle(.grouped)
-        .scrollContentBackground(.hidden)
+    }
+
+    private func toggleAutoLaunch() {
+        if autoLaunchEnabled {
+            try? SMAppService.mainApp.unregister()
+        } else {
+            try? SMAppService.mainApp.register()
+        }
+        autoLaunchEnabled = SMAppService.mainApp.status == .enabled
     }
 }
 
-struct LanguageRow: View {
+// MARK: - General sub-controls
+
+private struct LanguageSelect: View {
     @EnvironmentObject var prefs: AppearancePrefs
 
     var body: some View {
-        Picker(selection: $prefs.language) {
+        Menu {
             ForEach(SupportedLanguage.allCases) { lang in
-                Text(verbatim: lang.displayName).tag(lang)
+                Button {
+                    prefs.language = lang
+                } label: {
+                    HStack {
+                        Text(verbatim: lang.displayName)
+                        if prefs.language == lang {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                }
             }
         } label: {
-            EmptyView()
+            HStack(spacing: 8) {
+                Text(verbatim: prefs.language.displayName)
+                    .font(.system(size: 13))
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(Color.designBtnBg)
+                    .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .stroke(Color.designBtnEdge, lineWidth: 0.5))
+            )
+            .frame(minWidth: 120, alignment: .leading)
         }
-        .labelsHidden()
-        .pickerStyle(.menu)
+        .menuStyle(.borderlessButton)
+        .menuIndicator(.hidden)
+        .fixedSize()
     }
 }
+
+private struct ThemeSegmented: View {
+    @EnvironmentObject var prefs: AppearancePrefs
+
+    private struct Item: Identifiable {
+        let id: ThemeChoice
+        let label: LocalizedStringKey
+        let symbol: String
+    }
+
+    private let items: [Item] = [
+        .init(id: .light,  label: "浅色", symbol: "sun.max"),
+        .init(id: .dark,   label: "深色", symbol: "moon"),
+        .init(id: .system, label: "系统", symbol: "circle.lefthalf.filled"),
+    ]
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(items) { item in
+                let isActive = prefs.theme == item.id
+                Button {
+                    prefs.theme = item.id
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: item.symbol)
+                            .font(.system(size: 12, weight: .medium))
+                        Text(item.label)
+                            .font(.system(size: 12.5, weight: .semibold))
+                    }
+                    .foregroundStyle(isActive ? Color.designAccent : Color.secondary)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(
+                        Capsule().fill(isActive ? Color.designAccent.opacity(0.16) : Color.clear)
+                    )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(3)
+        .background(
+            Capsule()
+                .fill(Color.designBtnBg)
+                .overlay(Capsule().stroke(Color.designBtnEdge, lineWidth: 0.5))
+        )
+    }
+}
+
+// MARK: - License tab
+
+private struct LicenseTab: View {
+    @EnvironmentObject var prefs: AppearancePrefs
+    @StateObject private var license = LicenseManager.shared
+    @Binding var showDeactivateConfirm: Bool
+    @State private var inputKey: String = ""
+    @State private var isWorking = false
+    @State private var feedback: Feedback?
+
+    enum Feedback: Equatable {
+        case info(String)
+        case error(String)
+    }
+
+    var body: some View {
+        Group {
+            if license.isPro {
+                activatedCard
+            } else {
+                freeTierCard
+            }
+
+            if let feedback {
+                FeedbackBanner(feedback: feedback)
+                    .transition(.opacity)
+            }
+        }
+        .animation(.easeOut(duration: 0.15), value: feedback)
+    }
+
+    // MARK: Activated
+
+    private var activatedCard: some View {
+        VStack(spacing: 14) {
+            VerifiedSeal(size: 92)
+
+            Text("感谢您购买 Tutti")
+                .font(.system(size: 19, weight: .bold))
+
+            Text("解除 2 个设备上限。现在可以同时输出到任意数量的音箱、耳机和 AirPods。")
+                .font(.system(size: 13))
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 420)
+                .padding(.top, -4)
+
+            if let displayKey = formattedLicenseKey() {
+                HStack(spacing: 14) {
+                    Text(verbatim: displayKey)
+                        .font(.system(size: 12.5, design: .monospaced))
+                        .foregroundStyle(.secondary)
+                    Image(systemName: "doc.on.doc")
+                        .font(.system(size: 12))
+                        .foregroundStyle(.tertiary)
+                        .onTapGesture { copyKey() }
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(Color.designBtnBg)
+                        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .stroke(Color.designBtnEdge, lineWidth: 0.5))
+                )
+                .padding(.top, 4)
+            }
+
+            graceOrStatusLine
+                .font(.system(size: 12))
+                .foregroundStyle(.tertiary)
+
+            Button {
+                showDeactivateConfirm = true
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "power")
+                        .font(.system(size: 12))
+                    Text("停用这台 Mac")
+                        .font(.system(size: 12.5))
+                }
+                .foregroundStyle(.tertiary)
+            }
+            .buttonStyle(.plain)
+            .padding(.top, 6)
+        }
+        .padding(.vertical, 32)
+        .padding(.horizontal, 22)
+        .frame(maxWidth: .infinity)
+        .background(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(Color.designCardBg)
+                .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .stroke(Color.designCardEdge, lineWidth: 0.5))
+        )
+    }
+
+    @ViewBuilder
+    private var graceOrStatusLine: some View {
+        switch license.status {
+        case .offlineGrace(let daysLeft):
+            Text("离线模式 · 还可使用 \(daysLeft) 天")
+        case .expired:
+            Text("Pro 已过期，请联网验证或重新激活")
+        case .activated, .inactive:
+            Text("此密钥可在 2 台 Mac 上使用")
+        }
+    }
+
+    private func formattedLicenseKey() -> String? {
+        guard let key = license.maskedKey else { return nil }
+        return key
+    }
+
+    private func copyKey() {
+        guard let key = license.maskedKey else { return }
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(key, forType: .string)
+    }
+
+    // MARK: Free tier
+
+    private var freeTierCard: some View {
+        VStack(spacing: 16) {
+            // Free-tier header
+            HStack(spacing: 14) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(Color.designToggleOff)
+                        .frame(width: 38, height: 38)
+                    Image(systemName: "lock.fill")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(.secondary)
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("免费版 · 同时输出上限 2 个设备")
+                        .font(.system(size: 14, weight: .semibold))
+                    Text("升级到 Tutti Pro，同时连接任意数量的音箱、耳机和 AirPods。")
+                        .font(.system(size: 12.5))
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 14)
+            .background(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(Color.designBtnBg)
+                    .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .stroke(Color.designBtnEdge, lineWidth: 0.5))
+            )
+
+            // License key input
+            TextField("", text: $inputKey, prompt:
+                Text("粘贴邮件中的许可证密钥")
+                    .foregroundColor(.secondary)
+            )
+            .textFieldStyle(.plain)
+            .font(.system(size: 13.5))
+            .padding(.horizontal, 16)
+            .padding(.vertical, 14)
+            .background(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(Color.designBtnBg)
+                    .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .stroke(Color.designBtnEdge, lineWidth: 0.5))
+            )
+            .overlay(alignment: .leading) {
+                Rectangle()
+                    .fill(Color.designBrand)
+                    .frame(width: 2, height: 16)
+                    .padding(.leading, 16)
+            }
+            .disableAutocorrection(true)
+
+            // Activate button
+            Button {
+                Task { await runActivate() }
+            } label: {
+                Text(isWorking ? "激活中…" : "激活")
+                    .font(.system(size: 13.5, weight: .semibold))
+                    .foregroundStyle(activateForeground)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                    .background(
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .fill(activateBackground)
+                            .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                .stroke(Color.designBtnEdge, lineWidth: 0.5))
+                    )
+            }
+            .buttonStyle(.plain)
+            .disabled(isWorking || inputKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+
+            // Footer row
+            HStack {
+                Text("一次付费 · 可在 2 台 Mac 上使用")
+                    .font(.system(size: 12))
+                    .foregroundStyle(.tertiary)
+                Spacer()
+                Button {
+                    NSWorkspace.shared.open(license.purchaseURL)
+                } label: {
+                    HStack(spacing: 4) {
+                        Text("购买许可证")
+                            .font(.system(size: 12, weight: .semibold))
+                        Image(systemName: "arrow.up.right")
+                            .font(.system(size: 10))
+                    }
+                    .foregroundStyle(Color.designAccent)
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(.top, 2)
+        }
+        .padding(22)
+        .background(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(Color.designCardBg)
+                .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .stroke(Color.designCardEdge, lineWidth: 0.5))
+        )
+    }
+
+    private var canActivate: Bool {
+        !isWorking && !inputKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    private var activateBackground: Color {
+        canActivate ? Color.designAccent.opacity(0.18) : Color.designBtnBg
+    }
+
+    private var activateForeground: Color {
+        canActivate ? Color.designAccent : Color.secondary
+    }
+
+    private func runActivate() async {
+        feedback = nil
+        isWorking = true
+        defer { isWorking = false }
+        do {
+            try await LicenseManager.shared.activate(licenseKey: inputKey)
+            inputKey = ""
+            feedback = .info(String(localized: "激活成功"))
+        } catch {
+            feedback = .error(error.localizedDescription)
+        }
+    }
+}
+
+private struct FeedbackBanner: View {
+    let feedback: LicenseTab.Feedback
+
+    var body: some View {
+        let (icon, color, text): (String, Color, String) = {
+            switch feedback {
+            case .info(let s):  return ("checkmark.circle.fill", .designAccent, s)
+            case .error(let s): return ("exclamationmark.triangle.fill", .designDanger, s)
+            }
+        }()
+
+        return HStack(spacing: 10) {
+            Image(systemName: icon)
+                .foregroundStyle(color)
+            Text(verbatim: text)
+                .font(.system(size: 12.5))
+                .foregroundStyle(.secondary)
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(color.opacity(0.08))
+                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(color.opacity(0.25), lineWidth: 0.5))
+        )
+        .padding(.top, 6)
+    }
+}
+
+// MARK: - Verified Seal (Apple-style scalloped badge)
+
+private struct VerifiedSeal: View {
+    var size: CGFloat = 80
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(Color.designAccent.opacity(0.16))
+                .frame(width: size * 1.4, height: size * 1.4)
+                .blur(radius: 18)
+
+            // Scalloped seal in Color.designAccent
+            ScallopedBadge()
+                .fill(Color.designAccent)
+                .frame(width: size, height: size)
+                .overlay(
+                    Image(systemName: "checkmark")
+                        .font(.system(size: size * 0.42, weight: .black))
+                        .foregroundStyle(Color(red: 0.06, green: 0.16, blue: 0.11))
+                )
+        }
+        .frame(width: size * 1.4, height: size * 1.4)
+    }
+}
+
+/// 16-point scalloped seal — a tile of 16 outer points around a circle.
+private struct ScallopedBadge: Shape {
+    func path(in rect: CGRect) -> Path {
+        let center = CGPoint(x: rect.midX, y: rect.midY)
+        let outer = rect.width / 2
+        let inner = outer * 0.88
+        let points = 16
+        var path = Path()
+        for i in 0..<(points * 2) {
+            let theta = (Double(i) / Double(points * 2)) * 2 * .pi - .pi / 2
+            let r = (i % 2 == 0) ? outer : inner
+            let p = CGPoint(x: center.x + cos(theta) * r,
+                            y: center.y + sin(theta) * r)
+            if i == 0 { path.move(to: p) } else { path.addLine(to: p) }
+        }
+        path.closeSubpath()
+        return path
+    }
+}
+
+// MARK: - About tab
 
 private struct AboutTab: View {
     @ObservedObject var updater: UpdateChecker
     @EnvironmentObject var prefs: AppearancePrefs
 
-    var body: some View {
-        VStack(spacing: 18) {
-            Spacer(minLength: 8)
+    /// Live app-bundle icon — same artwork as the Dock icon, scaled.
+    private var appIcon: NSImage {
+        NSWorkspace.shared.icon(forFile: Bundle.main.bundlePath)
+    }
 
-            Image(nsImage: TuttiPulseIcon.image(level: 2, size: 64))
+    var body: some View {
+        VStack(spacing: 0) {
+            Image(nsImage: appIcon)
                 .resizable()
-                .frame(width: 64, height: 64)
-                .foregroundStyle(prefs.accentColor)
+                .interpolation(.high)
+                .frame(width: 96, height: 96)
+                .padding(.bottom, 14)
 
-            VStack(spacing: 6) {
-                Text("Tutti")
-                    .font(.system(size: 24, weight: .semibold))
-                Text("One sound, every speaker")
-                    .font(.system(size: 13, design: .monospaced))
-                    .foregroundStyle(.secondary)
-                Text("v\(updater.currentVersion)")
-                    .font(.system(size: 11, design: .monospaced))
-                    .foregroundStyle(.tertiary)
-            }
+            Text(verbatim: "Tutti")
+                .font(.system(size: 34, weight: .bold))
 
-            HStack(spacing: 10) {
-                Button {
-                    Task { await updater.check() }
-                } label: {
-                    Text(updater.status == .checking ? "检查中…" : "检查更新")
-                        .frame(minWidth: 88)
-                }
-                .controlSize(.regular)
-                .disabled(updater.status == .checking)
-
-                Button(role: .destructive) {
-                    NSApplication.shared.terminate(nil)
-                } label: {
-                    Text("退出 Tutti")
-                        .frame(minWidth: 88)
-                }
-                .controlSize(.regular)
-            }
-
-            updateStatus
-                .font(.system(size: 11))
+            Text(verbatim: "One sound, every speaker")
+                .font(.system(size: 13, design: .monospaced))
                 .foregroundStyle(.secondary)
-                .frame(height: 16)
+                .padding(.top, 4)
 
-            Spacer()
-        }
-        .padding(.horizontal, 32)
-        .padding(.vertical, 24)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
+            Text(verbatim: "v\(updater.currentVersion)")
+                .font(.system(size: 12, design: .monospaced))
+                .foregroundStyle(.secondary)
+                .padding(.top, 2)
 
-    @ViewBuilder
-    private var updateStatus: some View {
-        switch updater.status {
-        case .idle, .checking:
-            EmptyView()
-        case .upToDate:
-            Text("已是最新版本")
-        case .updateAvailable(let version, let url):
-            HStack(spacing: 5) {
-                Text("新版本 \(version)")
-                    .foregroundStyle(prefs.accentColor)
-                Button {
-                    NSWorkspace.shared.open(url)
-                } label: {
-                    Text("下载")
-                        .underline()
-                        .foregroundStyle(prefs.accentColor)
-                }
-                .buttonStyle(.plain)
+            Text("把一路音频同时送到多个输出设备的 macOS 菜单栏小工具。基于 CoreAudio aggregate device，原生 SwiftUI + AppKit 互操作，无第三方依赖。")
+                .font(.system(size: 13))
+                .foregroundStyle(.secondary)
+                .lineSpacing(3)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 460)
+                .padding(.top, 22)
+
+            HStack(spacing: 28) {
+                FooterLink("GitHub", url: "https://github.com/BarryBarrywu/tutti")
+                FooterLink("反馈", url: "https://github.com/BarryBarrywu/tutti/issues")
+                FooterLink("致谢", url: "https://github.com/BarryBarrywu/tutti#acknowledgements")
             }
-        case .error(let message):
-            Text(message).foregroundStyle(Color.muteRed.opacity(0.85))
+            .padding(.top, 24)
         }
-    }
-}
-
-struct ThemePicker: View {
-    @EnvironmentObject var prefs: AppearancePrefs
-
-    var body: some View {
-        HStack(spacing: 0) {
-            ForEach(Array(ThemeChoice.allCases.enumerated()), id: \.element) { idx, choice in
-                let selected = prefs.theme == choice
-                let prevSelected = idx > 0 && prefs.theme == ThemeChoice.allCases[idx - 1]
-
-                ThemeSegment(
-                    label: choice.label,
-                    symbol: choice.symbol,
-                    selected: selected,
-                    accent: prefs.accentColor
-                ) {
-                    prefs.theme = choice
-                }
-                .overlay(alignment: .leading) {
-                    if idx > 0 && !selected && !prevSelected {
-                        Rectangle()
-                            .fill(Color.primary.opacity(0.15))
-                            .frame(width: 1, height: 14)
-                    }
-                }
-            }
-        }
+        .padding(.vertical, 36)
+        .padding(.horizontal, 22)
         .frame(maxWidth: .infinity)
         .background(
-            RoundedRectangle(cornerRadius: 9, style: .continuous)
-                .fill(Color.primary.opacity(0.07))
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(Color.designCardBg)
+                .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .stroke(Color.designCardEdge, lineWidth: 0.5))
         )
     }
 }
 
-private struct ThemeSegment: View {
-    let label: LocalizedStringKey
-    let symbol: String
-    let selected: Bool
-    let accent: Color
-    let action: () -> Void
+private struct FooterLink: View {
+    let title: LocalizedStringKey
+    let url: String
+
+    init(_ title: LocalizedStringKey, url: String) {
+        self.title = title
+        self.url = url
+    }
 
     var body: some View {
-        Button(action: action) {
+        Button {
+            if let u = URL(string: url) { NSWorkspace.shared.open(u) }
+        } label: {
             HStack(spacing: 6) {
-                Image(systemName: symbol)
-                    .font(.system(size: 12, weight: .medium))
-                Text(label)
-                    .font(.system(size: 12, weight: .medium))
+                Text(title)
+                    .font(.system(size: 12.5))
+                Image(systemName: "arrow.up.right")
+                    .font(.system(size: 10))
+                    .foregroundStyle(.tertiary)
             }
-            .foregroundStyle(selected ? Color.white : Color.primary)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 6)
-            .background(
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .fill(selected ? accent : Color.clear)
-            )
-            .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .foregroundStyle(.secondary)
         }
         .buttonStyle(.plain)
     }
 }
 
-struct PermissionRow: View {
-    @EnvironmentObject var manager: AudioDeviceManager
+// MARK: - Shared subviews
+
+private struct StatusPill: View {
+    let label: LocalizedStringKey
+    enum Tone { case accent, plain }
+    let tone: Tone
 
     var body: some View {
-        let granted = manager.hasAccessibilityPermission
-        HStack(spacing: 9) {
-            Image(systemName: granted ? "checkmark.circle.fill" : "exclamationmark.circle.fill")
-                .foregroundStyle(granted ? Color.statusGreen : Color.muteRed)
-            Text(granted ? "辅助功能已授权" : "辅助功能未授权")
-            Spacer()
-            if !granted {
-                Button("去授权") { openAccessibilitySettings() }
+        let (fg, bg): (Color, Color) = {
+            switch tone {
+            case .accent: return (Color.designAccent, Color.designAccent.opacity(0.18))
+            case .plain:  return (Color.primary, Color.designBtnBg)
             }
-        }
+        }()
+        return Text(label)
+            .font(.system(size: 12.5, weight: .semibold))
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(Capsule().fill(bg))
+            .foregroundStyle(fg)
     }
 }
 
-struct AutoLaunchRow: View {
-    @State private var enabled: Bool = SMAppService.mainApp.status == .enabled
-
-    var body: some View {
-        Toggle("开机自动启动", isOn: Binding(
-            get: { enabled },
-            set: { _ in toggle() }
-        ))
-    }
-
-    private func toggle() {
-        if enabled {
-            try? SMAppService.mainApp.unregister()
-        } else {
-            try? SMAppService.mainApp.register()
-        }
-        enabled = SMAppService.mainApp.status == .enabled
+private struct GhostButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.system(size: 13, weight: .semibold))
+            .padding(.horizontal, 14)
+            .padding(.vertical, 7)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(Color.designBtnBg)
+                    .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .stroke(Color.designBtnEdge, lineWidth: 0.5))
+            )
+            .opacity(configuration.isPressed ? 0.7 : 1.0)
     }
 }
 
-struct UpdatesSection: View {
+private struct DangerGhostButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundStyle(Color.designDanger)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 7)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(Color.designDanger.opacity(0.10))
+                    .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .stroke(Color.designDanger.opacity(0.25), lineWidth: 0.5))
+            )
+            .opacity(configuration.isPressed ? 0.7 : 1.0)
+    }
+}
+
+/// Slim status line shown directly beneath the "自动检查更新" card after a
+/// manual check — keeps the card itself compact while still surfacing the
+/// outcome (up to date / new version / error).
+private struct UpdateStatusInline: View {
     @ObservedObject var updater: UpdateChecker
 
     var body: some View {
-        Toggle("启动时自动检查更新", isOn: $updater.autoCheckEnabled)
+        Group {
+            switch updater.status {
+            case .idle, .checking:
+                EmptyView()
+            case .upToDate:
+                HStack(spacing: 6) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(Color.designAccent)
+                    Text("已是最新版本")
+                        .foregroundStyle(.secondary)
+                }
+            case .updateAvailable(let version, let url):
+                HStack(spacing: 6) {
+                    Image(systemName: "arrow.up.circle.fill")
+                        .foregroundStyle(Color.designAccent)
+                    Text("新版本 \(version)")
+                        .foregroundStyle(.secondary)
+                    Button {
+                        NSWorkspace.shared.open(url)
+                    } label: {
+                        Text("下载")
+                            .underline()
+                            .foregroundStyle(Color.designAccent)
+                    }
+                    .buttonStyle(.plain)
+                }
+            case .error(let message):
+                HStack(spacing: 6) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundStyle(Color.designDanger)
+                    Text(verbatim: message)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .font(.system(size: 11.5))
+        .padding(.top, 6)
+        .padding(.leading, 20)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
+
+// MARK: - Accessibility settings helper
 
 func openAccessibilitySettings() {
     guard let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") else { return }

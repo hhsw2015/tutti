@@ -898,6 +898,422 @@
         "ko" : { "stringUnit" : { "state" : "translated", "value" : "나중에" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "稍後" } }
       }
+    },
+    "许可" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Lizenz" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "License" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Licencia" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Licence" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Licenza" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ライセンス" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "라이선스" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "授權" } }
+      }
+    },
+    "外观" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Erscheinungsbild" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Appearance" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Apariencia" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Apparence" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Aspetto" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "外観" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "모양" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "外觀" } }
+      }
+    },
+    "辅助功能权限" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Bedienungshilfen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Accessibility" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Accesibilidad" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Accessibilité" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Accessibilità" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アクセシビリティ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "손쉬운 사용" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "輔助使用" } }
+      }
+    },
+    "自动检查更新" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Automatisch nach Updates suchen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Auto-check for updates" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Comprobar actualizaciones automáticamente" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Rechercher les mises à jour automatiquement" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Cerca aggiornamenti automaticamente" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "自動的にアップデートを確認" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "자동으로 업데이트 확인" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "自動檢查更新" } }
+      }
+    },
+    "切换后需重启 Tutti 才会全部生效。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Erfordert einen Neustart von Tutti, um vollständig zu wirken." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Restart Tutti for the change to take full effect." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Reinicia Tutti para que el cambio surta efecto completo." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Redémarrez Tutti pour que le changement prenne effet." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Riavvia Tutti perché la modifica abbia pieno effetto." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "変更を完全に反映するには Tutti の再起動が必要です。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "변경 사항을 완전히 적용하려면 Tutti를 다시 시작해야 합니다." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "切換後需重新啟動 Tutti 才會全部生效。" } }
+      }
+    },
+    "跟随系统时，会随浅/深色切换菜单栏与所有面板。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Im Systemmodus wechseln Menüleiste und alle Panels mit Hell/Dunkel." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "When set to System, menubar and all panels follow light/dark." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "En modo Sistema, barra de menús y paneles siguen claro/oscuro." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En mode Système, la barre des menus et les panneaux suivent clair/sombre." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "In modalità Sistema, la barra dei menu e i pannelli seguono chiaro/scuro." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "システムに従う場合、メニューバーとすべてのパネルがライト/ダークに追従します。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "시스템 설정 시 메뉴 막대와 모든 패널이 라이트/다크를 따릅니다." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "跟隨系統時，會隨淺/深色切換選單列與所有面板。" } }
+      }
+    },
+    "登录系统时静默打开 Tutti，并以菜单栏图标方式驻留。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Beim Anmelden öffnet Tutti im Hintergrund und bleibt als Menüleistensymbol aktiv." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Opens silently at login and stays in the menubar." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Se abre silenciosamente al iniciar sesión y permanece en la barra de menús." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Démarre en silence à la connexion et reste dans la barre des menus." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Si avvia silenziosamente all'accesso e rimane nella barra dei menu." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ログイン時に静かに起動し、メニューバーアイコンとして常駐します。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "로그인 시 조용히 실행되어 메뉴 막대 아이콘으로 상주합니다." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "登入系統時靜默打開 Tutti，並以選單列圖示方式常駐。" } }
+      }
+    },
+    "授权后，键盘音量键能直接控制聚合输出。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Mit Berechtigung steuern die Lautstärketasten die Sammelausgabe direkt." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Once granted, the volume keys directly control the aggregate output." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Con el permiso, las teclas de volumen controlan directamente la salida agregada." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Une fois autorisé, les touches de volume contrôlent la sortie agrégée." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Una volta concesso, i tasti volume controllano direttamente l'uscita aggregata." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "許可すると、音量キーで集約出力を直接コントロールできます。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "허용하면 볼륨 키로 집계 출력을 직접 제어할 수 있습니다." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "授權後，鍵盤音量鍵能直接控制聚合輸出。" } }
+      }
+    },
+    "从 GitHub Releases 拉取，仅在有新版本时通知一次。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Lädt aus GitHub Releases und benachrichtigt nur bei neuer Version." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Pulls from GitHub Releases — notifies once when a new version is found." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Se obtiene de GitHub Releases. Notifica una vez por nueva versión." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Récupère depuis GitHub Releases — notifie une fois par nouvelle version." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Recupera da GitHub Releases — notifica una volta a ogni nuova versione." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GitHub Releases から取得し、新バージョンがあるときに 1 度だけ通知します。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "GitHub Releases에서 가져오며 새 버전이 있을 때 한 번만 알려줍니다." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "從 GitHub Releases 拉取，僅在有新版本時通知一次。" } }
+      }
+    },
+    "已授权" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Erteilt" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Granted" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Concedido" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autorisé" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Concesso" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "許可済み" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "허용됨" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "已授權" } }
+      }
+    },
+    "感谢您购买 Tutti" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Danke für den Kauf von Tutti" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Thank you for purchasing Tutti" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Gracias por comprar Tutti" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Merci d'avoir acheté Tutti" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Grazie per aver acquistato Tutti" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Tutti をご購入いただきありがとうございます" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Tutti를 구매해 주셔서 감사합니다" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "感謝您購買 Tutti" } }
+      }
+    },
+    "解除 2 个设备上限。现在可以同时输出到任意数量的音箱、耳机和 AirPods。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Das 2-Geräte-Limit ist aufgehoben. Sie können beliebig viele Lautsprecher, Kopfhörer und AirPods gleichzeitig nutzen." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "The 2-device cap is lifted. Stream to any number of speakers, headphones, and AirPods at once." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Se eliminó el límite de 2 dispositivos. Transmite a cualquier número de altavoces, auriculares y AirPods a la vez." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Plus de limite à 2 appareils. Diffusez vers autant d'enceintes, casques et AirPods que vous voulez en même temps." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Limite di 2 dispositivi rimosso. Trasmetti a qualsiasi numero di altoparlanti, cuffie e AirPods insieme." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "2 台の上限が解除されました。スピーカー・ヘッドフォン・AirPods に同時に好きなだけ出力できます。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "2대 제한이 해제되었습니다. 스피커, 헤드폰, AirPods를 원하는 만큼 동시에 출력할 수 있습니다." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "解除 2 台裝置上限。現在可以同時輸出到任意數量的喇叭、耳機和 AirPods。" } }
+      }
+    },
+    "停用这台 Mac" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Diesen Mac deaktivieren" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Deactivate this Mac" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Desactivar este Mac" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Désactiver ce Mac" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Disattiva questo Mac" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "この Mac の認証を解除" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "이 Mac 비활성화" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "停用此 Mac" } }
+      }
+    },
+    "停用这台 Mac?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Diesen Mac deaktivieren?" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Deactivate this Mac?" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "¿Desactivar este Mac?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Désactiver ce Mac ?" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Disattivare questo Mac?" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "この Mac の認証を解除しますか？" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "이 Mac을 비활성화하시겠습니까?" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "停用此 Mac？" } }
+      }
+    },
+    "停用" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Deaktivieren" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Deactivate" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Desactivar" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Désactiver" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Disattiva" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "解除" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "비활성화" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "停用" } }
+      }
+    },
+    "取消" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Abbrechen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Cancel" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Cancelar" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Annuler" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Annulla" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "キャンセル" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "취소" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "取消" } }
+      }
+    },
+    "释放 1 台设备名额。停用后会回到免费版（2 个设备上限），可随时用同一密钥重新激活。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Gibt einen Geräteplatz frei. Nach der Deaktivierung kehrt Tutti zur kostenlosen Version (2 Geräte) zurück; jederzeit mit demselben Schlüssel erneut aktivierbar." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Frees one device slot. You'll return to the free tier (2-device cap) and can reactivate with the same key any time." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Libera un espacio de dispositivo. Volverás a la versión gratuita (límite de 2) y podrás reactivar con la misma clave cuando quieras." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Libère un slot d'appareil. Vous repassez en version gratuite (limite de 2) et pouvez réactiver avec la même clé à tout moment." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Libera uno slot dispositivo. Tornerai alla versione gratuita (limite 2) e potrai riattivare con la stessa chiave in qualsiasi momento." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "デバイス枠を 1 つ解放します。無料版（2 台上限）に戻り、いつでも同じキーで再認証できます。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "기기 한 자리를 해제합니다. 무료 버전(2대 제한)으로 돌아가며 언제든 같은 키로 재활성화할 수 있습니다." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "釋放 1 台裝置名額。停用後會回到免費版（2 台裝置上限），可隨時用同一金鑰重新啟用。" } }
+      }
+    },
+    "此密钥可在 2 台 Mac 上使用" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Dieser Schlüssel gilt für bis zu 2 Macs" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "This key is valid on up to 2 Macs" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Esta clave es válida en hasta 2 Macs" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Cette clé est valable sur 2 Macs maximum" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Questa chiave è valida su 2 Mac al massimo" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "このキーは最大 2 台の Mac で使用できます" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "이 키는 최대 2대의 Mac에서 사용할 수 있습니다" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "此金鑰可在 2 台 Mac 上使用" } }
+      }
+    },
+    "离线模式 · 还可使用 %lld 天" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Offline · noch %lld Tage" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Offline · %lld days remaining" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Sin conexión · %lld días restantes" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Hors ligne · %lld jours restants" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Offline · %lld giorni rimanenti" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "オフライン · 残り %lld 日" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "오프라인 · %lld일 남음" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "離線模式 · 還可使用 %lld 天" } }
+      }
+    },
+    "免费版 · 同时输出上限 2 个设备" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Kostenlos · max. 2 gleichzeitige Geräte" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Free · 2 simultaneous devices" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Gratis · 2 dispositivos simultáneos" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Gratuit · 2 sorties simultanées" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Gratuito · 2 dispositivi contemporanei" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "無料版 · 同時出力 2 台まで" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "무료 · 동시 출력 2대" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "免費版 · 同時輸出上限 2 台裝置" } }
+      }
+    },
+    "升级到 Tutti Pro，同时连接任意数量的音箱、耳机和 AirPods。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wechseln Sie zu Tutti Pro, um beliebig viele Lautsprecher, Kopfhörer und AirPods gleichzeitig zu verbinden." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Upgrade to Tutti Pro to stream to any number of speakers, headphones, and AirPods at once." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Actualiza a Tutti Pro para conectar cualquier cantidad de altavoces, auriculares y AirPods a la vez." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Passez à Tutti Pro pour connecter un nombre illimité d'enceintes, casques et AirPods en même temps." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Passa a Tutti Pro per collegare qualsiasi numero di altoparlanti, cuffie e AirPods insieme." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro にアップグレードすると、好きなだけスピーカー・ヘッドフォン・AirPods を同時に接続できます。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro로 업그레이드하면 원하는 수의 스피커, 헤드폰, AirPods를 동시에 연결할 수 있습니다." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "升級到 Tutti Pro，同時連接任意數量的喇叭、耳機和 AirPods。" } }
+      }
+    },
+    "粘贴邮件中的许可证密钥" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Lizenzschlüssel aus der E-Mail einfügen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Paste the license key from your email" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Pega la clave de licencia del correo" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Collez la clé de licence reçue par e-mail" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Incolla la chiave di licenza dall'email" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メールに記載のライセンスキーを貼り付け" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "이메일의 라이선스 키를 붙여넣으세요" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "貼上郵件中的授權碼" } }
+      }
+    },
+    "激活中…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wird aktiviert…" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Activating…" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Activando…" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Activation…" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Attivazione…" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "認証中…" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "활성화 중…" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "啟用中…" } }
+      }
+    },
+    "一次付费 · 可在 2 台 Mac 上使用" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Einmalig · gilt auf bis zu 2 Macs" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "One-time · works on up to 2 Macs" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Pago único · funciona en hasta 2 Macs" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Achat unique · jusqu'à 2 Macs" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Una tantum · valido su 2 Mac al massimo" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "買い切り · 最大 2 台の Mac で利用可" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "1회 결제 · 최대 2대의 Mac에서 사용" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "一次付費 · 可在 2 台 Mac 上使用" } }
+      }
+    },
+    "购买许可证" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Lizenz kaufen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Buy a license" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Comprar licencia" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Acheter une licence" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Acquista licenza" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ライセンスを購入" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "라이선스 구매" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "購買授權" } }
+      }
+    },
+    "查看源码" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Quellcode ansehen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "View source" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Ver código" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Voir le code" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Vedi sorgente" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ソースを見る" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "소스 보기" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "查看原始碼" } }
+      }
+    },
+    "把一路音频同时送到多个输出设备的 macOS 菜单栏小工具。基于 CoreAudio aggregate device，原生 SwiftUI + AppKit 互操作，无第三方依赖。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ein macOS-Menüleisten-Tool, das eine Audioquelle gleichzeitig an mehrere Ausgabegeräte sendet. Baut auf CoreAudio Aggregate Device, natives SwiftUI + AppKit, ohne Drittabhängigkeiten." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "A macOS menubar tool that sends one audio stream to multiple output devices at once. Built on CoreAudio aggregate devices, native SwiftUI + AppKit, no third-party dependencies." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Una utilidad de la barra de menús de macOS que envía un flujo de audio a varios dispositivos a la vez. Basada en dispositivos agregados de CoreAudio, SwiftUI + AppKit nativos, sin dependencias externas." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Un utilitaire de la barre des menus macOS qui envoie un flux audio vers plusieurs sorties en même temps. Basé sur les aggregate devices CoreAudio, SwiftUI + AppKit natifs, sans dépendances tierces." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Un'utilità della barra dei menu di macOS che invia un flusso audio a più dispositivi contemporaneamente. Basata su CoreAudio aggregate device, SwiftUI + AppKit nativi, senza dipendenze esterne." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "1 つのオーディオを複数の出力デバイスに同時に送る macOS メニューバー小ツール。CoreAudio aggregate device 上に構築。SwiftUI + AppKit のネイティブのみ、サードパーティ依存なし。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "오디오를 여러 출력 장치로 동시에 보내는 macOS 메뉴 막대 도구. CoreAudio aggregate device 기반, 네이티브 SwiftUI + AppKit, 외부 의존성 없음." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "把一路音訊同時送到多個輸出裝置的 macOS 選單列小工具。基於 CoreAudio aggregate device，原生 SwiftUI + AppKit 互操作，無第三方依賴。" } }
+      }
+    },
+    "反馈" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Feedback" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Feedback" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Comentarios" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Retour" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Feedback" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "フィードバック" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "피드백" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "回饋" } }
+      }
+    },
+    "致谢" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Danksagungen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Acknowledgements" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Agradecimientos" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Remerciements" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Ringraziamenti" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "謝辞" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "감사의 말" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "致謝" } }
+      }
+    },
+    "完全退出应用，不再驻留菜单栏。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Beendet Tutti vollständig und entfernt das Menüleistensymbol." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Quits Tutti fully and removes the menubar icon." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Cierra Tutti por completo y elimina el icono de la barra de menús." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Quitte Tutti complètement et retire l'icône de la barre des menus." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Chiude completamente Tutti e rimuove l'icona dalla barra dei menu." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Tutti を完全に終了し、メニューバーアイコンも消します。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Tutti를 완전히 종료하고 메뉴 막대 아이콘도 제거합니다." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "完全結束應用，不再常駐於選單列。" } }
+      }
+    },
+    "退出" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Beenden" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Quit" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Salir" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Quitter" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Esci" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "終了" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "종료" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "結束" } }
+      }
+    },
+    "重启后菜单栏、面板以及系统通知会切换为新语言。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nach dem Neustart wechseln Menüleiste, Panels und Systembenachrichtigungen in die neue Sprache." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "After restart, the menubar, panels, and system notifications switch to the new language." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Tras reiniciar, la barra de menús, los paneles y las notificaciones del sistema cambian al nuevo idioma." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Après redémarrage, la barre des menus, les panneaux et les notifications système passent à la nouvelle langue." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Dopo il riavvio, barra dei menu, pannelli e notifiche di sistema passano alla nuova lingua." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "再起動後、メニューバー・パネル・システム通知が新しい言語に切り替わります。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "다시 시작하면 메뉴 막대, 패널, 시스템 알림이 새 언어로 전환됩니다." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "重新啟動後選單列、面板以及系統通知會切換為新語言。" } }
+      }
     }
   }
 }

@@ -174,6 +174,75 @@ extension Color {
 
     static let panelBackdrop = Color(red: 0.06, green: 0.05, blue: 0.10)
 
+    // MARK: - Settings design tokens (from Tutti Settings design canvas)
+
+    /// Mint-green "verified / Pro active" — slightly desaturated in light mode.
+    static let designAccent  = Color(light: hex("1F9C5E"), dark: hex("7BE4A5"))
+    /// Tutti brand pink / coral, used for the Broadcast Dot mark in About.
+    static let designBrand   = Color(light: hex("E04E70"), dark: hex("F2728E"))
+    /// System-blue primary action (used on the language-restart confirm).
+    static let designPrimary = Color(light: hex("0A66FF"), dark: hex("3D7BFF"))
+    /// Destructive red for "Deactivate this Mac" confirm.
+    static let designDanger  = Color(light: hex("C8362E"), dark: hex("E25656"))
+
+    /// Subtle tint dropped behind the .regularMaterial settings window —
+    /// pulls the glass toward the warm cream/brown look in the mockup.
+    static let designGlassTint = Color(
+        light: Color(red: 1.0, green: 0.98, blue: 0.94).opacity(0.45),
+        dark:  Color(red: 0.14, green: 0.09, blue: 0.06).opacity(0.45)
+    )
+
+    /// Card fill: a low-opacity white in dark mode, near-white in light mode.
+    static let designCardBg = Color(
+        light: Color.white.opacity(0.55),
+        dark:  Color(red: 1.0, green: 0.97, blue: 0.92).opacity(0.04)
+    )
+    static let designCardEdge = Color(
+        light: Color.black.opacity(0.07),
+        dark:  Color.white.opacity(0.06)
+    )
+
+    /// Pill / button container with a slight inset glass feel.
+    static let designBtnBg = Color(
+        light: Color.black.opacity(0.05),
+        dark:  Color.white.opacity(0.08)
+    )
+    static let designBtnEdge = Color(
+        light: Color.black.opacity(0.10),
+        dark:  Color.white.opacity(0.12)
+    )
+
+    /// Track for unselected toggle states.
+    static let designToggleOff = Color(
+        light: Color.black.opacity(0.14),
+        dark:  Color.white.opacity(0.12)
+    )
+
+    /// Active pill backdrop in the tab segmented control.
+    static let designPillActiveBg = Color.white
+    static let designPillActiveFg = Color(red: 0.10, green: 0.05, blue: 0.04)
+
+    private static func hex(_ string: String) -> Color {
+        let cleaned = string.trimmingCharacters(in: CharacterSet(charactersIn: "#"))
+        var int: UInt64 = 0
+        Scanner(string: cleaned).scanHexInt64(&int)
+        let r = Double((int >> 16) & 0xFF) / 255
+        let g = Double((int >> 8)  & 0xFF) / 255
+        let b = Double( int        & 0xFF) / 255
+        return Color(red: r, green: g, blue: b)
+    }
+
+    /// Light/dark adaptive Color built from two SwiftUI Colors.
+    init(light: Color, dark: Color) {
+        let lightNS = NSColor(light)
+        let darkNS  = NSColor(dark)
+        let dynamic = NSColor(name: nil) { appearance in
+            let match = appearance.bestMatch(from: [.aqua, .darkAqua]) ?? .aqua
+            return match == .darkAqua ? darkNS : lightNS
+        }
+        self.init(nsColor: dynamic)
+    }
+
     func lighter(by amount: CGFloat) -> Color {
         Color(nsColor: NSColor(self).blended(withFraction: amount, of: .white) ?? NSColor(self))
     }
