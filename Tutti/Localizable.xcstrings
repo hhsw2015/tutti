@@ -1276,6 +1276,32 @@
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "致謝" } }
       }
     },
+    "已复制到剪贴板" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "In die Zwischenablage kopiert" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Copied to clipboard" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Copiado al portapapeles" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Copié dans le presse-papiers" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Copiato negli appunti" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "クリップボードにコピーしました" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "클립보드에 복사됨" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "已複製到剪貼簿" } }
+      }
+    },
+    "复制完整密钥到剪贴板" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Vollständigen Schlüssel in die Zwischenablage kopieren" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Copy the full key to the clipboard" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Copiar la clave completa al portapapeles" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Copier la clé complète dans le presse-papiers" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Copia la chiave completa negli appunti" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "完全なキーをクリップボードにコピー" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "전체 키를 클립보드에 복사" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "複製完整金鑰到剪貼簿" } }
+      }
+    },
     "完全退出应用，不再驻留菜单栏。" : {
       "extractionState" : "manual",
       "localizations" : {

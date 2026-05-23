@@ -1,3 +1,4 @@
+import AppKit
 import Foundation
 import IOKit
 import Security
@@ -36,6 +37,10 @@ final class LicenseManager: ObservableObject {
 
     @Published private(set) var status: Status = .inactive
     @Published private(set) var maskedKey: String?
+    /// Last successfully activated key on this Mac. Preserved across
+    /// deactivate so the activate form can re-fill itself — saves the user
+    /// from digging the key out of their email again to reactivate.
+    @Published private(set) var lastUsedKey: String?
 
     /// 唯一的 gate 判断。Pro 包含已激活和离线宽限期，过期则回到 free。
     var isPro: Bool {
@@ -61,9 +66,18 @@ final class LicenseManager: ObservableObject {
     private let keychainAccount = "tutti.license"
     private let keychainServiceKey = "license_key"
     private let keychainServiceInstance = "license_key_instance_id"
+    private let keychainServiceLastUsed = "license_key_last_used"
     private let lastValidatedKey = "tutti.license.lastValidatedAt"
 
     private init() {
+        // Backfill: if a key is already active but the convenience slot is
+        // empty (e.g. the user activated on a pre-prefill build), promote
+        // the active key now so deactivate→reactivate works for them too.
+        if readKeychain(service: keychainServiceLastUsed) == nil,
+           let active = readKeychain(service: keychainServiceKey) {
+            try? saveKeychain(service: keychainServiceLastUsed, value: active)
+        }
+        lastUsedKey = readKeychain(service: keychainServiceLastUsed)
         recomputeStatusFromStorage()
         Task { await refreshIfPossible() }
     }
@@ -92,6 +106,10 @@ final class LicenseManager: ObservableObject {
 
         try saveKeychain(service: keychainServiceKey, value: key)
         try saveKeychain(service: keychainServiceInstance, value: response.id)
+        // Convenience prefill, kept across deactivate. Best-effort: a
+        // failure here is harmless, the user just retypes.
+        try? saveKeychain(service: keychainServiceLastUsed, value: key)
+        lastUsedKey = key
         UserDefaults.standard.set(Date(), forKey: lastValidatedKey)
         updateMaskedKey(key)
         status = .activated
@@ -128,6 +146,12 @@ final class LicenseManager: ObservableObject {
         ]
         _ = try await postEmpty("/licenses/deactivate", body: body)
 
+        // Preserve the user-pasted key for one-click reactivation later.
+        // clearStorage() only wipes the active credentials; the convenience
+        // slot survives so the activate form re-fills itself.
+        try? saveKeychain(service: keychainServiceLastUsed, value: key)
+        lastUsedKey = key
+
         clearStorage()
         status = .inactive
     }
@@ -136,6 +160,16 @@ final class LicenseManager: ObservableObject {
     func refreshIfPossible() async {
         guard readKeychain(service: keychainServiceKey) != nil else { return }
         try? await validate()
+    }
+
+    /// Copy the full active license key (not the masked form) to the
+    /// pasteboard. Returns false if no active key is stored.
+    @discardableResult
+    func copyKeyToPasteboard() -> Bool {
+        guard let key = readKeychain(service: keychainServiceKey) else { return false }
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(key, forType: .string)
+        return true
     }
 
     // MARK: - Storage / Status

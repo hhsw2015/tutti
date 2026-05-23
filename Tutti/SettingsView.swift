@@ -25,6 +25,10 @@ struct TuttiSettingsView: View {
     @StateObject private var license = LicenseManager.shared
     @State private var selectedTab: SettingsTab = .general
     @State private var showDeactivateConfirm = false
+    // Hoisted so the value survives tab switches — LicenseTab is rebuilt each
+    // time it's the active tab, so its own @State would reset and re-prefill.
+    @State private var licenseInputKey: String = ""
+    @State private var licenseDidPrefill: Bool = false
 
     var body: some View {
         ZStack {
@@ -37,9 +41,16 @@ struct TuttiSettingsView: View {
                 ScrollView(.vertical, showsIndicators: false) {
                     Group {
                         switch selectedTab {
-                        case .general: GeneralTab(updater: updater)
-                        case .license: LicenseTab(showDeactivateConfirm: $showDeactivateConfirm)
-                        case .about:   AboutTab(updater: updater)
+                        case .general:
+                            GeneralTab(updater: updater)
+                        case .license:
+                            LicenseTab(
+                                showDeactivateConfirm: $showDeactivateConfirm,
+                                inputKey: $licenseInputKey,
+                                didPrefill: $licenseDidPrefill
+                            )
+                        case .about:
+                            AboutTab(updater: updater)
                         }
                     }
                     .padding(.bottom, 4)
@@ -52,6 +63,15 @@ struct TuttiSettingsView: View {
         .frame(width: 720, height: 600)
         .environmentObject(prefs)
         .preferredColorScheme(prefs.theme.colorScheme)
+        .onChange(of: license.status) { newStatus in
+            // Any transition back to inactive (user deactivate or server
+            // revoke) re-arms the prefill so the saved key is offered once
+            // more on the next appearance of the free tier card.
+            if newStatus == .inactive {
+                licenseDidPrefill = false
+                licenseInputKey = ""
+            }
+        }
         .alert("切换语言需要重启 Tutti", isPresented: $prefs.languageRestartPending) {
             Button("立即重启") { prefs.relaunch() }
             Button("稍后", role: .cancel) {}
@@ -365,9 +385,11 @@ private struct LicenseTab: View {
     @EnvironmentObject var prefs: AppearancePrefs
     @StateObject private var license = LicenseManager.shared
     @Binding var showDeactivateConfirm: Bool
-    @State private var inputKey: String = ""
+    @Binding var inputKey: String
+    @Binding var didPrefill: Bool
     @State private var isWorking = false
     @State private var feedback: Feedback?
+    @State private var copiedFlash = false
 
     enum Feedback: Equatable {
         case info(String)
@@ -407,29 +429,42 @@ private struct LicenseTab: View {
                 .padding(.top, -4)
 
             if let displayKey = formattedLicenseKey() {
-                HStack(spacing: 14) {
-                    Text(verbatim: displayKey)
-                        .font(.system(size: 12.5, design: .monospaced))
-                        .foregroundStyle(.secondary)
-                    Image(systemName: "doc.on.doc")
-                        .font(.system(size: 12))
-                        .foregroundStyle(.tertiary)
-                        .onTapGesture { copyKey() }
+                Button(action: copyKey) {
+                    HStack(spacing: 10) {
+                        Text(verbatim: displayKey)
+                            .font(.system(size: 12.5, design: .monospaced))
+                            .foregroundStyle(copiedFlash ? Color.designAccent : Color.secondary)
+                        Image(systemName: copiedFlash ? "checkmark" : "doc.on.doc")
+                            .font(.system(size: 12, weight: copiedFlash ? .bold : .regular))
+                            .foregroundStyle(copiedFlash ? Color.designAccent : Color.secondary)
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .fill(Color.designBtnBg)
+                            .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .stroke(copiedFlash ? Color.designAccent.opacity(0.5) : Color.designBtnEdge,
+                                        lineWidth: 0.5))
+                    )
+                    .contentShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                 }
-                .padding(.horizontal, 14)
-                .padding(.vertical, 8)
-                .background(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(Color.designBtnBg)
-                        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .stroke(Color.designBtnEdge, lineWidth: 0.5))
-                )
+                .buttonStyle(.plain)
+                .help("复制完整密钥到剪贴板")
                 .padding(.top, 4)
             }
 
-            graceOrStatusLine
-                .font(.system(size: 12))
-                .foregroundStyle(.tertiary)
+            Group {
+                if copiedFlash {
+                    Text("已复制到剪贴板")
+                        .foregroundStyle(Color.designAccent)
+                } else {
+                    graceOrStatusLine
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .font(.system(size: 12))
+            .animation(.easeOut(duration: 0.15), value: copiedFlash)
 
             Button {
                 showDeactivateConfirm = true
@@ -474,9 +509,12 @@ private struct LicenseTab: View {
     }
 
     private func copyKey() {
-        guard let key = license.maskedKey else { return }
-        NSPasteboard.general.clearContents()
-        NSPasteboard.general.setString(key, forType: .string)
+        guard license.copyKeyToPasteboard() else { return }
+        withAnimation(.easeOut(duration: 0.15)) { copiedFlash = true }
+        Task {
+            try? await Task.sleep(for: .seconds(1.6))
+            withAnimation(.easeIn(duration: 0.2)) { copiedFlash = false }
+        }
     }
 
     // MARK: Free tier
@@ -527,12 +565,6 @@ private struct LicenseTab: View {
                     .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
                         .stroke(Color.designBtnEdge, lineWidth: 0.5))
             )
-            .overlay(alignment: .leading) {
-                Rectangle()
-                    .fill(Color.designBrand)
-                    .frame(width: 2, height: 16)
-                    .padding(.leading, 16)
-            }
             .disableAutocorrection(true)
 
             // Activate button
@@ -582,6 +614,18 @@ private struct LicenseTab: View {
                 .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous)
                     .stroke(Color.designCardEdge, lineWidth: 0.5))
         )
+        // Prefill once per "inactive session": the first appearance after
+        // the free tier card becomes visible (either on first open while
+        // already inactive, or right after a deactivate). Tab switches and
+        // re-renders within the same session don't refill, so a manual
+        // clear or edit sticks.
+        .onAppear {
+            guard !didPrefill else { return }
+            didPrefill = true
+            if inputKey.isEmpty, let last = license.lastUsedKey {
+                inputKey = last
+            }
+        }
     }
 
     private var canActivate: Bool {
