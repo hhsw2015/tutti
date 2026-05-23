@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 import CoreAudio
 
 private let panelWidth: CGFloat = 320
@@ -11,13 +12,21 @@ private let capsuleGap: CGFloat = 8
 struct MenuBarView: View {
     @EnvironmentObject var manager: AudioDeviceManager
     @StateObject private var prefs = AppearancePrefs.shared
+    @StateObject private var license = LicenseManager.shared
     @State private var devicesFolded = false
+    @State private var showUpgradeBanner = false
     @Environment(\.tuttiPopover) private var popoverHost
 
     private var showMaster: Bool { manager.selectedIDs.count >= 2 }
 
     var body: some View {
         VStack(spacing: capsuleGap) {
+            if showUpgradeBanner {
+                UpgradeBanner(purchaseURL: license.purchaseURL) {
+                    withAnimation { showUpgradeBanner = false }
+                }
+            }
+
             StatusCapsule()
 
             if showMaster {
@@ -25,6 +34,9 @@ struct MenuBarView: View {
             }
 
             DevicesCapsule(folded: $devicesFolded)
+        }
+        .onChange(of: manager.lastUpgradeAttemptID) { _ in
+            withAnimation(.easeOut(duration: 0.18)) { showUpgradeBanner = true }
         }
         .padding(.horizontal, 12)
         .padding(.top, 12)
@@ -552,3 +564,48 @@ private struct BatteryPill: View {
     }
 }
 
+// MARK: - Upgrade banner
+
+private struct UpgradeBanner: View {
+    let purchaseURL: URL
+    let onDismiss: () -> Void
+    @EnvironmentObject var prefs: AppearancePrefs
+
+    var body: some View {
+        GlassCapsule {
+            HStack(spacing: 10) {
+                Image(systemName: "sparkles")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(prefs.accentColor)
+
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("3 台或更多设备需要 Tutti Pro")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(Color.glassTextHi)
+                    Text("一次买断 $4.99")
+                        .font(.system(size: 10))
+                        .foregroundStyle(Color.glassTextLo)
+                }
+
+                Spacer(minLength: 4)
+
+                Button("升级") {
+                    NSWorkspace.shared.open(purchaseURL)
+                }
+                .buttonStyle(AccentPillButton())
+
+                Button(action: onDismiss) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(Color.glassTextLo)
+                        .frame(width: 20, height: 20)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+        }
+        .transition(.move(edge: .top).combined(with: .opacity))
+    }
+}

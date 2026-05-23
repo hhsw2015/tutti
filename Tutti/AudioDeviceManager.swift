@@ -24,6 +24,9 @@ final class AudioDeviceManager: ObservableObject {
         didSet { volumeKeyMonitor?.interceptEnabled = isActive }
     }
     @Published private(set) var hasAccessibilityPermission = false
+    /// Bumped whenever a free-tier user tries to select a 3rd device. UI observes this
+    /// to open the upgrade prompt — a new UUID each time so repeated attempts still fire.
+    @Published var lastUpgradeAttemptID: UUID?
 
     private var aggregateID: AudioDeviceID?
     private var savedDefaultID: AudioDeviceID?
@@ -45,7 +48,16 @@ final class AudioDeviceManager: ObservableObject {
     }
 
     func toggle(_ device: AudioDevice) {
-        if selectedIDs.contains(device.id) {
+        let alreadySelected = selectedIDs.contains(device.id)
+        // Free tier: max 2 simultaneous devices. 3rd+ requires Pro.
+        if !alreadySelected,
+           selectedIDs.count >= 2,
+           !LicenseManager.shared.isPro {
+            lastUpgradeAttemptID = UUID()
+            return
+        }
+
+        if alreadySelected {
             selectedIDs.remove(device.id)
         } else {
             if volumes[device.id] == nil {
