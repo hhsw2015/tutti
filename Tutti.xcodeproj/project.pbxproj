@@ -106,7 +106,7 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					9B9D5A4BDF85F98661DB0BF7 = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = RFW398ARA9;
 						ProvisioningStyle = Manual;
 					};
 				};
@@ -214,17 +214,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Tutti Local";
+				CODE_SIGN_ENTITLEMENTS = Tutti/Tutti.entitlements;
+				CODE_SIGN_IDENTITY = "Developer ID Application: BaoLin Wu (RFW398ARA9)";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
-				ENABLE_HARDENED_RUNTIME = NO;
+				DEVELOPMENT_TEAM = RFW398ARA9;
+				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Tutti/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				OTHER_CODE_SIGN_FLAGS = "--timestamp --options=runtime";
 				PRODUCT_BUNDLE_IDENTIFIER = com.recents.tutti;
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.9;
@@ -235,17 +237,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Tutti Local";
+				CODE_SIGN_ENTITLEMENTS = Tutti/Tutti.entitlements;
+				CODE_SIGN_IDENTITY = "Developer ID Application: BaoLin Wu (RFW398ARA9)";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = "";
-				ENABLE_HARDENED_RUNTIME = NO;
+				DEVELOPMENT_TEAM = RFW398ARA9;
+				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Tutti/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				OTHER_CODE_SIGN_FLAGS = "--timestamp --options=runtime";
 				PRODUCT_BUNDLE_IDENTIFIER = com.recents.tutti;
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.9;

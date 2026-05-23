@@ -28,6 +28,8 @@ targets:
       SWIFT_VERSION: "5.9"
       MACOSX_DEPLOYMENT_TARGET: "13.0"
       CODE_SIGN_STYLE: Manual
-      CODE_SIGN_IDENTITY: "Tutti Local"
-      DEVELOPMENT_TEAM: ""
-      ENABLE_HARDENED_RUNTIME: NO
+      CODE_SIGN_IDENTITY: "Developer ID Application: BaoLin Wu (RFW398ARA9)"
+      DEVELOPMENT_TEAM: RFW398ARA9
+      ENABLE_HARDENED_RUNTIME: YES
+      CODE_SIGN_ENTITLEMENTS: Tutti/Tutti.entitlements
+      OTHER_CODE_SIGN_FLAGS: "--timestamp --options=runtime"

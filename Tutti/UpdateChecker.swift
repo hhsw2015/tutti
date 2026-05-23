@@ -1,8 +1,7 @@
 import Foundation
 import SwiftUI
 
-// TODO: replace with the real GitHub repo path before first release
-private let githubRepo = "OWNER/tutti"
+private let githubRepo = "BarryBarrywu/tutti"
 
 @MainActor
 final class UpdateChecker: ObservableObject {
