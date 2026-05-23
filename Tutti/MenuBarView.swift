@@ -574,33 +574,58 @@ private struct UpgradeBanner: View {
 
     var body: some View {
         GlassCapsule {
-            HStack(spacing: 10) {
-                Image(systemName: "sparkles")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(prefs.accentColor)
+            VStack(alignment: .leading, spacing: 10) {
+                // Row 1: icon + 2-line text (full width) + dismiss
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(prefs.accentColor)
+                        .padding(.top, 1)
 
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("3 台或更多设备需要 Tutti Pro")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(Color.glassTextHi)
-                    Text("一次买断 $4.99")
-                        .font(.system(size: 10))
-                        .foregroundStyle(Color.glassTextLo)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("3 台或更多设备需要 Tutti Pro")
+                            .font(.system(size: 12.5, weight: .semibold))
+                            .foregroundStyle(Color.glassTextHi)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Text("一次买断 $4.99")
+                            .font(.system(size: 10.5))
+                            .foregroundStyle(Color.glassTextLo)
+                    }
+
+                    Spacer(minLength: 4)
+
+                    Button(action: onDismiss) {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundStyle(Color.glassTextLo)
+                            .frame(width: 20, height: 20)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
                 }
 
-                Spacer(minLength: 4)
-
-                Button("升级") {
+                // Row 2: full-width Upgrade CTA
+                Button {
                     NSWorkspace.shared.open(purchaseURL)
-                }
-                .buttonStyle(AccentPillButton())
-
-                Button(action: onDismiss) {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundStyle(Color.glassTextLo)
-                        .frame(width: 20, height: 20)
-                        .contentShape(Rectangle())
+                } label: {
+                    Text("升级")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 7)
+                        .background(
+                            Capsule().fill(
+                                LinearGradient(
+                                    colors: [
+                                        prefs.accentColor.lighter(by: 0.20),
+                                        prefs.accentColor,
+                                    ],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            )
+                        )
+                        .overlay(Capsule().stroke(Color.white.opacity(0.35), lineWidth: 0.5))
                 }
                 .buttonStyle(.plain)
             }
