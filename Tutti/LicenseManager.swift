@@ -22,13 +22,13 @@ final class LicenseManager: ObservableObject {
         var errorDescription: String? {
             switch self {
             case .invalidKey:
-                return "license key 无效或已被吊销"
+                return String(localized: "license key 无效或已被吊销")
             case .activationLimitReached:
-                return "已达激活上限（2 台设备）。请在旧设备的 Tutti 设置里停用后再试。"
+                return String(localized: "已达激活上限（2 台设备）。请在旧设备的 Tutti 设置里停用后再试。")
             case .network(let msg):
-                return "网络错误：\(msg)"
+                return String(localized: "网络错误：\(msg)")
             case .noLicense:
-                return "尚未激活"
+                return String(localized: "尚未激活")
             }
         }
     }

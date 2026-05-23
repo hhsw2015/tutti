@@ -37,7 +37,7 @@ final class UpdateChecker: ObservableObject {
     func check() async {
         status = .checking
         guard let endpoint = URL(string: "https://api.github.com/repos/\(githubRepo)/releases/latest") else {
-            status = .error("无效的更新地址")
+            status = .error(String(localized: "无效的更新地址"))
             return
         }
         do {
@@ -45,14 +45,14 @@ final class UpdateChecker: ObservableObject {
             request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
             let (data, response) = try await URLSession.shared.data(for: request)
             guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
-                status = .error("无法连接到 GitHub")
+                status = .error(String(localized: "无法连接到 GitHub"))
                 return
             }
             guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
                   let tag = json["tag_name"] as? String,
                   let htmlString = json["html_url"] as? String,
                   let releaseURL = URL(string: htmlString) else {
-                status = .error("解析失败")
+                status = .error(String(localized: "解析失败"))
                 return
             }
             let latest = tag.hasPrefix("v") ? String(tag.dropFirst()) : tag
@@ -62,7 +62,7 @@ final class UpdateChecker: ObservableObject {
                 status = .upToDate
             }
         } catch {
-            status = .error("检查失败")
+            status = .error(String(localized: "检查失败"))
         }
     }
 }

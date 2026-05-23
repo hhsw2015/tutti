@@ -1,0 +1,851 @@
+{
+  "sourceLanguage" : "zh-Hans",
+  "version" : "1.0",
+  "strings" : {
+    "%lld / %lld 已选" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld ausgewählt" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld of %2$lld selected" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld seleccionados" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld sélectionnés" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld selezionati" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld 選択中" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld 선택됨" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld 已選" } }
+      }
+    },
+    "%lld 个输出中 · %lld 个静音" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld aktiv · %2$lld stumm" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld playing · %2$lld muted" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld activos · %2$lld silenciados" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld actifs · %2$lld coupés" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld in riproduzione · %2$lld muti" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld 台再生中 · %2$lld 台ミュート" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld대 출력 중 · %2$lld대 음소거" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld 個輸出中 · %2$lld 個靜音" } }
+      }
+    },
+    "Pro 已过期，请联网验证或重新激活" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Pro abgelaufen. Bitte online verifizieren oder neu aktivieren." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Pro expired. Connect to verify or reactivate." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Pro expirado. Conéctate para verificar o reactivar." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Pro expiré. Connectez-vous pour vérifier ou réactiver." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Pro scaduto. Connettiti per verificare o riattivare." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Pro が期限切れ。ネットに接続して検証または再認証してください。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Pro 만료됨. 네트워크에 연결하여 확인하거나 다시 활성화하세요." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "Pro 已過期，請連線驗證或重新啟用" } }
+      }
+    },
+    "Tutti Pro · 离线模式" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro · Offline" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro · Offline" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro · Sin conexión" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro · Hors ligne" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro · Offline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro · オフライン" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro · 오프라인" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro · 離線模式" } }
+      }
+    },
+    "Tutti Pro 已激活" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro aktiviert" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro activated" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro activado" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro activé" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro attivato" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro 認証済み" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro 활성화됨" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro 已啟用" } }
+      }
+    },
+    "Tutti 设置" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Tutti-Einstellungen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Settings" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Ajustes de Tutti" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réglages Tutti" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Impostazioni Tutti" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Tutti 設定" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Tutti 설정" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "Tutti 設定" } }
+      }
+    },
+    "3 台或更多设备需要 Tutti Pro" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ab 3 Geräten wird Tutti Pro benötigt" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "3+ devices needs Tutti Pro" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "3+ dispositivos requieren Tutti Pro" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "3 appareils ou plus nécessitent Tutti Pro" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "3+ dispositivi richiedono Tutti Pro" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "3 台以上の出力には Tutti Pro が必要" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "3대 이상 출력에는 Tutti Pro 필요" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "3 台或更多裝置需要 Tutti Pro" } }
+      }
+    },
+    "一次买断 $4.99" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Einmalig 4,99 $" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "One-time $4.99" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Pago único $4,99" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Achat unique 4,99 $" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Una tantum $4,99" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "買い切り $4.99" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "1회 결제 $4.99" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "一次買斷 $4.99" } }
+      }
+    },
+    "license key 无效或已被吊销" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ungültiger oder widerrufener Lizenzschlüssel" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Invalid or revoked license key" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Clave de licencia no válida o revocada" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Clé de licence invalide ou révoquée" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Chiave di licenza non valida o revocata" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ライセンスキーが無効または取り消されました" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "잘못되었거나 취소된 라이선스 키" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "授權碼無效或已被撤銷" } }
+      }
+    },
+    "已达激活上限（2 台设备）。请在旧设备的 Tutti 设置里停用后再试。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktivierungslimit erreicht (2 Macs). Bitte zuerst einen alten Mac in dessen Tutti-Einstellungen deaktivieren." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Activation limit reached (2 Macs). Please deactivate an old Mac in its Tutti settings first." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Límite de activación alcanzado (2 Macs). Desactiva primero un Mac antiguo en sus ajustes de Tutti." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Limite d'activation atteinte (2 Macs). Désactivez d'abord un ancien Mac dans ses réglages Tutti." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Limite di attivazioni raggiunto (2 Mac). Disattiva prima un vecchio Mac nelle sue impostazioni di Tutti." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "認証上限（2 台）に達しました。古い Mac の Tutti 設定で認証を解除してから再試行してください。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "활성화 한도(2대)에 도달했습니다. 이전 Mac의 Tutti 설정에서 비활성화한 후 다시 시도하세요." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "已達啟用上限（2 台裝置）。請在舊裝置的 Tutti 設定中停用後再試。" } }
+      }
+    },
+    "网络错误：%@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Netzwerkfehler: %@" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Network error: %@" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Error de red: %@" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Erreur réseau : %@" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Errore di rete: %@" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ネットワークエラー：%@" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "네트워크 오류: %@" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "網路錯誤：%@" } }
+      }
+    },
+    "尚未激活" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht aktiviert" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Not activated" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "No activado" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Non activé" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Non attivato" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "未認証" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "활성화되지 않음" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "尚未啟用" } }
+      }
+    },
+    "通用" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Allgemein" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "General" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "General" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Général" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Generale" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "一般" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "일반" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "一般" } }
+      }
+    },
+    "许可证" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Lizenz" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "License" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Licencia" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Licence" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Licenza" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ライセンス" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "라이선스" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "授權" } }
+      }
+    },
+    "关于" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Über" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "About" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Acerca de" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "À propos" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Informazioni" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "情報" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "정보" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "關於" } }
+      }
+    },
+    "主题" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Erscheinungsbild" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Theme" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Tema" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Thème" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Tema" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "テーマ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "테마" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "主題" } }
+      }
+    },
+    "权限" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Berechtigungen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Permissions" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Permisos" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autorisations" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Autorizzazioni" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アクセス権" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "권한" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "權限" } }
+      }
+    },
+    "启动" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Start" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Launch" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Inicio" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Démarrage" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Avvio" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "起動" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "시작" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "啟動" } }
+      }
+    },
+    "更新" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Updates" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Updates" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Actualizaciones" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Mises à jour" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Aggiornamenti" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アップデート" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "업데이트" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "更新" } }
+      }
+    },
+    "语言" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Sprache" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Language" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Idioma" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Langue" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Lingua" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "言語" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "언어" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "語言" } }
+      }
+    },
+    "自动" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Automatisch" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Auto" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Automático" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Automatique" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Automatico" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "自動" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "자동" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "自動" } }
+      }
+    },
+    "辅助功能已授权" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Bedienungshilfen aktiviert" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Accessibility granted" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Accesibilidad concedida" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Accessibilité accordée" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Accessibilità concessa" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アクセシビリティ許可済み" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "손쉬운 사용 허용됨" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "輔助使用已授權" } }
+      }
+    },
+    "辅助功能未授权" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Bedienungshilfen nicht aktiviert" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Accessibility not granted" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Accesibilidad no concedida" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Accessibilité refusée" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Accessibilità non concessa" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アクセシビリティ未許可" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "손쉬운 사용 허용 안 됨" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "輔助使用未授權" } }
+      }
+    },
+    "去授权" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Einstellungen öffnen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Open Settings" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Abrir Ajustes" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ouvrir les Réglages" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Apri Impostazioni" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "設定を開く" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "설정 열기" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "前往授權" } }
+      }
+    },
+    "开机自动启动" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Beim Anmelden öffnen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Launch at login" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Iniciar al iniciar sesión" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Lancer au démarrage" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Avvia all'accesso" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ログイン時に起動" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "로그인 시 자동 시작" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "開機時自動啟動" } }
+      }
+    },
+    "启动时自动检查更新" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Beim Start nach Updates suchen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Check for updates on launch" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Buscar actualizaciones al iniciar" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Rechercher les mises à jour au démarrage" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Cerca aggiornamenti all'avvio" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "起動時にアップデートを確認" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "시작 시 업데이트 확인" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "啟動時自動檢查更新" } }
+      }
+    },
+    "检查更新" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nach Updates suchen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Check for Updates" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Buscar actualizaciones" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Rechercher des mises à jour" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Cerca aggiornamenti" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アップデートを確認" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "업데이트 확인" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "檢查更新" } }
+      }
+    },
+    "检查中…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Suche läuft…" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Checking…" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Buscando…" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Recherche…" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Verifica…" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "確認中…" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "확인 중…" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "檢查中…" } }
+      }
+    },
+    "已是最新版本" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Auf dem neuesten Stand" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Up to date" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Al día" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "À jour" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Aggiornato" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "最新です" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "최신 버전입니다" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "已是最新版本" } }
+      }
+    },
+    "新版本 %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Neue Version %@" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Version %@ available" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Nueva versión %@" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Nouvelle version %@" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Nuova versione %@" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "新バージョン %@" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "새 버전 %@" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "新版本 %@" } }
+      }
+    },
+    "下载" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Laden" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Download" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Descargar" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Télécharger" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Scarica" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ダウンロード" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "다운로드" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "下載" } }
+      }
+    },
+    "无效的更新地址" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ungültige Update-URL" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Invalid update URL" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "URL de actualización no válida" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "URL de mise à jour invalide" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "URL di aggiornamento non valido" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "無効なアップデート URL" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "잘못된 업데이트 URL" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "無效的更新位址" } }
+      }
+    },
+    "无法连接到 GitHub" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "GitHub nicht erreichbar" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Could not reach GitHub" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "No se pudo conectar a GitHub" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Impossible de joindre GitHub" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Impossibile raggiungere GitHub" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "GitHub に接続できません" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "GitHub에 연결할 수 없음" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "無法連線到 GitHub" } }
+      }
+    },
+    "解析失败" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Analyse fehlgeschlagen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Failed to parse update" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Error al analizar" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Échec de l'analyse" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Analisi non riuscita" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "解析に失敗しました" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "구문 분석 실패" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "解析失敗" } }
+      }
+    },
+    "检查失败" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Suche fehlgeschlagen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Update check failed" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Error al buscar" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Échec de la vérification" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Verifica non riuscita" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "確認に失敗しました" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "확인 실패" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "檢查失敗" } }
+      }
+    },
+    "退出 Tutti" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Tutti beenden" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Quit Tutti" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Salir de Tutti" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Quitter Tutti" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Esci da Tutti" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Tutti を終了" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Tutti 종료" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "結束 Tutti" } }
+      }
+    },
+    "系统" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "System" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "System" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Sistema" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Système" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Sistema" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "システム" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "시스템" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "系統" } }
+      }
+    },
+    "浅色" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Hell" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Light" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Claro" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Clair" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Chiaro" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ライト" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "라이트" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "淺色" } }
+      }
+    },
+    "深色" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Dunkel" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Dark" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Oscuro" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Sombre" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Scuro" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ダーク" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "다크" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "深色" } }
+      }
+    },
+    "状态" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Status" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Status" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Estado" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "État" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Stato" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "状態" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "상태" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "狀態" } }
+      }
+    },
+    "免费版（最多 2 台设备）" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Kostenlos (bis zu 2 Geräte)" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Free (up to 2 devices)" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Gratis (hasta 2 dispositivos)" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Gratuit (jusqu'à 2 appareils)" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Gratuito (fino a 2 dispositivi)" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "無料版（最大 2 台）" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "무료 (최대 2대)" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "免費版（最多 2 台裝置）" } }
+      }
+    },
+    "还可离线使用 %lld 天" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Noch %lld Tage offline nutzbar" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "%lld days of offline access remaining" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "%lld días de uso sin conexión" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "%lld jours d'accès hors ligne" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "%lld giorni offline rimanenti" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "オフライン残り %lld 日" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "오프라인 사용 가능 %lld일" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "離線可使用 %lld 天" } }
+      }
+    },
+    "输入 License Key" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Lizenzschlüssel eingeben" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Enter License Key" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Introducir clave de licencia" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Saisir la clé de licence" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Inserisci chiave di licenza" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ライセンスキーを入力" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "라이선스 키 입력" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "輸入授權碼" } }
+      }
+    },
+    "激活" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktivieren" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Activate" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Activar" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Activer" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Attiva" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "認証" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "활성화" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "啟用" } }
+      }
+    },
+    "停用此设备" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Diesen Mac deaktivieren" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Deactivate this Mac" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Desactivar este Mac" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Désactiver ce Mac" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Disattiva questo Mac" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "この Mac の認証を解除" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "이 Mac 비활성화" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "停用此裝置" } }
+      }
+    },
+    "停用后此 license 可在其他设备上激活。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nach der Deaktivierung kann die Lizenz auf einem anderen Mac aktiviert werden." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "After deactivation, the license can be activated on another Mac." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Tras desactivar, la licencia podrá activarse en otro Mac." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Après désactivation, la licence peut être activée sur un autre Mac." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Dopo la disattivazione, la licenza può essere attivata su un altro Mac." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "解除後、このライセンスは別の Mac で認証できます。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "비활성화하면 이 라이선스를 다른 Mac에서 활성화할 수 있습니다." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "停用後此授權可在其他裝置上啟用。" } }
+      }
+    },
+    "购买 Tutti Pro · $4.99" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro kaufen · 4,99 $" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Buy Tutti Pro · $4.99" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Comprar Tutti Pro · $4,99" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Acheter Tutti Pro · 4,99 $" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Acquista Tutti Pro · $4,99" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro を購入 · $4.99" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro 구매 · $4.99" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "購買 Tutti Pro · $4.99" } }
+      }
+    },
+    "免费版可同时输出到 2 台设备。Pro 解锁同时输出 3 台或更多，单 key 最多激活 2 台 Mac。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die kostenlose Version gibt auf bis zu 2 Geräten gleichzeitig aus. Pro schaltet 3 oder mehr gleichzeitige Ausgaben frei; ein Schlüssel ist für bis zu 2 Macs gültig." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "The free version outputs to up to 2 devices simultaneously. Pro unlocks 3 or more simultaneous outputs; one key is valid on up to 2 Macs." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "La versión gratis emite a 2 dispositivos a la vez. Pro desbloquea 3 o más salidas simultáneas; cada clave activa hasta 2 Macs." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "La version gratuite diffuse vers 2 appareils. Pro débloque 3 sorties simultanées ou plus, et une clé fonctionne sur 2 Macs maximum." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "La versione gratuita riproduce su 2 dispositivi contemporaneamente. Pro sblocca 3 uscite simultanee o più; una chiave è valida su 2 Mac al massimo." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "無料版は最大 2 台まで同時出力できます。Pro は 3 台以上の同時出力を解放し、1 つのキーで最大 2 台の Mac を認証できます。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "무료 버전은 최대 2대까지 동시 출력합니다. Pro는 동시에 3대 이상 출력하며, 키 1개로 최대 2대의 Mac에서 활성화할 수 있습니다." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "免費版可同時輸出到 2 台裝置。Pro 解鎖同時輸出 3 台或更多，單組授權最多啟用 2 台 Mac。" } }
+      }
+    },
+    "激活成功" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktiviert" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Activated" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Activado" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Activé" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Attivato" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "認証完了" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "활성화 완료" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "啟用成功" } }
+      }
+    },
+    "已停用此设备" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Deaktiviert" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Deactivated" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Desactivado" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Désactivé" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Disattivato" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "認証を解除しました" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "비활성화되었습니다" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "已停用此裝置" } }
+      }
+    },
+    "待机" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Bereit" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Idle" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "En espera" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En veille" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "In attesa" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "待機中" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "대기" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "待機" } }
+      }
+    },
+    "已静音 · %lld 个设备" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Stumm · %lld Geräte" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Muted · %lld devices" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Silenciado · %lld dispositivos" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Coupé · %lld appareils" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Muto · %lld dispositivi" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ミュート中 · %lld 台" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "음소거 · %lld대" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "已靜音 · %lld 台" } }
+      }
+    },
+    "正在输出" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktiv" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Playing" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Reproduciendo" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diffusion" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "In riproduzione" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "再生中" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "출력 중" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "輸出中" } }
+      }
+    },
+    "正在输出 · %lld 个设备" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktiv · %lld Geräte" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Playing · %lld devices" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Reproduciendo · %lld dispositivos" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diffusion · %lld appareils" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "In riproduzione · %lld dispositivi" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "再生中 · %lld 台" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "출력 중 · %lld대" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "輸出中 · %lld 台" } }
+      }
+    },
+    "总音量" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Gesamtlautstärke" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Master Volume" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Volumen general" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Volume principal" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Volume principale" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "マスター音量" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "전체 볼륨" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "主音量" } }
+      }
+    },
+    "总音量 · 已静音" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Gesamtlautstärke · Stumm" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Master Volume · Muted" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Volumen general · Silenciado" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Volume principal · Coupé" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Volume principale · Muto" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "マスター音量 · ミュート" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "전체 볼륨 · 음소거" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "主音量 · 已靜音" } }
+      }
+    },
+    "输出设备" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ausgabegeräte" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Output Devices" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Dispositivos de salida" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Sorties audio" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Dispositivi di uscita" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "出力デバイス" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "출력 장치" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "輸出裝置" } }
+      }
+    },
+    "未发现音频输出设备" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine Audioausgabegeräte gefunden" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "No audio output devices found" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "No se encontraron dispositivos de salida" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucun appareil de sortie audio" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Nessun dispositivo di uscita audio" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "オーディオ出力デバイスが見つかりません" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "오디오 출력 장치를 찾을 수 없음" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "未發現音訊輸出裝置" } }
+      }
+    },
+    "设置" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Einstellungen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Settings" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Ajustes" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réglages" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Impostazioni" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "設定" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "설정" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "設定" } }
+      }
+    },
+    "静音此设备" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Gerät stummschalten" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Mute" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Silenciar" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Couper le son" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Silenzia" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "この機器をミュート" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "이 장치 음소거" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "靜音此裝置" } }
+      }
+    },
+    "取消静音" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ton einschalten" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Unmute" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Activar sonido" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réactiver le son" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Riattiva audio" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ミュート解除" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "음소거 해제" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "取消靜音" } }
+      }
+    },
+    "升级" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Upgrade" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Upgrade" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Mejorar" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Mettre à niveau" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Aggiorna" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アップグレード" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "업그레이드" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "升級" } }
+      }
+    },
+    "切换语言需要重启 Tutti" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Tutti zum Sprachwechsel neu starten" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Restart Tutti to change the language" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Reinicia Tutti para cambiar el idioma" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Redémarrer Tutti pour changer de langue" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Riavvia Tutti per cambiare lingua" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "言語の切り替えには Tutti の再起動が必要です" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "언어를 변경하려면 Tutti를 다시 시작해야 합니다" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "切換語言需要重新啟動 Tutti" } }
+      }
+    },
+    "立即重启" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Jetzt neu starten" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Restart Now" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Reiniciar ahora" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Redémarrer maintenant" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Riavvia ora" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "今すぐ再起動" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "지금 다시 시작" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "立即重新啟動" } }
+      }
+    },
+    "稍后" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Später" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Later" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Más tarde" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Plus tard" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Più tardi" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "後で" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "나중에" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "稍後" } }
+      }
+    }
+  }
+}

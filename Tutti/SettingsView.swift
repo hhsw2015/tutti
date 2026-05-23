@@ -22,6 +22,10 @@ struct TuttiSettingsView: View {
         }
         .environmentObject(prefs)
         .frame(width: 480, height: 500)
+        .alert("切换语言需要重启 Tutti", isPresented: $prefs.languageRestartPending) {
+            Button("立即重启") { prefs.relaunch() }
+            Button("稍后", role: .cancel) {}
+        }
     }
 }
 
@@ -173,12 +177,29 @@ private struct GeneralTab: View {
     var body: some View {
         Form {
             Section("主题") { ThemePicker() }
+            Section("语言") { LanguageRow() }
             Section("权限") { PermissionRow() }
             Section("启动") { AutoLaunchRow() }
             Section("更新") { UpdatesSection(updater: updater) }
         }
         .formStyle(.grouped)
         .scrollContentBackground(.hidden)
+    }
+}
+
+struct LanguageRow: View {
+    @EnvironmentObject var prefs: AppearancePrefs
+
+    var body: some View {
+        Picker(selection: $prefs.language) {
+            ForEach(SupportedLanguage.allCases) { lang in
+                Text(verbatim: lang.displayName).tag(lang)
+            }
+        } label: {
+            EmptyView()
+        }
+        .labelsHidden()
+        .pickerStyle(.menu)
     }
 }
 
@@ -298,7 +319,7 @@ struct ThemePicker: View {
 }
 
 private struct ThemeSegment: View {
-    let label: String
+    let label: LocalizedStringKey
     let symbol: String
     let selected: Bool
     let accent: Color

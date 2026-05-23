@@ -14,7 +14,7 @@ enum ThemeChoice: String, CaseIterable, Identifiable {
         }
     }
 
-    var label: String {
+    var label: LocalizedStringKey {
         switch self {
         case .system: return "系统"
         case .light:  return "浅色"
@@ -31,15 +31,66 @@ enum ThemeChoice: String, CaseIterable, Identifiable {
     }
 }
 
+/// User-facing language preference. "auto" follows the system; everything else
+/// pins Tutti to a specific locale by writing `AppleLanguages`. Switching
+/// requires a relaunch — SwiftUI / Foundation only re-resolves strings against
+/// `Bundle.main` at process startup.
+enum SupportedLanguage: String, CaseIterable, Identifiable {
+    case auto
+    case english            = "en"
+    case simplifiedChinese  = "zh-Hans"
+    case traditionalChinese = "zh-Hant"
+    case japanese           = "ja"
+    case korean             = "ko"
+    case french             = "fr"
+    case german             = "de"
+    case italian            = "it"
+    case spanish            = "es"
+
+    var id: String { rawValue }
+
+    /// Always rendered in the target language so users searching for their
+    /// language can find it without already understanding the current UI.
+    var displayName: String {
+        switch self {
+        case .auto:                return String(localized: "自动")
+        case .english:             return "English"
+        case .simplifiedChinese:   return "中文"
+        case .traditionalChinese:  return "繁體中文"
+        case .japanese:            return "日本語"
+        case .korean:              return "한국어"
+        case .french:              return "Français"
+        case .german:              return "Deutsch"
+        case .italian:             return "Italiano"
+        case .spanish:             return "Español"
+        }
+    }
+}
+
 @MainActor
 final class AppearancePrefs: ObservableObject {
     static let shared = AppearancePrefs()
 
     private static let themeKey = "themeChoice"
+    private static let languageKey = "tutti.language"
+    private static let appleLanguagesKey = "AppleLanguages"
 
     @Published var theme: ThemeChoice {
         didSet { UserDefaults.standard.set(theme.rawValue, forKey: Self.themeKey) }
     }
+
+    @Published var language: SupportedLanguage {
+        didSet {
+            guard oldValue != language else { return }
+            UserDefaults.standard.set(language.rawValue, forKey: Self.languageKey)
+            applyLanguageOverride(language)
+            languageRestartPending = true
+        }
+    }
+
+    /// Set by `language` didSet; SettingsView observes this to show the
+    /// "restart to apply" alert.
+    @Published var languageRestartPending = false
 
     /// macOS system accent. Republishes via the observer below when the user
     /// changes it in System Settings.
@@ -48,8 +99,11 @@ final class AppearancePrefs: ObservableObject {
     private var systemColorObserver: NSObjectProtocol?
 
     private init() {
-        let raw = UserDefaults.standard.string(forKey: Self.themeKey) ?? ""
-        self.theme = ThemeChoice(rawValue: raw) ?? .system
+        let rawTheme = UserDefaults.standard.string(forKey: Self.themeKey) ?? ""
+        self.theme = ThemeChoice(rawValue: rawTheme) ?? .system
+
+        let rawLang = UserDefaults.standard.string(forKey: Self.languageKey) ?? ""
+        self.language = SupportedLanguage(rawValue: rawLang) ?? .auto
 
         systemColorObserver = NotificationCenter.default.addObserver(
             forName: NSColor.systemColorsDidChangeNotification,
@@ -60,6 +114,38 @@ final class AppearancePrefs: ObservableObject {
                 self?.objectWillChange.send()
             }
         }
+    }
+
+    /// Apply saved language preference. Called once from app startup to make
+    /// sure `AppleLanguages` is set before SwiftUI / NSWindow titles render.
+    static func applySavedLanguageAtStartup() {
+        let raw = UserDefaults.standard.string(forKey: languageKey) ?? ""
+        let lang = SupportedLanguage(rawValue: raw) ?? .auto
+        applyLanguageOverride(lang)
+    }
+
+    private static func applyLanguageOverride(_ lang: SupportedLanguage) {
+        if lang == .auto {
+            UserDefaults.standard.removeObject(forKey: appleLanguagesKey)
+        } else {
+            UserDefaults.standard.set([lang.rawValue], forKey: appleLanguagesKey)
+        }
+    }
+
+    /// Instance wrapper around the static so `didSet` can call it.
+    private func applyLanguageOverride(_ lang: SupportedLanguage) {
+        Self.applyLanguageOverride(lang)
+    }
+
+    /// Quit + relaunch via `open -n`. Called when the user accepts the
+    /// restart prompt after switching language.
+    func relaunch() {
+        let bundlePath = Bundle.main.bundlePath
+        let task = Process()
+        task.launchPath = "/usr/bin/open"
+        task.arguments = ["-n", bundlePath]
+        try? task.run()
+        NSApp.terminate(nil)
     }
 }
 

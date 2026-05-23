@@ -69,7 +69,7 @@ private struct StatusCapsule: View {
     private var playing: Int { count - silent }
     private var isMuted: Bool { manager.isMuted }
 
-    private var statusText: String {
+    private var statusText: LocalizedStringKey {
         if count == 0 { return "待机" }
         if isMuted    { return "已静音 · \(count) 个设备" }
         if silent > 0 { return "\(playing) 个输出中 · \(silent) 个静音" }
@@ -140,10 +140,11 @@ private struct MasterCapsule: View {
 
     var body: some View {
         let muted = manager.isMuted
+        let titleKey: LocalizedStringKey = muted ? "总音量 · 已静音" : "总音量"
         GlassCapsule(tint: muted ? .muteRed : nil) {
             VStack(alignment: .leading, spacing: 9) {
                 HStack {
-                    Text(muted ? "总音量 · 已静音" : "总音量")
+                    Text(titleKey)
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(muted ? Color.muteRed : Color.glassTextHi)
                     Spacer()
@@ -332,7 +333,7 @@ struct AccentPillButton: ButtonStyle {
 // MARK: - Section head (chevron + label + trailing)
 
 private struct SectionHead<Trailing: View>: View {
-    let title: String
+    let title: LocalizedStringKey
     @Binding var folded: Bool
     @ViewBuilder var trailing: () -> Trailing
 
@@ -364,7 +365,7 @@ private struct SectionHead<Trailing: View>: View {
 }
 
 extension SectionHead where Trailing == TrailingLabel {
-    init(title: String, trailing: String, folded: Binding<Bool>) {
+    init(title: LocalizedStringKey, trailing: LocalizedStringKey, folded: Binding<Bool>) {
         self.init(title: title, folded: folded) {
             TrailingLabel(text: trailing)
         }
@@ -372,7 +373,7 @@ extension SectionHead where Trailing == TrailingLabel {
 }
 
 private struct TrailingLabel: View {
-    let text: String
+    let text: LocalizedStringKey
     var body: some View {
         Text(text)
             .font(.system(size: 11, weight: .medium))

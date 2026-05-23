@@ -39,7 +39,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         let host = NSHostingController(rootView: view)
         let win = NSWindow(contentViewController: host)
         win.styleMask = [.titled, .closable]
-        win.title = "Tutti 设置"
+        win.title = String(localized: "Tutti 设置")
         win.isReleasedWhenClosed = false
         win.delegate = self
         win.setContentSize(NSSize(width: 480, height: 500))

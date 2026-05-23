@@ -23,6 +23,18 @@ targets:
         CFBundleVersion: "1"
         LSUIElement: YES
         NSHumanReadableCopyright: ""
+        CFBundleDevelopmentRegion: zh-Hans
+        CFBundleAllowMixedLocalizations: YES
+        CFBundleLocalizations:
+          - zh-Hans
+          - zh-Hant
+          - en
+          - ja
+          - ko
+          - fr
+          - de
+          - it
+          - es
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.recents.tutti
       SWIFT_VERSION: "5.9"

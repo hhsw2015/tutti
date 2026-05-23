@@ -10,6 +10,7 @@
 		049A43CCF8FA870994CEC175 /* TuttiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8113BFFF98933926FEFF511 /* TuttiApp.swift */; };
 		0A3749A099EC0C7F85F35592 /* LicenseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE4141E484B20BEB8AF08A22 /* LicenseManager.swift */; };
 		1C507C89A97FBBF2A60844DB /* AudioDeviceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3386723232B8F37159A4FAC /* AudioDeviceManager.swift */; };
+		275A9F3F3AEF39C81DD5D3E1 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 5253B6DAB2642EE2A6051DC7 /* Localizable.xcstrings */; };
 		2AFB272468FD2CE85346B347 /* BluetoothBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = E33C0B6BD8AF332DE818A1A0 /* BluetoothBattery.swift */; };
 		2E5E911ADF4CCC90DF368BA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6ECFA174FD7B909281244674 /* Assets.xcassets */; };
 		3C859E0EBABE04384253AF6A /* VolumeKeyMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01E0A1B8444B840EC7520D3 /* VolumeKeyMonitor.swift */; };
@@ -26,6 +27,7 @@
 
 /* Begin PBXFileReference section */
 		3685C7D65C9EB34FAB266678 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		5253B6DAB2642EE2A6051DC7 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		5F8174A1619533BDEF90EC63 /* TuttiPulseIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TuttiPulseIcon.swift; sourceTree = "<group>"; };
 		67375A0E29E56D83E7C8D944 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
 		6ECFA174FD7B909281244674 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -53,6 +55,7 @@
 				C3386723232B8F37159A4FAC /* AudioDeviceManager.swift */,
 				E33C0B6BD8AF332DE818A1A0 /* BluetoothBattery.swift */,
 				EE4141E484B20BEB8AF08A22 /* LicenseManager.swift */,
+				5253B6DAB2642EE2A6051DC7 /* Localizable.xcstrings */,
 				67375A0E29E56D83E7C8D944 /* MenuBarView.swift */,
 				DCEE4624F35F7EDEB969BFBB /* SettingsView.swift */,
 				95C48560770FEFBA4E27A594 /* StatusItemController.swift */,
@@ -123,7 +126,14 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,
+				de,
 				en,
+				es,
+				fr,
+				it,
+				ja,
+				ko,
+				"zh-Hant",
 			);
 			mainGroup = A46816F907156223EA4BDE0B;
 			minimizedProjectReferenceProxies = 1;
@@ -143,6 +153,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2E5E911ADF4CCC90DF368BA3 /* Assets.xcassets in Resources */,
+				275A9F3F3AEF39C81DD5D3E1 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
