@@ -18,7 +18,9 @@ private let systemObject = AudioObjectID(kAudioObjectSystemObject)
 @MainActor
 final class AudioDeviceManager: ObservableObject {
     @Published private(set) var devices: [AudioDevice] = []
-    @Published private(set) var selectedIDs: Set<AudioDeviceID> = []
+    @Published private(set) var selectedIDs: Set<AudioDeviceID> = [] {
+        didSet { syncVolumeListeners(old: oldValue) }
+    }
     @Published private(set) var volumes: [AudioDeviceID: Float] = [:]
     @Published private(set) var batteryLevels: [AudioDeviceID: Int] = [:]
     @Published private(set) var isActive = false {
@@ -43,6 +45,14 @@ final class AudioDeviceManager: ObservableObject {
     private var licenseObserver: AnyCancellable?
     private var trialObserver: AnyCancellable?
     private var lastVolumeKeyUpgradePromptAt: Date?
+
+    /// Per-device CoreAudio volume listeners. We must keep the block
+    /// reference to deregister later, so a token bundles address+block.
+    private struct VolumeListener {
+        var address: AudioObjectPropertyAddress
+        let block: AudioObjectPropertyListenerBlock
+    }
+    private var volumeListeners: [AudioDeviceID: VolumeListener] = [:]
 
     init() {
         cleanupOrphans()
@@ -156,6 +166,7 @@ final class AudioDeviceManager: ObservableObject {
         destroyAggregate()
         batteryTask?.cancel()
         permissionTimer?.cancel()
+        for id in Array(volumeListeners.keys) { removeVolumeListener(for: id) }
     }
 
     // MARK: - Aggregate lifecycle
@@ -363,6 +374,55 @@ final class AudioDeviceManager: ObservableObject {
             addr.mElement = 2
             if AudioObjectHasProperty(id, &addr) {
                 AudioObjectSetPropertyData(id, &addr, 0, nil, UInt32(MemoryLayout<Float32>.size), &vol)
+            }
+        }
+    }
+
+    // MARK: - External volume sync
+    //
+    // CoreAudio fires this whenever a device's volume changes — from any
+    // source: our own writeVolume, the system volume slider in Control
+    // Center, hardware volume keys we passed through (single-device mode),
+    // AppleScript, etc. Pulling the latest value here keeps the per-device
+    // slider in sync with the world; without it, single-device mode's
+    // sliders go stale the moment the user touches anything outside Tutti.
+
+    private func syncVolumeListeners(old: Set<AudioDeviceID>) {
+        let now = selectedIDs
+        for id in now.subtracting(old) { addVolumeListener(for: id) }
+        for id in old.subtracting(now) { removeVolumeListener(for: id) }
+    }
+
+    private func addVolumeListener(for id: AudioDeviceID) {
+        guard volumeListeners[id] == nil,
+              let addr = settableVolumeAddress(for: id) else { return }
+        var a = addr
+        let block: AudioObjectPropertyListenerBlock = { [weak self] _, _ in
+            Task { @MainActor [weak self] in self?.externalVolumeDidChange(for: id) }
+        }
+        let status = AudioObjectAddPropertyListenerBlock(id, &a, nil, block)
+        guard status == noErr else { return }
+        volumeListeners[id] = VolumeListener(address: addr, block: block)
+    }
+
+    private func removeVolumeListener(for id: AudioDeviceID) {
+        guard var token = volumeListeners.removeValue(forKey: id) else { return }
+        // Removing a listener on a device that has since been invalidated
+        // (e.g. Bluetooth disconnect) returns a non-zero OSStatus; the
+        // listener tears down with the device, so dropping the token is
+        // enough. Ignore the return value.
+        _ = AudioObjectRemovePropertyListenerBlock(id, &token.address, nil, token.block)
+    }
+
+    private func externalVolumeDidChange(for id: AudioDeviceID) {
+        guard let newVol = readVolume(id) else { return }
+        if volumes[id] != newVol {
+            volumes[id] = newVol
+            // If an external slider drags this device past 0, clear any
+            // stale pre-mute hint so a follow-up un-mute uses a sensible
+            // default instead of restoring an unrelated past volume.
+            if newVol > 0 {
+                preMuteVolumes.removeValue(forKey: id)
             }
         }
     }
