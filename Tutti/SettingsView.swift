@@ -88,7 +88,7 @@ struct TuttiSettingsView: View {
             }
             Button("取消", role: .cancel) {}
         } message: {
-            Text("释放 1 台设备名额。停用后会回到免费版（2 个设备上限），可随时用同一密钥重新激活。")
+            Text("释放 1 台设备名额。停用后所有基础功能仍可使用，仅硬件音量键接管会被禁用，可随时用同一密钥重新激活。")
         }
     }
 }
@@ -209,9 +209,17 @@ private struct GeneralTab: View {
     @ObservedObject var updater: UpdateChecker
     @EnvironmentObject var prefs: AppearancePrefs
     @EnvironmentObject var audio: AudioDeviceManager
+    @StateObject private var license = LicenseManager.shared
+    @StateObject private var trial = TrialManager.shared
     @State private var autoLaunchEnabled: Bool = SMAppService.mainApp.status == .enabled
 
     var body: some View {
+        // Explicit reads so SwiftUI re-renders the gated row when license
+        // or trial state changes. hasProAccess is static, so without these
+        // SwiftUI has nothing to subscribe to.
+        let _ = license.status
+        let _ = trial.trialStartDate
+
         VStack(spacing: 10) {
             CardRow("语言",
                     subtitle: "切换后需重启 Tutti 才会全部生效。") {
@@ -234,13 +242,20 @@ private struct GeneralTab: View {
                 .tint(Color.designAccent)
             }
 
-            CardRow("辅助功能权限",
-                    subtitle: "授权后，键盘音量键能直接控制聚合输出。") {
-                if audio.hasAccessibilityPermission {
-                    StatusPill(label: "已授权", tone: .accent)
-                } else {
-                    Button("去授权") { openAccessibilitySettings() }
-                        .buttonStyle(GhostButtonStyle())
+            if LicenseManager.hasProAccess {
+                CardRow("辅助功能权限",
+                        subtitle: "授权后，键盘音量键能直接控制聚合输出。") {
+                    if audio.hasAccessibilityPermission {
+                        StatusPill(label: "已授权", tone: .accent)
+                    } else {
+                        Button("去授权") { openAccessibilitySettings() }
+                            .buttonStyle(GhostButtonStyle())
+                    }
+                }
+            } else {
+                CardRow("硬件音量键接管 · Pro",
+                        subtitle: "升级 Pro 后，键盘音量键能直接控制聚合输出，无需手动调节每台设备。") {
+                    ProUpgradeButton(purchaseURL: license.purchaseURL)
                 }
             }
 
@@ -421,7 +436,7 @@ private struct LicenseTab: View {
             Text("感谢您购买 Tutti")
                 .font(.system(size: 19, weight: .bold))
 
-            Text("解除 2 个设备上限。现在可以同时输出到任意数量的音箱、耳机和 AirPods。")
+            Text("Pro 已解锁。键盘音量键可直接控制聚合输出，无需再手动调节每台设备。")
                 .font(.system(size: 13))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -532,9 +547,9 @@ private struct LicenseTab: View {
                         .foregroundStyle(.secondary)
                 }
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("免费版 · 同时输出上限 2 个设备")
+                    Text("免费版 · 基础功能完整可用")
                         .font(.system(size: 14, weight: .semibold))
-                    Text("升级到 Tutti Pro，同时连接任意数量的音箱、耳机和 AirPods。")
+                    Text("升级 Tutti Pro 后，键盘音量键可直接控制聚合输出。一次买断 $7.99，含所有未来 Pro 功能升级。")
                         .font(.system(size: 12.5))
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)

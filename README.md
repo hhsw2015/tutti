@@ -64,14 +64,14 @@ This project is licensed under [PolyForm Noncommercial License 1.0.0](https://po
 
 Anyone can download, compile, and use Tutti for **personal, non-commercial** purposes free of charge.
 
-The free tier includes nearly all the features. The only limit: **up to 2 simultaneous output devices**. For everyday "speaker + headphones" or two-people-sharing-headphones scenarios, the free tier is fully enough.
+The free tier is fully functional with no device-count cap — connect as many speakers, headphones and AirPods as your Mac supports. Multi-device output, per-device sliders, mute-on-tap, theme switching, Bluetooth battery readout, auto-launch and update checks are all included.
 
-### Tutti Pro
+### Tutti Pro — $7.99 one-time
 
-If you need to chain **3 or more audio devices** at once, or want to use Tutti in a commercial setting (commercial recording studios, paid streaming, corporate offices, etc.), you'll need a Pro license.
+Pro unlocks a single power-user convenience: **hardware volume key takeover**. Your Mac's keyboard volume keys (and the volume keys on supported keyboards) drive the aggregate output directly — no more dragging sliders to balance multiple devices.
 
-A Pro license removes the device-count limit and directly supports continued development.
+Every new Tutti install gets a **7-day Pro trial** on first launch, no license key required. After it ends, all free-tier features keep working unchanged.
 
-[Get a Tutti Pro license](https://tutti.recents.com/buy) — one-time purchase, lifetime activation, supports up to 2 Macs per license.
+[Get a Tutti Pro license](https://tutti.recents.com/buy) — $7.99 one-time, lifetime activation, up to 2 Macs per license. **All future Pro features are included** at no extra cost.
 
 > **A note for developers**: You're welcome to clone this repo and build it yourself. Per the PolyForm license, however, you may not use this code or any modified version for commercial gain (e.g. shipping it on an app store, or bundling it into a paid service).

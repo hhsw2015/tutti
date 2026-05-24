@@ -22,11 +22,13 @@ final class AudioDeviceManager: ObservableObject {
     @Published private(set) var volumes: [AudioDeviceID: Float] = [:]
     @Published private(set) var batteryLevels: [AudioDeviceID: Int] = [:]
     @Published private(set) var isActive = false {
-        didSet { volumeKeyMonitor?.interceptEnabled = isActive }
+        didSet { refreshProFeatureStates() }
     }
     @Published private(set) var hasAccessibilityPermission = false
-    /// Bumped whenever a free-tier user tries to select a 3rd device. UI observes this
-    /// to open the upgrade prompt — a new UUID each time so repeated attempts still fire.
+    /// Bumped whenever a free-tier (no-Pro, no-trial) user hits a Pro-only
+    /// feature path — currently the hardware volume key after trial expiry.
+    /// UI observes this to open the upgrade banner; new UUID each time so
+    /// repeated attempts still fire.
     @Published var lastUpgradeAttemptID: UUID?
 
     private var aggregateID: AudioDeviceID?
@@ -39,6 +41,8 @@ final class AudioDeviceManager: ObservableObject {
     private var batteryTask: Task<Void, Never>?
     private var popoverIsOpen = false
     private var licenseObserver: AnyCancellable?
+    private var trialObserver: AnyCancellable?
+    private var lastVolumeKeyUpgradePromptAt: Date?
 
     init() {
         cleanupOrphans()
@@ -48,38 +52,31 @@ final class AudioDeviceManager: ObservableObject {
         startPermissionPolling()
         startBatteryPolling()
         startLicenseObserver()
+        startTrialObserver()
     }
 
-    /// Watch the license status; if Pro expires while a 3+ device aggregate
-    /// is running, demote the selection to the free-tier ceiling so the user
-    /// can't keep using Pro features indefinitely without re-toggling.
     private func startLicenseObserver() {
-        enforceFreeTierLimit()
         licenseObserver = LicenseManager.shared.$status
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.enforceFreeTierLimit()
+                self?.refreshProFeatureStates()
             }
     }
 
-    private func enforceFreeTierLimit() {
-        guard !LicenseManager.shared.isPro, selectedIDs.count > 2 else { return }
-        // Keep the first two in stable AudioDeviceID order; the user can
-        // re-pick which two they want from the popover.
-        let keep = Set(selectedIDs.sorted().prefix(2))
-        selectedIDs = keep
-        updateAggregate()
+    private func startTrialObserver() {
+        trialObserver = TrialManager.shared.$trialStartDate
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.refreshProFeatureStates()
+            }
+    }
+
+    private func refreshProFeatureStates() {
+        volumeKeyMonitor?.interceptEnabled = isActive && LicenseManager.hasProAccess
     }
 
     func toggle(_ device: AudioDevice) {
         let alreadySelected = selectedIDs.contains(device.id)
-        // Free tier: max 2 simultaneous devices. 3rd+ requires Pro.
-        if !alreadySelected,
-           selectedIDs.count >= 2,
-           !LicenseManager.shared.isPro {
-            lastUpgradeAttemptID = UUID()
-            return
-        }
 
         if alreadySelected {
             selectedIDs.remove(device.id)
@@ -499,12 +496,37 @@ final class AudioDeviceManager: ObservableObject {
     }
 
     private func startVolumeKeyMonitoring() {
-        volumeKeyMonitor = VolumeKeyMonitor { [weak self] action in
-            Task { @MainActor [weak self] in
-                self?.handleVolumeKey(action)
+        volumeKeyMonitor = VolumeKeyMonitor(
+            onKey: { [weak self] action in
+                Task { @MainActor [weak self] in
+                    self?.handleVolumeKey(action)
+                }
+            },
+            onUnauthorized: { [weak self] in
+                Task { @MainActor [weak self] in
+                    self?.triggerVolumeKeyUpgradePrompt()
+                }
             }
+        )
+        // No prompt at startup — the system permission dialog only appears
+        // when the user explicitly clicks "去授权" in Settings (after they
+        // have or want Pro). Free-tier users never see an unsolicited
+        // accessibility prompt for a feature they can't use.
+        volumeKeyMonitor?.start(promptForPermission: false)
+    }
+
+    /// Called when a free / expired-trial user presses a hardware volume
+    /// key. Throttled so a 5-second volume drag doesn't fire the banner
+    /// dozens of times.
+    private func triggerVolumeKeyUpgradePrompt() {
+        guard !LicenseManager.hasProAccess else { return }
+        let now = Date()
+        if let last = lastVolumeKeyUpgradePromptAt,
+           now.timeIntervalSince(last) < 30 {
+            return
         }
-        volumeKeyMonitor?.start(promptForPermission: true)
+        lastVolumeKeyUpgradePromptAt = now
+        lastUpgradeAttemptID = UUID()
     }
 
     private func handleVolumeKey(_ action: VolumeKeyAction) {

@@ -349,3 +349,30 @@ final class LicenseManager: ObservableObject {
         SecItemDelete(query as CFDictionary)
     }
 }
+
+// MARK: - Pro Access Gate
+
+extension LicenseManager {
+    /// Unified Pro check: paid license active (incl. offline grace) OR
+    /// first-launch trial still running. All Pro-only feature paths must
+    /// route through this, not `isPro`, so trial users get full access.
+    static var hasProAccess: Bool {
+        shared.isPro || TrialManager.shared.isInTrial
+    }
+}
+
+#if DEBUG
+enum LicenseManagerTestHook {
+    @MainActor
+    static func setStatus(_ status: LicenseManager.Status) {
+        LicenseManager.shared.statusForTesting = status
+    }
+}
+
+extension LicenseManager {
+    fileprivate var statusForTesting: Status {
+        get { status }
+        set { status = newValue }
+    }
+}
+#endif

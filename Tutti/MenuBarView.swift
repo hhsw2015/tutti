@@ -13,18 +13,30 @@ struct MenuBarView: View {
     @EnvironmentObject var manager: AudioDeviceManager
     @StateObject private var prefs = AppearancePrefs.shared
     @StateObject private var license = LicenseManager.shared
+    @StateObject private var trial = TrialManager.shared
     @State private var devicesFolded = false
-    @State private var showUpgradeBanner = false
+    @State private var showUpgradePulse = false
+    @State private var welcomeAcknowledged = UserDefaults.standard.bool(forKey: "tutti.welcome.acknowledged")
+    @State private var countdownDismissedDate: String = UserDefaults.standard.string(forKey: "tutti.countdown.dismissedDate") ?? ""
     @Environment(\.tuttiPopover) private var popoverHost
 
     private var showMaster: Bool { manager.selectedIDs.count >= 2 }
 
     var body: some View {
+        // Explicit reads keep SwiftUI subscribed to license + trial; the
+        // gating logic itself goes through static hasProAccess which won't
+        // republish on its own.
+        let _ = license.status
+        let _ = trial.trialStartDate
+
         VStack(spacing: capsuleGap) {
-            if showUpgradeBanner {
-                UpgradeBanner(purchaseURL: license.purchaseURL) {
-                    withAnimation { showUpgradeBanner = false }
-                }
+            if let variant = bannerVariant {
+                UpgradeBanner(
+                    variant: variant,
+                    purchaseURL: license.purchaseURL,
+                    onDismiss: dismissable(variant) ? { dismissBanner(variant) } : nil,
+                    onCTA: { handleCTA(variant) }
+                )
             }
 
             StatusCapsule()
@@ -36,7 +48,9 @@ struct MenuBarView: View {
             DevicesCapsule(folded: $devicesFolded)
         }
         .onChange(of: manager.lastUpgradeAttemptID) { _ in
-            withAnimation(.easeOut(duration: 0.18)) { showUpgradeBanner = true }
+            // Re-show the volume-key upgrade banner each time the user
+            // hits the gate, even if they previously dismissed it.
+            withAnimation(.easeOut(duration: 0.18)) { showUpgradePulse = true }
         }
         .padding(.horizontal, 12)
         .padding(.top, 12)
@@ -54,6 +68,70 @@ struct MenuBarView: View {
         .background(TransparentWindow(theme: prefs.theme))
         .environmentObject(prefs)
         .preferredColorScheme(prefs.theme.colorScheme)
+    }
+
+    // MARK: - Banner state machine
+
+    private var bannerVariant: BannerVariant? {
+        // Priority: trialExpired > volume-key upgrade pulse > countdown > welcome
+        if trial.hasUsedTrial && !trial.isInTrial && !license.isPro {
+            return .trialExpired
+        }
+        if showUpgradePulse && !LicenseManager.hasProAccess {
+            return .upgrade
+        }
+        if trial.isInTrial && trial.daysRemaining <= 3
+            && countdownDismissedDate != todayKey() {
+            return .trialCountdown(daysRemaining: trial.daysRemaining)
+        }
+        if trial.isInTrial && !welcomeAcknowledged {
+            return .welcome(trialDays: 7)
+        }
+        return nil
+    }
+
+    private func dismissable(_ variant: BannerVariant) -> Bool {
+        switch variant {
+        case .trialExpired: return false
+        case .welcome:      return false  // welcome closes via CTA
+        case .upgrade, .trialCountdown: return true
+        }
+    }
+
+    private func dismissBanner(_ variant: BannerVariant) {
+        switch variant {
+        case .welcome:
+            UserDefaults.standard.set(true, forKey: "tutti.welcome.acknowledged")
+            welcomeAcknowledged = true
+        case .trialCountdown:
+            let key = todayKey()
+            UserDefaults.standard.set(key, forKey: "tutti.countdown.dismissedDate")
+            countdownDismissedDate = key
+        case .upgrade:
+            withAnimation { showUpgradePulse = false }
+        case .trialExpired:
+            break
+        }
+    }
+
+    private func handleCTA(_ variant: BannerVariant) {
+        switch variant {
+        case .welcome:
+            // "知道了" — acknowledge and dismiss, don't open the purchase URL.
+            UserDefaults.standard.set(true, forKey: "tutti.welcome.acknowledged")
+            welcomeAcknowledged = true
+        case .upgrade, .trialCountdown, .trialExpired:
+            NSWorkspace.shared.open(license.purchaseURL)
+            if case .upgrade = variant {
+                withAnimation { showUpgradePulse = false }
+            }
+        }
+    }
+
+    private func todayKey() -> String {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        return f.string(from: Date())
     }
 }
 
@@ -567,65 +645,112 @@ private struct BatteryPill: View {
 
 // MARK: - Upgrade banner
 
+enum BannerVariant: Equatable {
+    case welcome(trialDays: Int)
+    case trialCountdown(daysRemaining: Int)
+    case trialExpired
+    case upgrade  // generic Pro upsell — fired by volume-key gate
+}
+
 private struct UpgradeBanner: View {
+    let variant: BannerVariant
     let purchaseURL: URL
-    let onDismiss: () -> Void
+    let onDismiss: (() -> Void)?
+    let onCTA: () -> Void
     @EnvironmentObject var prefs: AppearancePrefs
 
+    private var iconName: String {
+        switch variant {
+        case .welcome:        return "party.popper.fill"
+        case .trialCountdown: return "sparkles"
+        case .trialExpired:   return "exclamationmark.triangle.fill"
+        case .upgrade:        return "sparkles"
+        }
+    }
+
+    private var iconColor: Color {
+        if case .trialExpired = variant { return .muteRed }
+        return prefs.accentColor
+    }
+
+    private var title: LocalizedStringKey {
+        switch variant {
+        case .welcome:                       return "欢迎使用 Tutti · Pro 试用已开启"
+        case .trialCountdown(let days):      return "Pro 试用还剩 \(days) 天"
+        case .trialExpired:                  return "Pro 试用已结束 · 音量键功能已停用"
+        case .upgrade:                       return "硬件音量键控制需要 Tutti Pro"
+        }
+    }
+
+    private var subtitle: LocalizedStringKey {
+        switch variant {
+        case .welcome(let days):  return "试用期 \(days) 天，所有功能解锁。结束后基础功能仍可正常使用。"
+        case .trialCountdown:     return "一次买断 $7.99 解锁永久使用"
+        case .trialExpired:       return "一次买断 $7.99，绑定 2 台 Mac"
+        case .upgrade:            return "一次买断 $7.99，绑定 2 台 Mac"
+        }
+    }
+
+    private var ctaLabel: LocalizedStringKey {
+        switch variant {
+        case .welcome:        return "知道了"
+        case .trialExpired:   return "立即购买"
+        default:              return "升级"
+        }
+    }
+
+    private var ctaIsGhost: Bool {
+        if case .welcome = variant { return true }
+        return false
+    }
+
+    private var capsuleTint: Color? {
+        if case .trialExpired = variant { return .muteRed }
+        return nil
+    }
+
     var body: some View {
-        GlassCapsule {
+        GlassCapsule(tint: capsuleTint) {
             VStack(alignment: .leading, spacing: 10) {
-                // Row 1: icon + 2-line text (full width) + dismiss
                 HStack(alignment: .top, spacing: 10) {
-                    Image(systemName: "sparkles")
+                    Image(systemName: iconName)
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(prefs.accentColor)
+                        .foregroundStyle(iconColor)
                         .padding(.top, 1)
 
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("3 台或更多设备需要 Tutti Pro")
+                        Text(title)
                             .font(.system(size: 12.5, weight: .semibold))
                             .foregroundStyle(Color.glassTextHi)
                             .fixedSize(horizontal: false, vertical: true)
-                        Text("一次买断 $4.99")
-                            .font(.system(size: 10.5))
-                            .foregroundStyle(Color.glassTextLo)
+                        Text(subtitle)
+                            .font(.system(size: 11))
+                            .foregroundStyle(Color.glassTextMid)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
 
                     Spacer(minLength: 4)
 
-                    Button(action: onDismiss) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundStyle(Color.glassTextLo)
-                            .frame(width: 20, height: 20)
-                            .contentShape(Rectangle())
+                    if let onDismiss {
+                        Button(action: onDismiss) {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 10, weight: .semibold))
+                                .foregroundStyle(Color.glassTextLo)
+                                .frame(width: 20, height: 20)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
 
-                // Row 2: full-width Upgrade CTA
-                Button {
-                    NSWorkspace.shared.open(purchaseURL)
-                } label: {
-                    Text("升级")
+                Button(action: onCTA) {
+                    Text(ctaLabel)
                         .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(ctaIsGhost ? prefs.accentColor : .white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 7)
-                        .background(
-                            Capsule().fill(
-                                LinearGradient(
-                                    colors: [
-                                        prefs.accentColor.lighter(by: 0.20),
-                                        prefs.accentColor,
-                                    ],
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                )
-                            )
-                        )
-                        .overlay(Capsule().stroke(Color.white.opacity(0.35), lineWidth: 0.5))
+                        .background(ctaBackground)
+                        .overlay(ctaBorder)
                 }
                 .buttonStyle(.plain)
             }
@@ -633,5 +758,32 @@ private struct UpgradeBanner: View {
             .padding(.vertical, 10)
         }
         .transition(.move(edge: .top).combined(with: .opacity))
+    }
+
+    @ViewBuilder
+    private var ctaBackground: some View {
+        if ctaIsGhost {
+            Capsule().fill(prefs.accentColor.opacity(0.10))
+        } else {
+            Capsule().fill(
+                LinearGradient(
+                    colors: [
+                        prefs.accentColor.lighter(by: 0.20),
+                        prefs.accentColor,
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
+        }
+    }
+
+    @ViewBuilder
+    private var ctaBorder: some View {
+        if ctaIsGhost {
+            Capsule().stroke(prefs.accentColor.opacity(0.45), lineWidth: 0.5)
+        } else {
+            Capsule().stroke(Color.white.opacity(0.35), lineWidth: 0.5)
+        }
     }
 }

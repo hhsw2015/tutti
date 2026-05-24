@@ -9,6 +9,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private var settingsWindow: NSWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // 7-day Pro trial. Idempotent — only sets the start date the first
+        // time, so re-launches don't reset it. Must run before any UI reads
+        // LicenseManager.hasProAccess.
+        TrialManager.shared.startTrialIfFirstLaunch()
+
         let rootView = MenuBarView()
             .environmentObject(manager)
             .environment(\.openTuttiSettings, OpenTuttiSettingsAction { [weak self] in

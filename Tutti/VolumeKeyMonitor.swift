@@ -26,9 +26,12 @@ final class VolumeKeyMonitor {
     var isRunning: Bool { eventTap != nil }
 
     private let onKey: (VolumeKeyAction) -> Void
+    private let onUnauthorized: (() -> Void)?
 
-    init(onKey: @escaping (VolumeKeyAction) -> Void) {
+    init(onKey: @escaping (VolumeKeyAction) -> Void,
+         onUnauthorized: (() -> Void)? = nil) {
         self.onKey = onKey
+        self.onUnauthorized = onUnauthorized
     }
 
     @discardableResult
@@ -84,7 +87,6 @@ final class VolumeKeyMonitor {
             if let tap = eventTap { CGEvent.tapEnable(tap: tap, enable: true) }
             return Unmanaged.passUnretained(event)
         }
-        guard interceptEnabled else { return Unmanaged.passUnretained(event) }
         guard let nsEvent = NSEvent(cgEvent: event), nsEvent.subtype.rawValue == 8 else {
             return Unmanaged.passUnretained(event)
         }
@@ -102,6 +104,14 @@ final class VolumeKeyMonitor {
         case NX_KEYTYPE_SOUND_DOWN: action = .adjust(delta: -step)
         case NX_KEYTYPE_MUTE:       action = .mute
         default: return Unmanaged.passUnretained(event)
+        }
+
+        // Free / expired-trial users get the upgrade prompt instead of the
+        // intercept. We pass the event through so macOS still shows its
+        // normal volume HUD — they just don't get the aggregate routing.
+        guard interceptEnabled else {
+            onUnauthorized?()
+            return Unmanaged.passUnretained(event)
         }
 
         onKey(action)

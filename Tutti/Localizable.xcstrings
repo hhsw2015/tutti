@@ -80,32 +80,6 @@
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "Tutti 設定" } }
       }
     },
-    "3 台或更多设备需要 Tutti Pro" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ab 3 Geräten wird Tutti Pro benötigt" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "3+ devices needs Tutti Pro" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "3+ dispositivos requieren Tutti Pro" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "3 appareils ou plus nécessitent Tutti Pro" } },
-        "it" : { "stringUnit" : { "state" : "translated", "value" : "3+ dispositivi richiedono Tutti Pro" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "3 台以上の出力には Tutti Pro が必要" } },
-        "ko" : { "stringUnit" : { "state" : "translated", "value" : "3대 이상 출력에는 Tutti Pro 필요" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "3 台或更多裝置需要 Tutti Pro" } }
-      }
-    },
-    "一次买断 $4.99" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Einmalig 4,99 $" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "One-time $4.99" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Pago único $4,99" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Achat unique 4,99 $" } },
-        "it" : { "stringUnit" : { "state" : "translated", "value" : "Una tantum $4,99" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "買い切り $4.99" } },
-        "ko" : { "stringUnit" : { "state" : "translated", "value" : "1회 결제 $4.99" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "一次買斷 $4.99" } }
-      }
-    },
     "license key 无效或已被吊销" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -650,32 +624,6 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "解除後、このライセンスは別の Mac で認証できます。" } },
         "ko" : { "stringUnit" : { "state" : "translated", "value" : "비활성화하면 이 라이선스를 다른 Mac에서 활성화할 수 있습니다." } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "停用後此授權可在其他裝置上啟用。" } }
-      }
-    },
-    "购买 Tutti Pro · $4.99" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro kaufen · 4,99 $" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Buy Tutti Pro · $4.99" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Comprar Tutti Pro · $4,99" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Acheter Tutti Pro · 4,99 $" } },
-        "it" : { "stringUnit" : { "state" : "translated", "value" : "Acquista Tutti Pro · $4,99" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro を購入 · $4.99" } },
-        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Tutti Pro 구매 · $4.99" } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "購買 Tutti Pro · $4.99" } }
-      }
-    },
-    "免费版可同时输出到 2 台设备。Pro 解锁同时输出 3 台或更多，单 key 最多激活 2 台 Mac。" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die kostenlose Version gibt auf bis zu 2 Geräten gleichzeitig aus. Pro schaltet 3 oder mehr gleichzeitige Ausgaben frei; ein Schlüssel ist für bis zu 2 Macs gültig." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "The free version outputs to up to 2 devices simultaneously. Pro unlocks 3 or more simultaneous outputs; one key is valid on up to 2 Macs." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "La versión gratis emite a 2 dispositivos a la vez. Pro desbloquea 3 o más salidas simultáneas; cada clave activa hasta 2 Macs." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "La version gratuite diffuse vers 2 appareils. Pro débloque 3 sorties simultanées ou plus, et une clé fonctionne sur 2 Macs maximum." } },
-        "it" : { "stringUnit" : { "state" : "translated", "value" : "La versione gratuita riproduce su 2 dispositivi contemporaneamente. Pro sblocca 3 uscite simultanee o più; una chiave è valida su 2 Mac al massimo." } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "無料版は最大 2 台まで同時出力できます。Pro は 3 台以上の同時出力を解放し、1 つのキーで最大 2 台の Mac を認証できます。" } },
-        "ko" : { "stringUnit" : { "state" : "translated", "value" : "무료 버전은 최대 2대까지 동시 출력합니다. Pro는 동시에 3대 이상 출력하며, 키 1개로 최대 2대의 Mac에서 활성화할 수 있습니다." } },
-        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "免費版可同時輸出到 2 台裝置。Pro 解鎖同時輸出 3 台或更多，單組授權最多啟用 2 台 Mac。" } }
       }
     },
     "激活成功" : {
