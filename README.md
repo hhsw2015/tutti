@@ -1,10 +1,14 @@
-# Tutti
+<p align="center">
+  <img src="docs/screenshots/icon.png" alt="Tutti app icon" width="128" height="128">
+</p>
 
-> One sound, every speaker.
+<h1 align="center">Tutti</h1>
 
-A macOS menu bar utility that plays the same audio through any number of output devices at once.
+<p align="center"><em>One sound, every speaker.</em></p>
 
-[中文版 README](README.zh.md)
+<p align="center">A macOS menu bar utility that plays the same audio through any number of output devices at once.</p>
+
+<p align="center"><a href="README.zh.md">中文版 README</a></p>
 
 ## Features
 

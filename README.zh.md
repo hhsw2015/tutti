@@ -1,8 +1,12 @@
-# Tutti
+<p align="center">
+  <img src="docs/screenshots/icon.png" alt="Tutti app icon" width="128" height="128">
+</p>
 
-> One sound, every speaker.
+<h1 align="center">Tutti</h1>
 
-macOS 菜单栏小工具：让任意几个输出设备同时播放同一份声音。
+<p align="center"><em>One sound, every speaker.</em></p>
+
+<p align="center">macOS 菜单栏小工具：让任意几个输出设备同时播放同一份声音。</p>
 
 ## 功能
 
