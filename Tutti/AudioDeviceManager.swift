@@ -597,6 +597,8 @@ final class AudioDeviceManager: ObservableObject {
         case .mute:
             toggleMasterMute()
         }
+        let names = devices.filter { selectedIDs.contains($0.id) }.map { $0.name }
+        VolumeOSDController.shared.show(volume: masterVolume, isMuted: isMuted, deviceNames: names)
     }
 
     private func adjustAllVolumes(by delta: Float) {
