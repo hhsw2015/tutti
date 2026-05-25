@@ -24,6 +24,7 @@ final class VolumeOSDController {
             buildPanel(contentView: hosting)
         }
 
+        repositionPanel()
         panel?.orderFrontRegardless()
         scheduleDismiss()
     }
@@ -51,18 +52,29 @@ final class VolumeOSDController {
         p.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle]
         p.isMovable = false
         p.contentView = contentView
-
-        // Panel is larger than the visible OSD so the SwiftUI .shadow() has room
-        // to extend beyond the rounded rectangle instead of being clipped into
-        // visible square edges at the corners.
-        let size = CGSize(width: 420, height: 160)
-        if let screen = NSScreen.main {
-            let sf = screen.frame
-            let origin = CGPoint(x: sf.midX - size.width / 2, y: sf.minY + 100)
-            p.setFrame(CGRect(origin: origin, size: size), display: false)
-        }
-
         panel = p
+    }
+
+    // Panel is larger than the visible OSD so the SwiftUI .shadow() has room
+    // to extend beyond the rounded rectangle instead of being clipped at the
+    // corners. Recomputed every show() so the OSD follows display changes
+    // (monitor hot-plug, primary-screen swap, user moving across screens).
+    private func repositionPanel() {
+        guard let p = panel, let screen = preferredScreen() else { return }
+        let size = CGSize(width: 420, height: 160)
+        let sf = screen.frame
+        let origin = CGPoint(x: sf.midX - size.width / 2, y: sf.minY + 100)
+        p.setFrame(CGRect(origin: origin, size: size), display: false)
+    }
+
+    /// Screen the user is most likely looking at: the one under the cursor,
+    /// falling back to the screen with the key window, then the first screen.
+    private func preferredScreen() -> NSScreen? {
+        let mouse = NSEvent.mouseLocation
+        if let hit = NSScreen.screens.first(where: { $0.frame.contains(mouse) }) {
+            return hit
+        }
+        return NSScreen.main ?? NSScreen.screens.first
     }
 
     private func scheduleDismiss() {
