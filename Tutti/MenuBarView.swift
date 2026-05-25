@@ -18,6 +18,7 @@ struct MenuBarView: View {
     @State private var showUpgradePulse = false
     @State private var welcomeAcknowledged = UserDefaults.standard.bool(forKey: "tutti.welcome.acknowledged")
     @State private var countdownDismissedDate: String = UserDefaults.standard.string(forKey: "tutti.countdown.dismissedDate") ?? ""
+    @State private var trialExpiredDismissedSession: String = UserDefaults.standard.string(forKey: "tutti.trialExpired.dismissedSession") ?? ""
     @Environment(\.tuttiPopover) private var popoverHost
 
     private var showMaster: Bool { manager.selectedIDs.count >= 2 }
@@ -52,6 +53,15 @@ struct MenuBarView: View {
             // hits the gate, even if they previously dismissed it.
             withAnimation(.easeOut(duration: 0.18)) { showUpgradePulse = true }
         }
+        .onChange(of: license.isPro) { isPro in
+            // Activate-then-deactivate within the same session must resurface
+            // the trialExpired banner — otherwise a prior session dismissal
+            // silences the only signal that paid access just went away.
+            if !isPro {
+                UserDefaults.standard.removeObject(forKey: "tutti.trialExpired.dismissedSession")
+                trialExpiredDismissedSession = ""
+            }
+        }
         .padding(.horizontal, 12)
         .padding(.top, 12)
         .padding(.bottom, 14)
@@ -74,7 +84,8 @@ struct MenuBarView: View {
 
     private var bannerVariant: BannerVariant? {
         // Priority: trialExpired > volume-key upgrade pulse > countdown > welcome
-        if trial.hasUsedTrial && !trial.isInTrial && !license.isPro {
+        if trial.hasUsedTrial && !trial.isInTrial && !license.isPro
+            && trialExpiredDismissedSession != TrialManager.currentSessionID {
             return .trialExpired
         }
         if showUpgradePulse && !LicenseManager.hasProAccess {
@@ -92,9 +103,8 @@ struct MenuBarView: View {
 
     private func dismissable(_ variant: BannerVariant) -> Bool {
         switch variant {
-        case .trialExpired: return false
         case .welcome:      return false  // welcome closes via CTA
-        case .upgrade, .trialCountdown: return true
+        case .trialExpired, .upgrade, .trialCountdown: return true
         }
     }
 
@@ -110,7 +120,14 @@ struct MenuBarView: View {
         case .upgrade:
             withAnimation { showUpgradePulse = false }
         case .trialExpired:
-            break
+            let sid = TrialManager.currentSessionID
+            UserDefaults.standard.set(sid, forKey: "tutti.trialExpired.dismissedSession")
+            withAnimation {
+                // Clear any latent volume-key pulse so dismissing trialExpired
+                // doesn't immediately surface a second upgrade banner.
+                showUpgradePulse = false
+                trialExpiredDismissedSession = sid
+            }
         }
     }
 

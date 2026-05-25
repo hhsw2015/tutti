@@ -4,6 +4,11 @@ import Foundation
 final class TrialManager: ObservableObject {
     static let shared = TrialManager()
 
+    // Fresh per process. Banner dismissals are scoped against this so the
+    // trialExpired banner reappears on next app launch but stays closed
+    // for the remainder of the current session.
+    static let currentSessionID = UUID().uuidString
+
     @Published private(set) var trialStartDate: Date?
 
     private let trialDays = 7
