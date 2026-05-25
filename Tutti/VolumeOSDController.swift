@@ -129,11 +129,11 @@ private struct VolumeOSDView: View {
         isDark ? .white.opacity(0.16) : .black.opacity(0.10)
     }
 
-    private var label: String {
+    private var labelText: Text {
         switch deviceNames.count {
-        case 0: return "Tutti"
-        case 1: return deviceNames[0]
-        default: return "\(deviceNames.count) 个设备"
+        case 0: return Text(verbatim: "Tutti")
+        case 1: return Text(verbatim: deviceNames[0])
+        default: return Text("\(deviceNames.count) 个设备")
         }
     }
 
@@ -171,7 +171,7 @@ private struct VolumeOSDView: View {
             // Label + slider
             VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .firstTextBaseline) {
-                    Text(label)
+                    labelText
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(textPrimary)
                         .lineLimit(1)

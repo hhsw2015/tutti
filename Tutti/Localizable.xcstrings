@@ -704,6 +704,19 @@
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "輸出中 · %lld 台" } }
       }
     },
+    "%lld 个设备" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "%lld Geräte" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "%lld devices" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "%lld dispositivos" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "%lld appareils" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "%lld dispositivi" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%lld 台" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "%lld대" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "%lld 台" } }
+      }
+    },
     "总音量" : {
       "extractionState" : "manual",
       "localizations" : {
