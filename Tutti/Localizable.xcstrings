@@ -873,6 +873,71 @@
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "外觀" } }
       }
     },
+    "欢迎使用 Tutti" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Willkommen bei Tutti" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Welcome to Tutti" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Bienvenido a Tutti" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Bienvenue dans Tutti" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Benvenuto in Tutti" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Tutti へようこそ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Tutti에 오신 것을 환영합니다" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "歡迎使用 Tutti" } }
+      }
+    },
+    "随时切换音频设备，Pro 支持音量键控制" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Audiogeräte jederzeit wechseln. Lautstärketasten mit Pro." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Switch audio devices instantly. Volume keys with Pro." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Cambia dispositivos de audio al instante. Teclas de volumen con Pro." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Changez d'appareil audio instantanément. Touches de volume avec Pro." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Cambia dispositivi audio all'istante. Tasti volume con Pro." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "オーディオデバイスを瞬時に切替。Pro では音量キーにも対応。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "오디오 장치를 즉시 전환하세요. Pro에서 볼륨 키 지원." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "隨時切換音訊裝置，Pro 支援音量鍵控制" } }
+      }
+    },
+    "解锁 Pro 音量键功能" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Pro-Lautstärketasten freischalten" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Required for Pro volume key control" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Necesario para las teclas de volumen Pro" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Requis pour les touches de volume Pro" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Richiesto per i tasti volume Pro" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Pro 音量キー機能に必要" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Pro 볼륨 키 제어에 필요" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "解鎖 Pro 音量鍵功能" } }
+      }
+    },
+    "可稍后在设置中开启" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Kann später in den Einstellungen aktiviert werden" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "You can enable this later in Settings" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Puedes activarlo más tarde en Ajustes" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vous pouvez l'activer plus tard dans les Réglages" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Puoi attivarlo più tardi nelle Impostazioni" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "後で設定から有効にできます" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "나중에 설정에서 활성화할 수 있습니다" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "可稍後在設定中開啟" } }
+      }
+    },
+    "开始试用" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Testversion starten" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Start Trial" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Iniciar prueba" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Commencer l'essai" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Avvia prova" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "トライアルを開始" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "체험판 시작" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "開始試用" } }
+      }
+    },
     "辅助功能权限" : {
       "extractionState" : "manual",
       "localizations" : {

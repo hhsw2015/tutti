@@ -7,6 +7,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private let popover = TuttiPopover()
     private var statusItem: StatusItemController?
     private var settingsWindow: NSWindow?
+    private var onboardingWindow: NSWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // 7-day Pro trial. Idempotent — only sets the start date the first
@@ -28,6 +29,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
 
         statusItem = StatusItemController(manager: manager, popover: popover)
+        showOnboardingIfNeeded()
     }
 
     func openSettings() {
@@ -58,6 +60,30 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         win.standardWindowButton(.zoomButton)?.isHidden = true
         settingsWindow = win
 
+        NSApp.activate(ignoringOtherApps: true)
+        win.makeKeyAndOrderFront(nil)
+    }
+
+    private func showOnboardingIfNeeded() {
+        guard !UserDefaults.standard.bool(forKey: "tutti.onboarding.completed") else { return }
+        let view = OnboardingView {
+            UserDefaults.standard.set(true, forKey: "tutti.onboarding.completed")
+            self.onboardingWindow?.close()
+            self.onboardingWindow = nil
+        }
+        .environmentObject(manager)
+        let host = NSHostingController(rootView: view)
+        let win = NSWindow(contentViewController: host)
+        win.styleMask = [.titled, .closable, .fullSizeContentView]
+        win.titlebarAppearsTransparent = true
+        win.titleVisibility = .hidden
+        win.isReleasedWhenClosed = false
+        win.setContentSize(NSSize(width: 620, height: 520))
+        win.center()
+        win.isMovableByWindowBackground = true
+        win.standardWindowButton(.miniaturizeButton)?.isHidden = true
+        win.standardWindowButton(.zoomButton)?.isHidden = true
+        onboardingWindow = win
         NSApp.activate(ignoringOtherApps: true)
         win.makeKeyAndOrderFront(nil)
     }

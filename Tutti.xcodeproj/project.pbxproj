@@ -24,6 +24,7 @@
 		BBF90DDA4BCD469B3B56288C /* LicenseAccessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74377CA7CD6C772D91779548 /* LicenseAccessTests.swift */; };
 		C16F31402213E8291C44501C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEE4624F35F7EDEB969BFBB /* SettingsView.swift */; };
 		D8C670DC2B1D9DCB55D7678E /* AudioDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = F597D2465B350C16DC6AA182 /* AudioDevice.swift */; };
+		DA723EC44F77CDCC8BAEB839 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8A53C472F65BA90F073340 /* OnboardingView.swift */; };
 		E703A025B69AC28F76DC9104 /* TuttiPulseIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8174A1619533BDEF90EC63 /* TuttiPulseIcon.swift */; };
 		E7B0F4D314232C3B9F0B23A5 /* TuttiPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = B357BD3CFCF3AA3FCB942B49 /* TuttiPopover.swift */; };
 		FF395EB3ABC222770735F64E /* UpdateChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72B9AF269E35B6238432956 /* UpdateChecker.swift */; };
@@ -45,6 +46,7 @@
 		4B314347F4A6CDB2AB077825 /* TrialManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrialManagerTests.swift; sourceTree = "<group>"; };
 		5253B6DAB2642EE2A6051DC7 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		5D847762E8D12F6E3DB46943 /* ProUpgradeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProUpgradeButton.swift; sourceTree = "<group>"; };
+		5E8A53C472F65BA90F073340 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		5F8174A1619533BDEF90EC63 /* TuttiPulseIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TuttiPulseIcon.swift; sourceTree = "<group>"; };
 		67375A0E29E56D83E7C8D944 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
 		6ECFA174FD7B909281244674 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -57,7 +59,6 @@
 		DCEE4624F35F7EDEB969BFBB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		E01E0A1B8444B840EC7520D3 /* VolumeKeyMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeKeyMonitor.swift; sourceTree = "<group>"; };
 		E33C0B6BD8AF332DE818A1A0 /* BluetoothBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothBattery.swift; sourceTree = "<group>"; };
-		E79AEFEA081DCAE9AAF313F4 /* .gitkeep */ = {isa = PBXFileReference; path = .gitkeep; sourceTree = "<group>"; };
 		EE4141E484B20BEB8AF08A22 /* LicenseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseManager.swift; sourceTree = "<group>"; };
 		F597D2465B350C16DC6AA182 /* AudioDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDevice.swift; sourceTree = "<group>"; };
 		F72B9AF269E35B6238432956 /* UpdateChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateChecker.swift; sourceTree = "<group>"; };
@@ -69,7 +70,6 @@
 		6397272238690503A392F44D /* TuttiTests */ = {
 			isa = PBXGroup;
 			children = (
-				E79AEFEA081DCAE9AAF313F4 /* .gitkeep */,
 				74377CA7CD6C772D91779548 /* LicenseAccessTests.swift */,
 				4B314347F4A6CDB2AB077825 /* TrialManagerTests.swift */,
 			);
@@ -87,6 +87,7 @@
 				EE4141E484B20BEB8AF08A22 /* LicenseManager.swift */,
 				5253B6DAB2642EE2A6051DC7 /* Localizable.xcstrings */,
 				67375A0E29E56D83E7C8D944 /* MenuBarView.swift */,
+				5E8A53C472F65BA90F073340 /* OnboardingView.swift */,
 				5D847762E8D12F6E3DB46943 /* ProUpgradeButton.swift */,
 				DCEE4624F35F7EDEB969BFBB /* SettingsView.swift */,
 				95C48560770FEFBA4E27A594 /* StatusItemController.swift */,
@@ -236,6 +237,7 @@
 				2AFB272468FD2CE85346B347 /* BluetoothBattery.swift in Sources */,
 				0A3749A099EC0C7F85F35592 /* LicenseManager.swift in Sources */,
 				7226802E3EEAC600C9B6EF9F /* MenuBarView.swift in Sources */,
+				DA723EC44F77CDCC8BAEB839 /* OnboardingView.swift in Sources */,
 				5335AB69E6C0385207113DF2 /* ProUpgradeButton.swift in Sources */,
 				C16F31402213E8291C44501C /* SettingsView.swift in Sources */,
 				8714A0C087CED7352EC3AB1C /* StatusItemController.swift in Sources */,
