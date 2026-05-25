@@ -176,8 +176,9 @@ extension Color {
 
     // MARK: - Settings design tokens (from Tutti Settings design canvas)
 
-    /// Mint-green "verified / Pro active" — slightly desaturated in light mode.
-    static let designAccent  = Color(light: hex("1F9C5E"), dark: hex("7BE4A5"))
+    /// Follows the macOS system accent color so badges, toggles, and Pro chips
+    /// match whatever the user picks in System Settings > Appearance > Accent.
+    static let designAccent  = Color(nsColor: .controlAccentColor)
     /// Tutti brand pink / coral, used for the Broadcast Dot mark in About.
     static let designBrand   = Color(light: hex("E04E70"), dark: hex("F2728E"))
     /// System-blue primary action (used on the language-restart confirm).
