@@ -694,8 +694,8 @@ private struct UpgradeBanner: View {
         switch variant {
         case .welcome:                       return "欢迎使用 Tutti · Pro 试用已开启"
         case .trialCountdown(let days):      return "Pro 试用还剩 \(days) 天"
-        case .trialExpired:                  return "Pro 试用已结束 · 音量键功能已停用"
-        case .upgrade:                       return "硬件音量键控制需要 Tutti Pro"
+        case .trialExpired:                  return "Pro 试用已结束 · 音量直控已停用"
+        case .upgrade:                       return "音量直控需要 Tutti Pro"
         }
     }
 

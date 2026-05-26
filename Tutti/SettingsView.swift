@@ -88,7 +88,7 @@ struct TuttiSettingsView: View {
             }
             Button("取消", role: .cancel) {}
         } message: {
-            Text("释放 1 台设备名额。停用后所有基础功能仍可使用，仅硬件音量键接管会被禁用，可随时用同一密钥重新激活。")
+            Text("释放 1 台设备名额。停用后所有基础功能仍可使用，仅音量直控（键盘音量键 + 菜单栏滚轮）会被禁用，可随时用同一密钥重新激活。")
         }
     }
 }
@@ -253,8 +253,8 @@ private struct GeneralTab: View {
                     }
                 }
             } else {
-                CardRow("硬件音量键接管 · Pro",
-                        subtitle: "升级 Pro 后，键盘音量键能直接控制聚合输出，无需手动调节每台设备。") {
+                CardRow("音量直控 · Pro",
+                        subtitle: "升级 Pro 后，键盘音量键和菜单栏滚轮都能直接调聚合输出，不用一台一台拖滑杆。") {
                     ProUpgradeButton(purchaseURL: license.purchaseURL)
                 }
             }
@@ -436,7 +436,7 @@ private struct LicenseTab: View {
             Text("感谢您购买 Tutti")
                 .font(.system(size: 19, weight: .bold))
 
-            Text("Pro 已解锁。键盘音量键可直接控制聚合输出，无需再手动调节每台设备。")
+            Text("Pro 已解锁。键盘音量键和菜单栏滚轮都能直接调聚合输出，无需再手动调节每台设备。")
                 .font(.system(size: 13))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -549,7 +549,7 @@ private struct LicenseTab: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("免费版 · 基础功能完整可用")
                         .font(.system(size: 14, weight: .semibold))
-                    Text("升级 Tutti Pro 后，键盘音量键可直接控制聚合输出。一次买断 $7.99，含所有未来 Pro 功能升级。")
+                    Text("升级 Tutti Pro 后，键盘音量键和菜单栏滚轮都能直接调聚合输出。一次买断 $7.99，含所有未来 Pro 功能升级。")
                         .font(.system(size: 12.5))
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
