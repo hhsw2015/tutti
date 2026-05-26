@@ -570,14 +570,11 @@ private struct GlassProfileRow: View {
     @State private var draftName = ""
     @FocusState private var nameFieldFocused: Bool
 
-    private var trailingReserve: CGFloat {
-        if renaming { return 26 }
-        if hovering { return 44 }
-        return 0
-    }
-
     var body: some View {
-        ZStack(alignment: .trailing) {
+        // Rename/delete buttons MUST be siblings of the apply button, not
+        // overlaid in a ZStack. A ZStack lets a tap on ✕ also hit the apply
+        // button underneath, which fires the Pro banner on every delete.
+        HStack(spacing: 0) {
             Button {
                 guard !renaming else { return }
                 manager.applyProfile(uids: profile.deviceUIDs)
@@ -609,7 +606,6 @@ private struct GlassProfileRow: View {
                                   : "\(profile.deviceUIDs.count) 台")
                         .font(.system(size: 11).monospacedDigit())
                         .foregroundStyle(isActive ? prefs.accentColor : Color.glassTextLo)
-                        .padding(.trailing, trailingReserve)
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
@@ -617,18 +613,6 @@ private struct GlassProfileRow: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .background(
-                Group {
-                    if isActive {
-                        prefs.accentColor.opacity(0.18)
-                    } else if hovering {
-                        Color.glassHoverBg
-                    } else {
-                        Color.clear
-                    }
-                }
-            )
-            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
             if renaming {
                 Button { commitRename() } label: {
@@ -642,30 +626,40 @@ private struct GlassProfileRow: View {
                 .help("确认重命名")
                 .padding(.trailing, 4)
             } else if hovering {
-                HStack(spacing: 0) {
-                    Button { beginRename() } label: {
-                        Image(systemName: "pencil")
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundStyle(Color.glassTextMid)
-                            .frame(width: 22, height: 22)
-                            .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .help("重命名")
-
-                    Button { profiles.delete(profile) } label: {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 9, weight: .semibold))
-                            .foregroundStyle(Color.muteRed.opacity(0.85))
-                            .frame(width: 22, height: 22)
-                            .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .help("删除")
+                Button { beginRename() } label: {
+                    Image(systemName: "pencil")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(Color.glassTextMid)
+                        .frame(width: 22, height: 22)
+                        .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
+                .help("重命名")
+
+                Button { profiles.delete(profile) } label: {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 9, weight: .semibold))
+                        .foregroundStyle(Color.muteRed.opacity(0.85))
+                        .frame(width: 22, height: 22)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .help("删除")
                 .padding(.trailing, 4)
             }
         }
+        .background(
+            Group {
+                if isActive {
+                    prefs.accentColor.opacity(0.18)
+                } else if hovering {
+                    Color.glassHoverBg
+                } else {
+                    Color.clear
+                }
+            }
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         .onHover { hovering = $0 }
         .onChange(of: nameFieldFocused) { focused in
             if !focused && renaming { commitRename() }
