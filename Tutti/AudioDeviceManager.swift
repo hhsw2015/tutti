@@ -53,7 +53,7 @@ final class AudioDeviceManager: ObservableObject {
     private var popoverIsOpen = false
     private var licenseObserver: AnyCancellable?
     private var trialObserver: AnyCancellable?
-    private var lastVolumeKeyUpgradePromptAt: Date?
+    private var lastUpgradePromptAt: Date?
 
     /// Per-device CoreAudio volume listeners. We must keep the block
     /// reference to deregister later, so a token bundles address+block.
@@ -585,17 +585,19 @@ final class AudioDeviceManager: ObservableObject {
     }
 
     /// Called when a free / expired-trial user hits a Pro-only path.
-    /// Throttled so a 5-second volume drag doesn't fire the banner dozens
-    /// of times. The throttle is shared across reasons on purpose — back-to-back
-    /// attempts from different features still feel like one upsell event.
+    /// Throttles SAME-reason repeats (e.g., a 5-second volume drag) so the
+    /// banner doesn't re-pulse dozens of times. Cross-reason hits always fire
+    /// — otherwise a profile tap right after a dismissed volume banner would
+    /// silently no-op and the user would have no Pro hint.
     func triggerUpgradePrompt(reason: UpgradeReason) {
         guard !LicenseManager.hasProAccess else { return }
         let now = Date()
-        if let last = lastVolumeKeyUpgradePromptAt,
+        if reason == pendingUpgradeReason,
+           let last = lastUpgradePromptAt,
            now.timeIntervalSince(last) < 30 {
             return
         }
-        lastVolumeKeyUpgradePromptAt = now
+        lastUpgradePromptAt = now
         pendingUpgradeReason = reason
         lastUpgradeAttemptID = UUID()
     }
@@ -614,7 +616,18 @@ final class AudioDeviceManager: ObservableObject {
             triggerUpgradePrompt(reason: .profile)
             return
         }
-        selectedIDs = Set(devices.filter { uids.contains($0.uid) }.map { $0.id })
+        let matched = devices.filter { uids.contains($0.uid) }
+        let newIDs = Set(matched.map { $0.id })
+        // Re-tapping an already-active profile would otherwise destroy and
+        // rebuild the aggregate (audible glitch + dropped audio).
+        guard newIDs != selectedIDs else { return }
+        // Pre-read volumes the same way toggle() does, so master/mute/silent
+        // reads don't snap to 0 right after apply on a fresh launch when
+        // volumes[] hasn't been populated yet for these devices.
+        for d in matched where volumes[d.id] == nil {
+            volumes[d.id] = readVolume(d.id) ?? 1.0
+        }
+        selectedIDs = newIDs
         updateAggregate()
     }
 

@@ -16,44 +16,29 @@
 		3C859E0EBABE04384253AF6A /* VolumeKeyMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01E0A1B8444B840EC7520D3 /* VolumeKeyMonitor.swift */; };
 		41E14891E3758C5CBD9D2E00 /* VolumeOSDController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A673E36F99B203C7993A19 /* VolumeOSDController.swift */; };
 		5335AB69E6C0385207113DF2 /* ProUpgradeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D847762E8D12F6E3DB46943 /* ProUpgradeButton.swift */; };
-		B1C2D3E4F5061728394A5B6C /* ProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0B1C2D3E4F506172839405B /* ProfileStore.swift */; };
 		6A9B034C169B8351750C1166 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D91242F916B4605C2909D9D6 /* AppDelegate.swift */; };
-		6FF6E8B64FC7264CF1A103FA /* TrialManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B314347F4A6CDB2AB077825 /* TrialManagerTests.swift */; };
 		7226802E3EEAC600C9B6EF9F /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67375A0E29E56D83E7C8D944 /* MenuBarView.swift */; };
 		79A08DC7B987E829175C7862 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3685C7D65C9EB34FAB266678 /* Theme.swift */; };
 		8714A0C087CED7352EC3AB1C /* StatusItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C48560770FEFBA4E27A594 /* StatusItemController.swift */; };
 		A6BED915EA53D729131817ED /* TrialManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3398BCBA06564775622EE512 /* TrialManager.swift */; };
-		BBF90DDA4BCD469B3B56288C /* LicenseAccessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74377CA7CD6C772D91779548 /* LicenseAccessTests.swift */; };
 		C16F31402213E8291C44501C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEE4624F35F7EDEB969BFBB /* SettingsView.swift */; };
 		D8C670DC2B1D9DCB55D7678E /* AudioDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = F597D2465B350C16DC6AA182 /* AudioDevice.swift */; };
 		DA723EC44F77CDCC8BAEB839 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E8A53C472F65BA90F073340 /* OnboardingView.swift */; };
 		E703A025B69AC28F76DC9104 /* TuttiPulseIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8174A1619533BDEF90EC63 /* TuttiPulseIcon.swift */; };
 		E7B0F4D314232C3B9F0B23A5 /* TuttiPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = B357BD3CFCF3AA3FCB942B49 /* TuttiPopover.swift */; };
+		E85FCDEF6A271950AB1534E5 /* ProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E851FEB3386BED3FDCE7AFDE /* ProfileStore.swift */; };
 		FF395EB3ABC222770735F64E /* UpdateChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72B9AF269E35B6238432956 /* UpdateChecker.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		9302B6D834D4458FCC32A23F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CEA519F00D7A840940AF870A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 9B9D5A4BDF85F98661DB0BF7;
-			remoteInfo = Tutti;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		3398BCBA06564775622EE512 /* TrialManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrialManager.swift; sourceTree = "<group>"; };
 		3685C7D65C9EB34FAB266678 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
-		4B314347F4A6CDB2AB077825 /* TrialManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrialManagerTests.swift; sourceTree = "<group>"; };
 		5253B6DAB2642EE2A6051DC7 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		5D847762E8D12F6E3DB46943 /* ProUpgradeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProUpgradeButton.swift; sourceTree = "<group>"; };
-		A0B1C2D3E4F506172839405B /* ProfileStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileStore.swift; sourceTree = "<group>"; };
 		5E8A53C472F65BA90F073340 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		5F8174A1619533BDEF90EC63 /* TuttiPulseIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TuttiPulseIcon.swift; sourceTree = "<group>"; };
 		67375A0E29E56D83E7C8D944 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
 		6ECFA174FD7B909281244674 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		74377CA7CD6C772D91779548 /* LicenseAccessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseAccessTests.swift; sourceTree = "<group>"; };
 		7E6A3882847B1553494B1C00 /* Tutti.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tutti.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		95C48560770FEFBA4E27A594 /* StatusItemController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItemController.swift; sourceTree = "<group>"; };
 		97A673E36F99B203C7993A19 /* VolumeOSDController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeOSDController.swift; sourceTree = "<group>"; };
@@ -63,23 +48,14 @@
 		DCEE4624F35F7EDEB969BFBB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		E01E0A1B8444B840EC7520D3 /* VolumeKeyMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeKeyMonitor.swift; sourceTree = "<group>"; };
 		E33C0B6BD8AF332DE818A1A0 /* BluetoothBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothBattery.swift; sourceTree = "<group>"; };
+		E851FEB3386BED3FDCE7AFDE /* ProfileStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileStore.swift; sourceTree = "<group>"; };
 		EE4141E484B20BEB8AF08A22 /* LicenseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseManager.swift; sourceTree = "<group>"; };
 		F597D2465B350C16DC6AA182 /* AudioDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDevice.swift; sourceTree = "<group>"; };
 		F72B9AF269E35B6238432956 /* UpdateChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateChecker.swift; sourceTree = "<group>"; };
 		F8113BFFF98933926FEFF511 /* TuttiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TuttiApp.swift; sourceTree = "<group>"; };
-		FDD1C7F649137A0BDB2ADFFB /* TuttiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TuttiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		6397272238690503A392F44D /* TuttiTests */ = {
-			isa = PBXGroup;
-			children = (
-				74377CA7CD6C772D91779548 /* LicenseAccessTests.swift */,
-				4B314347F4A6CDB2AB077825 /* TrialManagerTests.swift */,
-			);
-			path = TuttiTests;
-			sourceTree = "<group>";
-		};
 		7B643D2573EBB02FFACFDDD2 /* Tutti */ = {
 			isa = PBXGroup;
 			children = (
@@ -92,8 +68,8 @@
 				5253B6DAB2642EE2A6051DC7 /* Localizable.xcstrings */,
 				67375A0E29E56D83E7C8D944 /* MenuBarView.swift */,
 				5E8A53C472F65BA90F073340 /* OnboardingView.swift */,
+				E851FEB3386BED3FDCE7AFDE /* ProfileStore.swift */,
 				5D847762E8D12F6E3DB46943 /* ProUpgradeButton.swift */,
-				A0B1C2D3E4F506172839405B /* ProfileStore.swift */,
 				DCEE4624F35F7EDEB969BFBB /* SettingsView.swift */,
 				95C48560770FEFBA4E27A594 /* StatusItemController.swift */,
 				3685C7D65C9EB34FAB266678 /* Theme.swift */,
@@ -112,7 +88,6 @@
 			isa = PBXGroup;
 			children = (
 				7B643D2573EBB02FFACFDDD2 /* Tutti */,
-				6397272238690503A392F44D /* TuttiTests */,
 				ACC910B6F1F3928E8A4057E8 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -121,7 +96,6 @@
 			isa = PBXGroup;
 			children = (
 				7E6A3882847B1553494B1C00 /* Tutti.app */,
-				FDD1C7F649137A0BDB2ADFFB /* TuttiTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -129,24 +103,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		731D4EFE1F01EEAC63FAE42F /* TuttiTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 290601417E1F1FB80CFED914 /* Build configuration list for PBXNativeTarget "TuttiTests" */;
-			buildPhases = (
-				3A83F96A59F8B72F1C10AB54 /* Sources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				A92348709C01430D4D609E92 /* PBXTargetDependency */,
-			);
-			name = TuttiTests;
-			packageProductDependencies = (
-			);
-			productName = TuttiTests;
-			productReference = FDD1C7F649137A0BDB2ADFFB /* TuttiTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		9B9D5A4BDF85F98661DB0BF7 /* Tutti */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0E7F3461017415E46C3D7572 /* Build configuration list for PBXNativeTarget "Tutti" */;
@@ -174,10 +130,6 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
-					731D4EFE1F01EEAC63FAE42F = {
-						DevelopmentTeam = RFW398ARA9;
-						ProvisioningStyle = Manual;
-					};
 					9B9D5A4BDF85F98661DB0BF7 = {
 						DevelopmentTeam = RFW398ARA9;
 						ProvisioningStyle = Manual;
@@ -206,7 +158,6 @@
 			projectRoot = "";
 			targets = (
 				9B9D5A4BDF85F98661DB0BF7 /* Tutti */,
-				731D4EFE1F01EEAC63FAE42F /* TuttiTests */,
 			);
 		};
 /* End PBXProject section */
@@ -224,15 +175,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		3A83F96A59F8B72F1C10AB54 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BBF90DDA4BCD469B3B56288C /* LicenseAccessTests.swift in Sources */,
-				6FF6E8B64FC7264CF1A103FA /* TrialManagerTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		FFEC022758F3F527E1AFB0FC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -245,7 +187,7 @@
 				7226802E3EEAC600C9B6EF9F /* MenuBarView.swift in Sources */,
 				DA723EC44F77CDCC8BAEB839 /* OnboardingView.swift in Sources */,
 				5335AB69E6C0385207113DF2 /* ProUpgradeButton.swift in Sources */,
-				B1C2D3E4F5061728394A5B6C /* ProfileStore.swift in Sources */,
+				E85FCDEF6A271950AB1534E5 /* ProfileStore.swift in Sources */,
 				C16F31402213E8291C44501C /* SettingsView.swift in Sources */,
 				8714A0C087CED7352EC3AB1C /* StatusItemController.swift in Sources */,
 				79A08DC7B987E829175C7862 /* Theme.swift in Sources */,
@@ -260,14 +202,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		A92348709C01430D4D609E92 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 9B9D5A4BDF85F98661DB0BF7 /* Tutti */;
-			targetProxy = 9302B6D834D4458FCC32A23F /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		0897C94399D4433118D5CFF5 /* Release */ = {
@@ -348,50 +282,6 @@
 				SWIFT_VERSION = 5.9;
 			};
 			name = Debug;
-		};
-		64886B21755FB01B972072E9 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "Developer ID Application: BaoLin Wu (RFW398ARA9)";
-				CODE_SIGN_STYLE = Manual;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = RFW398ARA9;
-				GENERATE_INFOPLIST_FILE = YES;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.recents.tutti.tests;
-				SDKROOT = macosx;
-				SWIFT_VERSION = 5.9;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tutti.app/Contents/MacOS/Tutti";
-			};
-			name = Debug;
-		};
-		7C79C9F1F1ADFE4C533CF693 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "Developer ID Application: BaoLin Wu (RFW398ARA9)";
-				CODE_SIGN_STYLE = Manual;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = RFW398ARA9;
-				GENERATE_INFOPLIST_FILE = YES;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.recents.tutti.tests;
-				SDKROOT = macosx;
-				SWIFT_VERSION = 5.9;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tutti.app/Contents/MacOS/Tutti";
-			};
-			name = Release;
 		};
 		9FDA081405C68AADBDF5BFE0 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -496,15 +386,6 @@
 			buildConfigurations = (
 				D77CF51768ED944D8C0B0719 /* Debug */,
 				0897C94399D4433118D5CFF5 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		290601417E1F1FB80CFED914 /* Build configuration list for PBXNativeTarget "TuttiTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				64886B21755FB01B972072E9 /* Debug */,
-				7C79C9F1F1ADFE4C533CF693 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

@@ -47,24 +47,7 @@ targets:
       CODE_SIGN_ENTITLEMENTS: Tutti/Tutti.entitlements
       OTHER_CODE_SIGN_FLAGS: "--timestamp --options=runtime"
     scheme:
-      testTargets:
-        - TuttiTests
       gatherCoverageData: false
+    # TuttiTests target removed from spec — test sources live locally only
+    # (gitignored). Re-add a local test target via xcodegen overlay if needed.
 
-  TuttiTests:
-    type: bundle.unit-test
-    platform: macOS
-    sources:
-      - path: TuttiTests
-    dependencies:
-      - target: Tutti
-    settings:
-      PRODUCT_BUNDLE_IDENTIFIER: com.recents.tutti.tests
-      SWIFT_VERSION: "5.9"
-      MACOSX_DEPLOYMENT_TARGET: "13.0"
-      GENERATE_INFOPLIST_FILE: YES
-      BUNDLE_LOADER: "$(TEST_HOST)"
-      TEST_HOST: "$(BUILT_PRODUCTS_DIR)/Tutti.app/Contents/MacOS/Tutti"
-      CODE_SIGN_STYLE: Manual
-      CODE_SIGN_IDENTITY: "Developer ID Application: BaoLin Wu (RFW398ARA9)"
-      DEVELOPMENT_TEAM: RFW398ARA9
