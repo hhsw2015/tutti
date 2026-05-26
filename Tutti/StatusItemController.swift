@@ -7,7 +7,9 @@ final class StatusItemController: NSObject {
     private let popover: TuttiPopover
     private let manager: AudioDeviceManager
     private var cancellable: AnyCancellable?
+    private var scrollMonitor: Any?
     private var currentLevel: Int = -1
+    private var currentMuted: Bool = false
 
     init(manager: AudioDeviceManager, popover: TuttiPopover) {
         self.manager = manager
@@ -22,6 +24,33 @@ final class StatusItemController: NSObject {
         cancellable = manager.objectWillChange
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in self?.updateIcon() }
+        installScrollMonitor()
+    }
+
+    deinit {
+        if let monitor = scrollMonitor {
+            NSEvent.removeMonitor(monitor)
+        }
+    }
+
+    private func installScrollMonitor() {
+        scrollMonitor = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { [weak self] event in
+            guard let self else { return event }
+            // Consume scrolls that landed on either our status bar button or
+            // the popover panel. Anything else (settings window, other apps'
+            // surfaces, etc.) passes through untouched.
+            let onButton = event.window === self.item.button?.window
+            let onPopover = event.window is TuttiPanel
+            guard onButton || onPopover else { return event }
+
+            let raw = Float(event.scrollingDeltaY) * 0.002
+            let delta = max(-0.02, min(0.02, raw))
+            guard delta != 0 else { return nil }
+            Task { @MainActor in
+                self.manager.handleScrollVolumeAdjust(by: delta)
+            }
+            return nil
+        }
     }
 
     @objc private func handleClick(_ sender: Any?) {
@@ -39,8 +68,10 @@ final class StatusItemController: NSObject {
             else if v > 0.5 { level = 2 }
             else { level = 1 }
         }
-        guard level != currentLevel else { return }
+        let muted = manager.isMuted
+        guard level != currentLevel || muted != currentMuted else { return }
         currentLevel = level
-        item.button?.image = TuttiPulseIcon.image(level: level)
+        currentMuted = muted
+        item.button?.image = TuttiPulseIcon.image(level: level, muted: muted)
     }
 }

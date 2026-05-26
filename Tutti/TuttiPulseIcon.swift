@@ -4,6 +4,8 @@ import AppKit
 private struct TuttiBroadcastShape: View {
     var level: Int
     var size: CGFloat
+    var lineColor: Color = .black
+    var muteDot: Bool = false
 
     var body: some View {
         Canvas { context, _ in
@@ -23,7 +25,12 @@ private struct TuttiBroadcastShape: View {
                 width: 5.2 * unit,
                 height: 5.2 * unit
             ))
-            context.fill(dot, with: .color(.black))
+            // Muted: tint the broadcast core itself, no external red dot.
+            // Reads as "the signal source went silent" rather than a stuck-on badge.
+            let dotColor: Color = muteDot
+                ? Color(red: 1.0, green: 0.231, blue: 0.188)
+                : lineColor
+            context.fill(dot, with: .color(dotColor))
 
             if level >= 1 {
                 var innerLeft = Path()
@@ -34,7 +41,7 @@ private struct TuttiBroadcastShape: View {
                     endAngle: .degrees(224.4),
                     clockwise: false
                 )
-                context.stroke(innerLeft, with: .color(.black), style: style)
+                context.stroke(innerLeft, with: .color(lineColor), style: style)
 
                 var innerRight = Path()
                 innerRight.addArc(
@@ -44,7 +51,7 @@ private struct TuttiBroadcastShape: View {
                     endAngle: .degrees(44.4),
                     clockwise: false
                 )
-                context.stroke(innerRight, with: .color(.black), style: style)
+                context.stroke(innerRight, with: .color(lineColor), style: style)
             }
 
             if level >= 2 {
@@ -56,7 +63,7 @@ private struct TuttiBroadcastShape: View {
                     endAngle: .degrees(224.9),
                     clockwise: false
                 )
-                context.stroke(outerLeft, with: .color(.black), style: style)
+                context.stroke(outerLeft, with: .color(lineColor), style: style)
 
                 var outerRight = Path()
                 outerRight.addArc(
@@ -66,7 +73,7 @@ private struct TuttiBroadcastShape: View {
                     endAngle: .degrees(44.9),
                     clockwise: false
                 )
-                context.stroke(outerRight, with: .color(.black), style: style)
+                context.stroke(outerRight, with: .color(lineColor), style: style)
             }
         }
         .frame(width: size, height: size)
@@ -75,12 +82,25 @@ private struct TuttiBroadcastShape: View {
 
 enum TuttiPulseIcon {
     @MainActor
-    static func image(level: Int, size: CGFloat = 22) -> NSImage {
-        let view = TuttiBroadcastShape(level: level, size: size)
+    static func image(level: Int, muted: Bool = false, size: CGFloat = 22) -> NSImage {
+        if !muted {
+            let view = TuttiBroadcastShape(level: level, size: size)
+            let renderer = ImageRenderer(content: view)
+            renderer.scale = 2.0
+            let image = renderer.nsImage ?? NSImage(size: NSSize(width: size, height: size))
+            image.isTemplate = true
+            return image
+        }
+
+        // Muted path: render with explicit line color so the red dot survives.
+        // isTemplate must be off, otherwise the menu bar tints the dot away.
+        let isDark = NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+        let lineColor: Color = isDark ? .white : .black
+        let view = TuttiBroadcastShape(level: level, size: size, lineColor: lineColor, muteDot: true)
         let renderer = ImageRenderer(content: view)
         renderer.scale = 2.0
         let image = renderer.nsImage ?? NSImage(size: NSSize(width: size, height: size))
-        image.isTemplate = true
+        image.isTemplate = false
         return image
     }
 }

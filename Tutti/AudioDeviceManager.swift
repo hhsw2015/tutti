@@ -576,9 +576,9 @@ final class AudioDeviceManager: ObservableObject {
     }
 
     /// Called when a free / expired-trial user presses a hardware volume
-    /// key. Throttled so a 5-second volume drag doesn't fire the banner
-    /// dozens of times.
-    private func triggerVolumeKeyUpgradePrompt() {
+    /// key or scrolls on the menu bar icon. Throttled so a 5-second volume
+    /// drag doesn't fire the banner dozens of times.
+    func triggerVolumeKeyUpgradePrompt() {
         guard !LicenseManager.hasProAccess else { return }
         let now = Date()
         if let last = lastVolumeKeyUpgradePromptAt,
@@ -587,6 +587,22 @@ final class AudioDeviceManager: ObservableObject {
         }
         lastVolumeKeyUpgradePromptAt = now
         lastUpgradeAttemptID = UUID()
+    }
+
+    /// Scroll on the menu bar icon. Pro-gated, with OSD feedback.
+    /// Unlike the hardware volume key (which only takes over in aggregate mode
+    /// to avoid fighting the system OSD), scroll always belongs to Tutti — the
+    /// system never receives it. So we adjust whenever any device is selected,
+    /// including the single-device case.
+    func handleScrollVolumeAdjust(by delta: Float) {
+        guard LicenseManager.hasProAccess else {
+            triggerVolumeKeyUpgradePrompt()
+            return
+        }
+        guard !selectedIDs.isEmpty else { return }
+        adjustAllVolumes(by: delta)
+        let names = devices.filter { selectedIDs.contains($0.id) }.map { $0.name }
+        VolumeOSDController.shared.show(volume: masterVolume, isMuted: isMuted, deviceNames: names)
     }
 
     private func handleVolumeKey(_ action: VolumeKeyAction) {
@@ -602,7 +618,7 @@ final class AudioDeviceManager: ObservableObject {
         VolumeOSDController.shared.show(volume: masterVolume, isMuted: isMuted, deviceNames: names)
     }
 
-    private func adjustAllVolumes(by delta: Float) {
+    func adjustAllVolumes(by delta: Float) {
         for id in selectedIDs {
             let current = volumes[id] ?? 1.0
             let newVol = max(0, min(1, current + delta))

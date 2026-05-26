@@ -1366,6 +1366,71 @@
         "ko" : { "stringUnit" : { "state" : "translated", "value" : "다시 시작하면 메뉴 막대, 패널, 시스템 알림이 새 언어로 전환됩니다." } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "重新啟動後選單列、面板以及系統通知會切換為新語言。" } }
       }
+    },
+    "整理你的菜单栏" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Menüleiste aufräumen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Tidy up your menu bar" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Ordena tu barra de menús" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Rangez votre barre des menus" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Sistema la barra dei menu" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メニューバーをすっきり" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "메뉴 막대 정리하기" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "整理你的選單列" } }
+      }
+    },
+    "Tutti 现在能完整接管音频输出。系统自带的音量图标可以隐藏，菜单栏会清爽很多。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Tutti steuert jetzt jede Audioausgabe. Das eingebaute Lautstärkesymbol lässt sich ausblenden – die Menüleiste wird deutlich aufgeräumter." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Tutti now handles every audio output. The built-in volume icon can be hidden, and your menu bar gets a lot cleaner." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Tutti ya se encarga de cada salida de audio. Puedes ocultar el icono de volumen del sistema y tu barra de menús queda mucho más limpia." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Tutti prend désormais en charge chaque sortie audio. L'icône de volume intégrée peut être masquée et votre barre des menus devient beaucoup plus nette." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Tutti ora gestisce ogni uscita audio. L'icona del volume di sistema può essere nascosta, lasciando la barra dei menu molto più pulita." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Tutti が音声出力を一手に引き受けます。標準の音量アイコンは隠せて、メニューバーがすっきりします。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "이제 Tutti가 모든 오디오 출력을 처리합니다. 내장 볼륨 아이콘은 숨길 수 있어 메뉴 막대가 훨씬 깔끔해집니다." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "Tutti 現在能完整接管音訊輸出。系統內建的音量圖示可以隱藏，選單列會清爽很多。" } }
+      }
+    },
+    "打开系统设置" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Systemeinstellungen öffnen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Open System Settings" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Abrir Ajustes del sistema" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ouvrir les Réglages système" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Apri Impostazioni di sistema" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "システム設定を開く" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "시스템 설정 열기" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "打開系統設定" } }
+      }
+    },
+    "稍后再说" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Später" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Maybe later" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Más tarde" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Plus tard" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Più tardi" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "あとで" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "나중에" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "稍後再說" } }
+      }
+    },
+    "Tutti 接管系统音频图标后，控制中心里的音量入口可以关掉。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Sobald Tutti die Audioanzeige übernimmt, kann das Lautstärkesymbol im Kontrollzentrum ausgeblendet werden." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Once Tutti takes over, the Control Center sound entry can be turned off." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Cuando Tutti se hace cargo, el icono de sonido del Centro de control se puede ocultar." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Une fois Tutti aux commandes, l'icône de son du Centre de contrôle peut être masquée." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Quando Tutti subentra, l'icona del suono in Centro di Controllo può essere nascosta." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Tutti が引き継いだ後は、コントロールセンターの音量項目を隠せます。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Tutti가 음원을 맡으면 제어 센터의 사운드 항목은 숨길 수 있습니다." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "Tutti 接管系統音訊圖示後，控制中心裡的音量入口可以關掉。" } }
+      }
     }
   }
 }

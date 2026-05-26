@@ -942,3 +942,10 @@ func openAccessibilitySettings() {
     guard let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") else { return }
     NSWorkspace.shared.open(url)
 }
+
+func openControlCenterSoundSettings() {
+    // Verified on macOS 26.5 — opens System Settings → Control Center
+    // where the user toggles the Sound menu bar entry.
+    guard let url = URL(string: "x-apple.systempreferences:com.apple.ControlCenter-Settings.extension") else { return }
+    NSWorkspace.shared.open(url)
+}

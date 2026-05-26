@@ -20,8 +20,14 @@ struct OnboardingView: View {
                             insertion: .opacity.combined(with: .move(edge: .leading)),
                             removal: .opacity.combined(with: .move(edge: .leading))
                         ))
-                } else {
+                } else if step == 1 {
                     permissionStep
+                        .transition(.asymmetric(
+                            insertion: .opacity.combined(with: .move(edge: .trailing)),
+                            removal: .opacity.combined(with: .move(edge: .trailing))
+                        ))
+                } else {
+                    tidyStep
                         .transition(.asymmetric(
                             insertion: .opacity.combined(with: .move(edge: .trailing)),
                             removal: .opacity.combined(with: .move(edge: .trailing))
@@ -164,12 +170,16 @@ struct OnboardingView: View {
                 Spacer()
 
                 if authed {
-                    OnboardingPrimaryButton(label: "开始使用", tone: .accent, action: onComplete)
+                    OnboardingPrimaryButton(label: "下一步", tone: .accent) {
+                        withAnimation(.easeInOut(duration: 0.22)) { step = 2 }
+                    }
                 } else {
-                    Button("稍后在设置中开启") { onComplete() }
-                        .font(.system(size: 12.5))
-                        .foregroundStyle(Color.glassTextLo)
-                        .buttonStyle(.plain)
+                    Button("稍后在设置中开启") {
+                        withAnimation(.easeInOut(duration: 0.22)) { step = 2 }
+                    }
+                    .font(.system(size: 12.5))
+                    .foregroundStyle(Color.glassTextLo)
+                    .buttonStyle(.plain)
 
                     Spacer().frame(width: 16)
 
@@ -181,6 +191,75 @@ struct OnboardingView: View {
         }
         .animation(.easeInOut(duration: 0.25), value: authed)
     }
+
+    // MARK: - Step 3: Tidy the menu bar
+
+    private var tidyStep: some View {
+        VStack(spacing: 0) {
+            OnboardingStepper(activeStep: 2)
+
+            Spacer().frame(height: 20)
+
+            ZStack {
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .fill(Color.designBrand.opacity(0.14))
+                    .frame(width: 72, height: 72)
+                Image(systemName: "menubar.dock.rectangle")
+                    .font(.system(size: 28, weight: .semibold))
+                    .foregroundStyle(Color.designBrand)
+            }
+
+            Spacer().frame(height: 16)
+
+            Text("整理你的菜单栏")
+                .font(.system(size: 22, weight: .bold))
+                .foregroundStyle(Color.glassTextHi)
+
+            Spacer().frame(height: 6)
+
+            Text("Tutti 现在能完整接管音频输出。系统自带的音量图标可以隐藏，菜单栏会清爽很多。")
+                .font(.system(size: 13))
+                .foregroundStyle(Color.glassTextMid)
+                .multilineTextAlignment(.center)
+                .lineSpacing(3)
+                .padding(.horizontal, 12)
+
+            Spacer().frame(height: 20)
+
+            OnboardingTidyHintBox()
+
+            Spacer()
+
+            HStack(alignment: .center) {
+                Button {
+                    withAnimation(.easeInOut(duration: 0.22)) { step = 1 }
+                } label: {
+                    HStack(spacing: 5) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 12, weight: .semibold))
+                        Text("返回")
+                            .font(.system(size: 13))
+                    }
+                    .foregroundStyle(Color.glassTextMid)
+                }
+                .buttonStyle(.plain)
+
+                Spacer()
+
+                Button("稍后再说") { onComplete() }
+                    .font(.system(size: 12.5))
+                    .foregroundStyle(Color.glassTextLo)
+                    .buttonStyle(.plain)
+
+                Spacer().frame(width: 16)
+
+                OnboardingPrimaryButton(label: "打开系统设置", tone: .primary) {
+                    openControlCenterSoundSettings()
+                    onComplete()
+                }
+            }
+        }
+    }
 }
 
 // MARK: - Primitives
@@ -190,7 +269,7 @@ private struct OnboardingStepper: View {
 
     var body: some View {
         HStack(spacing: 6) {
-            ForEach(0..<2, id: \.self) { i in
+            ForEach(0..<3, id: \.self) { i in
                 if i == activeStep {
                     Capsule()
                         .fill(Color.designBrand)
@@ -333,6 +412,33 @@ private struct OnboardingHintBox: View {
             (Text("点击「打开设置」会跳转到 ")
             + Text("系统设置 › 隐私与安全性 › 辅助功能").font(.system(size: 12, design: .monospaced))
             + Text("，把 Tutti 的开关打开即可。"))
+            .font(.system(size: 12))
+            .foregroundStyle(Color.glassTextMid)
+            .lineSpacing(3)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(Color.designCardBg)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .stroke(style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
+                        .foregroundStyle(Color.designCardEdge.opacity(1.5))
+                )
+        )
+    }
+}
+
+private struct OnboardingTidyHintBox: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            (Text("点击「打开系统设置」会跳到 ")
+            + Text("控制中心").font(.system(size: 12, design: .monospaced))
+            + Text("，把 ")
+            + Text("声音").font(.system(size: 12, design: .monospaced))
+            + Text(" 一栏的「在菜单栏中显示」改为「不显示」即可。"))
             .font(.system(size: 12))
             .foregroundStyle(Color.glassTextMid)
             .lineSpacing(3)
