@@ -977,7 +977,7 @@ private struct UpgradeBanner: View {
         switch variant {
         case .welcome:                       return "欢迎使用 Tutti · Pro 试用已开启"
         case .trialCountdown(let days):      return "Pro 试用还剩 \(days) 天"
-        case .trialExpired:                  return "Pro 试用已结束 · 音量直控已停用"
+        case .trialExpired:                  return "Pro 试用已结束 · 高级功能已停用"
         case .upgrade(.volumeTakeover):      return "音量直控需要 Tutti Pro"
         case .upgrade(.profile):             return "档案功能需要 Tutti Pro"
         }

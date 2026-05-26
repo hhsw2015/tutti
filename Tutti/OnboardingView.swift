@@ -79,8 +79,8 @@ struct OnboardingView: View {
                 )
                 OnboardingFeatureCard(
                     icon: "keyboard",
-                    title: "音量直控",
-                    sub: "键盘 + 滚轮调聚合",
+                    title: "高级功能",
+                    sub: "音量直控 + 档案切换",
                     pro: true
                 )
                 OnboardingFeatureCard(

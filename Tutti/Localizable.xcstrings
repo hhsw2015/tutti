@@ -1574,6 +1574,123 @@
         "ko" : { "stringUnit" : { "state" : "translated", "value" : "이름 변경" } },
         "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "重新命名" } }
       }
+    },
+    "免费版 · 基础功能完整可用" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Free · All basic features included" } },
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Kostenlos · Alle Grundfunktionen verfügbar" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Gratis · Todas las funciones básicas incluidas" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Gratuit · Toutes les fonctions de base incluses" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Gratis · Tutte le funzioni base incluse" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "無料版 · 基本機能はすべて利用可能" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "무료 · 모든 기본 기능 포함" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "免費版 · 基礎功能完整可用" } }
+      }
+    },
+    "Pro 让你用键盘音量键和菜单栏滚轮直接调聚合输出，还能把常用设备组合存为档案一键切换。一次买断 $7.99，含所有未来 Pro 功能升级。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Pro lets you adjust the aggregate output with your keyboard volume keys and the menu bar scroll wheel, and save device combinations as profiles for one-tap switching. One-time $7.99, includes all future Pro upgrades." } },
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Mit Pro steuerst du die Mischausgabe über die Lautstärketasten der Tastatur und das Scrollrad in der Menüleiste und speicherst Gerätekombinationen als Profile für den Schnellwechsel. Einmalig $7.99, inkl. aller künftigen Pro-Upgrades." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Pro permite ajustar la salida combinada con las teclas de volumen y la rueda de desplazamiento en la barra de menús, y guardar combinaciones de dispositivos como perfiles para cambiar con un toque. Pago único de $7.99, incluye todas las futuras actualizaciones Pro." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Pro vous permet d'ajuster la sortie agrégée avec les touches de volume du clavier et la molette de la barre des menus, et d'enregistrer des combinaisons d'appareils sous forme de profils pour basculer en un clic. Achat unique de $7.99, inclut toutes les futures mises à jour Pro." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Con Pro regoli l'uscita aggregata con i tasti volume e la rotella nella barra dei menu, e salvi le combinazioni di dispositivi come profili per passare con un clic. Pagamento unico di $7.99, include tutti gli aggiornamenti Pro futuri." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Pro ではキーボードの音量キーとメニューバーのスクロールホイールで集約出力を直接調整でき、よく使う出力先の組み合わせをプロファイルとして保存してワンタップで切り替えられます。買い切り $7.99、今後のすべての Pro アップグレードを含みます。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Pro에서는 키보드 볼륨 키와 메뉴 막대 스크롤 휠로 통합 출력을 직접 조절하고, 자주 쓰는 기기 조합을 프로필로 저장해 원클릭으로 전환할 수 있습니다. 일회성 $7.99, 모든 향후 Pro 업그레이드 포함." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "Pro 讓你用鍵盤音量鍵和選單列滾輪直接調聚合輸出，還能把常用裝置組合存為檔案一鍵切換。一次買斷 $7.99，含所有未來 Pro 功能升級。" } }
+      }
+    },
+    "Pro 试用已结束 · 高级功能已停用" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Pro trial ended · Premium features disabled" } },
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Pro-Test beendet · Premium-Funktionen deaktiviert" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Prueba Pro finalizada · Funciones premium desactivadas" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Essai Pro terminé · Fonctions premium désactivées" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Prova Pro terminata · Funzioni premium disattivate" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Pro 試用が終了 · プレミアム機能は無効" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Pro 체험 종료 · 프리미엄 기능 비활성화" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "Pro 試用已結束 · 進階功能已停用" } }
+      }
+    },
+    "释放 1 台设备名额。停用后基础功能仍可使用，仅高级功能（音量直控和档案保存）会被禁用，可随时用同一密钥重新激活。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Frees one device slot. Basic features keep working — only premium features (volume takeover and profiles) will be disabled. You can reactivate with the same key anytime." } },
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Gibt einen Geräteplatz frei. Grundfunktionen bleiben verfügbar; nur Premium-Funktionen (Lautstärkesteuerung und Profile) werden deaktiviert. Mit demselben Schlüssel jederzeit reaktivierbar." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Libera un espacio de dispositivo. Las funciones básicas siguen funcionando; solo se desactivarán las funciones premium (control de volumen y perfiles). Puedes reactivar con la misma clave en cualquier momento." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Libère un emplacement d'appareil. Les fonctions de base continuent de fonctionner ; seules les fonctions premium (contrôle du volume et profils) seront désactivées. Vous pouvez réactiver avec la même clé à tout moment." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Libera uno slot dispositivo. Le funzioni base continuano a funzionare; verranno disattivate solo le funzioni premium (controllo volume e profili). Puoi riattivare con la stessa chiave in qualsiasi momento." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "1 台分の枠が解放されます。基本機能はそのまま使えます。プレミアム機能（音量直接操作とプロファイル保存）のみ無効になります。同じキーでいつでも再認証できます。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "기기 1대 분량이 해제됩니다. 기본 기능은 계속 사용할 수 있으며, 프리미엄 기능(볼륨 직접 제어와 프로필 저장)만 비활성화됩니다. 같은 키로 언제든지 다시 활성화할 수 있습니다." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "釋出 1 台裝置名額。停用後基礎功能仍可使用，僅進階功能（音量直控與檔案儲存）會被停用，可隨時用同一密鑰重新啟用。" } }
+      }
+    },
+    "高级功能 · Pro" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Pro features" } },
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Pro-Funktionen" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Funciones Pro" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fonctions Pro" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Funzioni Pro" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Pro 機能" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Pro 기능" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "進階功能 · Pro" } }
+      }
+    },
+    "升级 Pro 后，键盘音量键和菜单栏滚轮直接调聚合输出，常用设备组合存为档案一键切换。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Upgrade to Pro: keyboard volume keys and the menu bar scroll wheel adjust the aggregate output directly, and save device combinations as profiles for one-tap switching." } },
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Upgrade auf Pro: Die Lautstärketasten der Tastatur und das Scrollrad in der Menüleiste steuern die Mischausgabe direkt, und du speicherst Gerätekombinationen als Profile für den Schnellwechsel." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Mejora a Pro: las teclas de volumen y la rueda de desplazamiento ajustan directamente la salida combinada, y guardas combinaciones de dispositivos como perfiles para cambiar con un toque." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Passez à Pro : les touches de volume et la molette de la barre des menus ajustent directement la sortie agrégée, et vous enregistrez les combinaisons d'appareils sous forme de profils pour basculer en un clic." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Passa a Pro: i tasti volume e la rotella nella barra dei menu regolano direttamente l'uscita aggregata e salvi le combinazioni di dispositivi come profili per passare con un clic." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Pro にアップグレード: キーボードの音量キーとメニューバーのスクロールホイールで集約出力を直接調整でき、出力先の組み合わせをプロファイルとして保存できます。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Pro로 업그레이드: 키보드 볼륨 키와 메뉴 막대 스크롤 휠로 통합 출력을 바로 조절하고, 자주 쓰는 기기 조합을 프로필로 저장할 수 있습니다." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "升級 Pro 後，鍵盤音量鍵和選單列滾輪直接調聚合輸出，常用裝置組合存為檔案一鍵切換。" } }
+      }
+    },
+    "Pro 已解锁。键盘音量键和菜单栏滚轮可直接调聚合输出，常用设备组合也能存为档案一键切换。" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Pro is unlocked. Adjust the aggregate output with your keyboard volume keys or the menu bar scroll wheel, and save device combinations as profiles for one-tap switching." } },
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Pro freigeschaltet. Steuere die Mischausgabe mit den Lautstärketasten der Tastatur oder dem Scrollrad in der Menüleiste und speichere Gerätekombinationen als Profile für den Schnellwechsel." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Pro desbloqueado. Ajusta la salida combinada con las teclas de volumen o la rueda de desplazamiento, y guarda combinaciones de dispositivos como perfiles para cambiar con un toque." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Pro déverrouillé. Ajustez la sortie agrégée avec les touches de volume ou la molette de la barre des menus, et enregistrez les combinaisons d'appareils sous forme de profils pour basculer en un clic." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Pro sbloccato. Regola l'uscita aggregata con i tasti volume o la rotella nella barra dei menu e salva le combinazioni di dispositivi come profili per passare con un clic." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Pro が有効になりました。キーボードの音量キーやメニューバーのスクロールホイールで集約出力を調整でき、出力先の組み合わせをプロファイルとして保存できます。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Pro가 활성화되었습니다. 키보드 볼륨 키나 메뉴 막대 스크롤 휠로 통합 출력을 조절하고, 기기 조합을 프로필로 저장할 수 있습니다." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "Pro 已解鎖。鍵盤音量鍵和選單列滾輪可直接調聚合輸出，常用裝置組合也能存為檔案一鍵切換。" } }
+      }
+    },
+    "高级功能" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Pro features" } },
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Pro-Funktionen" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Funciones Pro" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fonctions Pro" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Funzioni Pro" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Pro 機能" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Pro 기능" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "進階功能" } }
+      }
+    },
+    "音量直控 + 档案切换" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Volume + profile switching" } },
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Lautstärke + Profile" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Volumen + perfiles" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Volume + profils" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Volume + profili" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "音量 + プロファイル切替" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "볼륨 + 프로필 전환" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "音量直控 + 檔案切換" } }
+      }
     }
   }
 }
