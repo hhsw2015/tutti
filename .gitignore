@@ -4,9 +4,31 @@ xcuserdata/
 DerivedData/
 .build/
 build/
+.swiftpm/
+
+# IDE state
+.vscode/
+.idea/
 
 # Local-only progress tracking, not for upstream
 TODO.md
 
-# Certificate Signing Requests should never be committed
+# Unit tests stay local — they document license/trial internals
+TuttiTests/
+
+# Signing & credentials must never be committed
 *.certSigningRequest
+*.mobileprovision
+*.p12
+*.cer
+*.pem
+*.key
+
+# Env files with potential secrets
+.env
+.env.*
+
+# Built artifacts that may land in the repo root
+*.dmg
+*.zip
+*.app
