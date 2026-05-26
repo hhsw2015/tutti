@@ -16,6 +16,7 @@
 		3C859E0EBABE04384253AF6A /* VolumeKeyMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01E0A1B8444B840EC7520D3 /* VolumeKeyMonitor.swift */; };
 		41E14891E3758C5CBD9D2E00 /* VolumeOSDController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A673E36F99B203C7993A19 /* VolumeOSDController.swift */; };
 		5335AB69E6C0385207113DF2 /* ProUpgradeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D847762E8D12F6E3DB46943 /* ProUpgradeButton.swift */; };
+		B1C2D3E4F5061728394A5B6C /* ProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0B1C2D3E4F506172839405B /* ProfileStore.swift */; };
 		6A9B034C169B8351750C1166 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D91242F916B4605C2909D9D6 /* AppDelegate.swift */; };
 		6FF6E8B64FC7264CF1A103FA /* TrialManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B314347F4A6CDB2AB077825 /* TrialManagerTests.swift */; };
 		7226802E3EEAC600C9B6EF9F /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67375A0E29E56D83E7C8D944 /* MenuBarView.swift */; };
@@ -47,6 +48,7 @@
 		4B314347F4A6CDB2AB077825 /* TrialManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrialManagerTests.swift; sourceTree = "<group>"; };
 		5253B6DAB2642EE2A6051DC7 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		5D847762E8D12F6E3DB46943 /* ProUpgradeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProUpgradeButton.swift; sourceTree = "<group>"; };
+		A0B1C2D3E4F506172839405B /* ProfileStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileStore.swift; sourceTree = "<group>"; };
 		5E8A53C472F65BA90F073340 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		5F8174A1619533BDEF90EC63 /* TuttiPulseIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TuttiPulseIcon.swift; sourceTree = "<group>"; };
 		67375A0E29E56D83E7C8D944 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
@@ -91,6 +93,7 @@
 				67375A0E29E56D83E7C8D944 /* MenuBarView.swift */,
 				5E8A53C472F65BA90F073340 /* OnboardingView.swift */,
 				5D847762E8D12F6E3DB46943 /* ProUpgradeButton.swift */,
+				A0B1C2D3E4F506172839405B /* ProfileStore.swift */,
 				DCEE4624F35F7EDEB969BFBB /* SettingsView.swift */,
 				95C48560770FEFBA4E27A594 /* StatusItemController.swift */,
 				3685C7D65C9EB34FAB266678 /* Theme.swift */,
@@ -242,6 +245,7 @@
 				7226802E3EEAC600C9B6EF9F /* MenuBarView.swift in Sources */,
 				DA723EC44F77CDCC8BAEB839 /* OnboardingView.swift in Sources */,
 				5335AB69E6C0385207113DF2 /* ProUpgradeButton.swift in Sources */,
+				B1C2D3E4F5061728394A5B6C /* ProfileStore.swift in Sources */,
 				C16F31402213E8291C44501C /* SettingsView.swift in Sources */,
 				8714A0C087CED7352EC3AB1C /* StatusItemController.swift in Sources */,
 				79A08DC7B987E829175C7862 /* Theme.swift in Sources */,

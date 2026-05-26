@@ -11,10 +11,14 @@ private let capsuleGap: CGFloat = 8
 
 struct MenuBarView: View {
     @EnvironmentObject var manager: AudioDeviceManager
+    @EnvironmentObject var profiles: ProfileStore
     @StateObject private var prefs = AppearancePrefs.shared
     @StateObject private var license = LicenseManager.shared
     @StateObject private var trial = TrialManager.shared
     @State private var devicesFolded = false
+    @State private var profilesFolded = false
+    @State private var showProfileSaveField = false
+    @State private var profileSaveDraft = ""
     @State private var showUpgradePulse = false
     @State private var welcomeAcknowledged = UserDefaults.standard.bool(forKey: "tutti.welcome.acknowledged")
     @State private var countdownDismissedDate: String = UserDefaults.standard.string(forKey: "tutti.countdown.dismissedDate") ?? ""
@@ -22,6 +26,9 @@ struct MenuBarView: View {
     @Environment(\.tuttiPopover) private var popoverHost
 
     private var showMaster: Bool { manager.selectedIDs.count >= 2 }
+    private var showProfiles: Bool {
+        !profiles.profiles.isEmpty || manager.selectedIDs.count >= 2
+    }
 
     var body: some View {
         // Explicit reads keep SwiftUI subscribed to license + trial; the
@@ -47,7 +54,18 @@ struct MenuBarView: View {
             }
 
             DevicesCapsule(folded: $devicesFolded)
+
+            if showProfiles {
+                ProfilesCapsule(
+                    folded: $profilesFolded,
+                    showSaveField: $showProfileSaveField,
+                    draftName: $profileSaveDraft
+                )
+                .transition(.scale(scale: 0.96).combined(with: .opacity))
+            }
         }
+        .animation(.easeOut(duration: 0.20), value: showProfiles)
+        .animation(.easeOut(duration: 0.20), value: profilesFolded)
         .onChange(of: manager.lastUpgradeAttemptID) { _ in
             // Re-show the volume-key upgrade banner each time the user
             // hits the gate, even if they previously dismissed it.
@@ -89,7 +107,7 @@ struct MenuBarView: View {
             return .trialExpired
         }
         if showUpgradePulse && !LicenseManager.hasProAccess {
-            return .upgrade
+            return .upgrade(reason: manager.pendingUpgradeReason)
         }
         if trial.isInTrial && trial.daysRemaining <= 3
             && countdownDismissedDate != todayKey() {
@@ -399,6 +417,277 @@ private struct DevicesCapsule: View {
     }
 }
 
+// MARK: - Profiles capsule
+
+private struct ProfilesCapsule: View {
+    @EnvironmentObject var manager: AudioDeviceManager
+    @EnvironmentObject var profiles: ProfileStore
+    @EnvironmentObject var prefs: AppearancePrefs
+    @Binding var folded: Bool
+    @Binding var showSaveField: Bool
+    @Binding var draftName: String
+
+    private var canSave: Bool { manager.selectedIDs.count >= 2 }
+
+    var body: some View {
+        GlassCapsule {
+            VStack(spacing: 0) {
+                SectionHead(title: "档案", folded: $folded) {
+                    if canSave && !showSaveField {
+                        Button {
+                            withAnimation { showSaveField = true }
+                        } label: {
+                            HStack(spacing: 3) {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 9, weight: .bold))
+                                Text("保存当前")
+                                    .font(.system(size: 11, weight: .semibold))
+                            }
+                            .foregroundStyle(prefs.accentColor)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+
+                if !folded {
+                    if showSaveField {
+                        ProfileSaveField(draftName: $draftName,
+                                         onSubmit: commitSave,
+                                         onCancel: cancelSave)
+                            .padding(.horizontal, 8)
+                            .padding(.bottom, 8)
+                            .transition(.opacity)
+                    }
+
+                    if !profiles.profiles.isEmpty {
+                        let activeUIDs = activeDeviceUIDs
+                        VStack(spacing: 1) {
+                            ForEach(profiles.profiles) { profile in
+                                GlassProfileRow(
+                                    profile: profile,
+                                    isActive: Set(profile.deviceUIDs) == activeUIDs
+                                )
+                            }
+                        }
+                        .padding(.horizontal, 4)
+                        .padding(.bottom, 6)
+                    }
+                }
+            }
+            .padding(4)
+            .animation(.easeOut(duration: 0.18), value: showSaveField)
+        }
+    }
+
+    private var activeDeviceUIDs: Set<String> {
+        Set(manager.devices
+            .filter { manager.selectedIDs.contains($0.id) }
+            .map { $0.uid })
+    }
+
+    private func commitSave() {
+        let name = draftName.trimmingCharacters(in: .whitespaces)
+        guard !name.isEmpty else { return }
+        // Pro gate: free users see the banner and the draft sticks around so
+        // they can retry post-upgrade without retyping.
+        guard LicenseManager.hasProAccess else {
+            manager.triggerUpgradePrompt(reason: .profile)
+            return
+        }
+        let uids = manager.devices
+            .filter { manager.selectedIDs.contains($0.id) }
+            .map { $0.uid }
+        profiles.add(name: name, uids: uids)
+        draftName = ""
+        showSaveField = false
+    }
+
+    private func cancelSave() {
+        draftName = ""
+        showSaveField = false
+    }
+}
+
+private struct ProfileSaveField: View {
+    @EnvironmentObject var prefs: AppearancePrefs
+    @Binding var draftName: String
+    let onSubmit: () -> Void
+    let onCancel: () -> Void
+
+    var body: some View {
+        HStack(spacing: 4) {
+            TextField("档案名称", text: $draftName)
+                .textFieldStyle(.plain)
+                .font(.system(size: 12))
+                .foregroundStyle(Color.glassTextHi)
+                .padding(.horizontal, 9)
+                .padding(.vertical, 6)
+                .background(
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .fill(Color.glassInnerFill)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                .stroke(Color.glassInnerStroke, lineWidth: 0.5)
+                        )
+                )
+                .onSubmit(onSubmit)
+
+            Button(action: onCancel) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(Color.glassTextMid)
+                    .frame(width: 24, height: 24)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .keyboardShortcut(.cancelAction)
+            .help("取消")
+
+            Button(action: onSubmit) {
+                Image(systemName: "checkmark")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(draftName.isEmpty ? Color.glassTextLo : prefs.accentColor)
+                    .frame(width: 24, height: 24)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .disabled(draftName.isEmpty)
+            .help("保存")
+        }
+    }
+}
+
+// MARK: - Profile row
+
+private struct GlassProfileRow: View {
+    let profile: Profile
+    let isActive: Bool
+    @EnvironmentObject var manager: AudioDeviceManager
+    @EnvironmentObject var profiles: ProfileStore
+    @EnvironmentObject var prefs: AppearancePrefs
+    @State private var hovering = false
+    @State private var renaming = false
+    @State private var draftName = ""
+    @FocusState private var nameFieldFocused: Bool
+
+    private var trailingReserve: CGFloat {
+        if renaming { return 26 }
+        if hovering { return 44 }
+        return 0
+    }
+
+    var body: some View {
+        ZStack(alignment: .trailing) {
+            Button {
+                guard !renaming else { return }
+                manager.applyProfile(uids: profile.deviceUIDs)
+            } label: {
+                HStack(spacing: 10) {
+                    GlassIconBadge(symbol: "slider.horizontal.3",
+                                   selected: isActive,
+                                   accent: prefs.accentColor)
+                        .scaleEffect(0.8)
+                        .frame(width: 24, height: 24)
+
+                    if renaming {
+                        TextField("名称", text: $draftName)
+                            .textFieldStyle(.plain)
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(Color.glassTextHi)
+                            .focused($nameFieldFocused)
+                            .onSubmit { commitRename() }
+                            .onExitCommand { cancelRename() }
+                    } else {
+                        Text(profile.name)
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(Color.glassTextHi)
+                            .lineLimit(1)
+                    }
+
+                    Spacer()
+                    Text(isActive ? "当前 · \(profile.deviceUIDs.count) 台"
+                                  : "\(profile.deviceUIDs.count) 台")
+                        .font(.system(size: 11).monospacedDigit())
+                        .foregroundStyle(isActive ? prefs.accentColor : Color.glassTextLo)
+                        .padding(.trailing, trailingReserve)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .background(
+                Group {
+                    if isActive {
+                        prefs.accentColor.opacity(0.18)
+                    } else if hovering {
+                        Color.glassHoverBg
+                    } else {
+                        Color.clear
+                    }
+                }
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+
+            if renaming {
+                Button { commitRename() } label: {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(prefs.accentColor)
+                        .frame(width: 22, height: 22)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .help("确认重命名")
+                .padding(.trailing, 4)
+            } else if hovering {
+                HStack(spacing: 0) {
+                    Button { beginRename() } label: {
+                        Image(systemName: "pencil")
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundStyle(Color.glassTextMid)
+                            .frame(width: 22, height: 22)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .help("重命名")
+
+                    Button { profiles.delete(profile) } label: {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 9, weight: .semibold))
+                            .foregroundStyle(Color.muteRed.opacity(0.85))
+                            .frame(width: 22, height: 22)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .help("删除")
+                }
+                .padding(.trailing, 4)
+            }
+        }
+        .onHover { hovering = $0 }
+        .onChange(of: nameFieldFocused) { focused in
+            if !focused && renaming { commitRename() }
+        }
+    }
+
+    private func beginRename() {
+        draftName = profile.name
+        renaming = true
+        DispatchQueue.main.async { nameFieldFocused = true }
+    }
+
+    private func commitRename() {
+        profiles.rename(profile, to: draftName)
+        renaming = false
+    }
+
+    private func cancelRename() {
+        renaming = false
+    }
+}
+
 struct AccentPillButton: ButtonStyle {
     @EnvironmentObject var prefs: AppearancePrefs
 
@@ -666,7 +955,7 @@ enum BannerVariant: Equatable {
     case welcome(trialDays: Int)
     case trialCountdown(daysRemaining: Int)
     case trialExpired
-    case upgrade  // generic Pro upsell — fired by volume-key gate
+    case upgrade(reason: UpgradeReason)  // generic Pro upsell with feature-specific copy
 }
 
 private struct UpgradeBanner: View {
@@ -695,7 +984,8 @@ private struct UpgradeBanner: View {
         case .welcome:                       return "欢迎使用 Tutti · Pro 试用已开启"
         case .trialCountdown(let days):      return "Pro 试用还剩 \(days) 天"
         case .trialExpired:                  return "Pro 试用已结束 · 音量直控已停用"
-        case .upgrade:                       return "音量直控需要 Tutti Pro"
+        case .upgrade(.volumeTakeover):      return "音量直控需要 Tutti Pro"
+        case .upgrade(.profile):             return "档案功能需要 Tutti Pro"
         }
     }
 

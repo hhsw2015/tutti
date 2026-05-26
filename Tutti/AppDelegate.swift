@@ -4,6 +4,7 @@ import SwiftUI
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private let manager = AudioDeviceManager()
+    private let profiles = ProfileStore()
     private let popover = TuttiPopover()
     private var statusItem: StatusItemController?
     private var settingsWindow: NSWindow?
@@ -17,6 +18,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         let rootView = MenuBarView()
             .environmentObject(manager)
+            .environmentObject(profiles)
             .environment(\.openTuttiSettings, OpenTuttiSettingsAction { [weak self] in
                 self?.openSettings()
             })

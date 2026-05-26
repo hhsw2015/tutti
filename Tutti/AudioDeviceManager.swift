@@ -15,6 +15,12 @@ private let aggregateUID = "com.recents.tutti.aggregate"
 private let legacyMultiOutUID = "com.multiout.aggregate"
 private let systemObject = AudioObjectID(kAudioObjectSystemObject)
 
+/// Why a free user just hit a Pro gate. Banner copy routes on this.
+enum UpgradeReason: Equatable {
+    case volumeTakeover  // hardware volume keys or scroll on the menu bar icon
+    case profile         // save / apply a device-set profile
+}
+
 @MainActor
 final class AudioDeviceManager: ObservableObject {
     @Published private(set) var devices: [AudioDevice] = []
@@ -32,6 +38,9 @@ final class AudioDeviceManager: ObservableObject {
     /// UI observes this to open the upgrade banner; new UUID each time so
     /// repeated attempts still fire.
     @Published var lastUpgradeAttemptID: UUID?
+    /// Which Pro-only path the most recent upgrade attempt came from. Banner
+    /// copy routes on this so a profile-tap doesn't show "音量直控" copy.
+    @Published private(set) var pendingUpgradeReason: UpgradeReason = .volumeTakeover
 
     private var aggregateID: AudioDeviceID?
     private var savedDefaultID: AudioDeviceID?
@@ -575,10 +584,11 @@ final class AudioDeviceManager: ObservableObject {
         volumeKeyMonitor?.start(promptForPermission: false)
     }
 
-    /// Called when a free / expired-trial user presses a hardware volume
-    /// key or scrolls on the menu bar icon. Throttled so a 5-second volume
-    /// drag doesn't fire the banner dozens of times.
-    func triggerVolumeKeyUpgradePrompt() {
+    /// Called when a free / expired-trial user hits a Pro-only path.
+    /// Throttled so a 5-second volume drag doesn't fire the banner dozens
+    /// of times. The throttle is shared across reasons on purpose — back-to-back
+    /// attempts from different features still feel like one upsell event.
+    func triggerUpgradePrompt(reason: UpgradeReason) {
         guard !LicenseManager.hasProAccess else { return }
         let now = Date()
         if let last = lastVolumeKeyUpgradePromptAt,
@@ -586,7 +596,26 @@ final class AudioDeviceManager: ObservableObject {
             return
         }
         lastVolumeKeyUpgradePromptAt = now
+        pendingUpgradeReason = reason
         lastUpgradeAttemptID = UUID()
+    }
+
+    /// Back-compat alias for the hardware volume-key / scroll path. Kept so
+    /// VolumeKeyMonitor and existing scroll handlers don't need to know about
+    /// the reason enum.
+    func triggerVolumeKeyUpgradePrompt() {
+        triggerUpgradePrompt(reason: .volumeTakeover)
+    }
+
+    /// Pro-gated. Replaces the selected device set with the devices matching
+    /// `uids`. Free users get an upgrade banner instead of an apply.
+    func applyProfile(uids: [String]) {
+        guard LicenseManager.hasProAccess else {
+            triggerUpgradePrompt(reason: .profile)
+            return
+        }
+        selectedIDs = Set(devices.filter { uids.contains($0.uid) }.map { $0.id })
+        updateAggregate()
     }
 
     /// Scroll on the menu bar icon. Pro-gated, with OSD feedback.
