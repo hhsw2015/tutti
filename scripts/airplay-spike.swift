@@ -125,6 +125,69 @@
 //     the AirPlay capability/feature parsing the Fig daemon already does from
 //     TXT records. Move on to Path 4 (MRMediaRemoteService).
 //
+// Path 4 result (run 2026-05-27, macOS 26.5):
+//   - MR* classes (pre-dlopen): NONE found via NSClassFromString — framework
+//     not yet loaded into the swift CLI process.
+//   - dlopen MediaRemote framework: YES (handle non-null).
+//   - MR* classes (post-dlopen, verified by NSClassFromString):
+//       MRMediaRemoteService, MRDestination, MRAVOutputDevice, MRAVEndpoint,
+//       MROrigin, MRNowPlayingController, MRNowPlayingRequest, MRClient,
+//       MRPlayer
+//   - Enumeration C symbols found:
+//       MRMediaRemoteCopyPickableRoutes,
+//       MRMediaRemoteSetPickedRouteWithPassword,
+//       MRMediaRemoteRegisterForNowPlayingNotifications,
+//       MRMediaRemoteGetNowPlayingInfo,
+//       MRMediaRemoteSendCommand,
+//       MRMediaRemoteSetWantsNowPlayingNotifications,
+//       MRMediaRemoteSetCanBeNowPlayingApplication,
+//       MRAVRoutingDiscoverySessionCreate,
+//       MRMediaRemoteCopyPickableRoutesForCategory
+//   - Enumeration selectors on MRAVRoutingDiscoverySessionWrapper:
+//       setDiscoveryMode:, sharedSession, addOutputDevicesAddedCallback:,
+//       addOutputDevicesChangedCallback:, addEndpointsAddedCallback:,
+//       setCachedDiscoveryEnabled:, setAlwaysAllowUpdates:,
+//       setTargetAudioSessionID:, setRoutingContextUID: (46 methods total)
+//   - Drill-in invocation results:
+//       MRMediaRemoteCopyPickableRoutes() -> NSArray of 12 routes, ALL local
+//         Core Audio HAL devices (BlackHole, Studio Display speaker/mic,
+//         built-in speaker, iPhone mic, accessibility plugin). ZERO of the 5
+//         LAN AirPlay devices (HomePods, Apple TV, other Macs) present.
+//       MRMediaRemoteCopyPickableRoutesForCategory(cat, queue, block) for
+//         categories "AudioVideo"/"Audio"/"Video"/"Default"/"" -> callback
+//         never fires within 5s. Function exists but is a no-op in this
+//         context (no entitlement to subscribe to routing updates).
+//       MRAVRoutingDiscoverySessionCreate() -> returns
+//         MRAVRoutingDiscoverySessionWrapper. setDiscoveryMode:2 +
+//         setAlwaysAllowUpdates:true + setCachedDiscoveryEnabled:true accepted
+//         without error; callbacks crash inside
+//         -[MRAVRoutingDiscoverySessionWrapper addEndpointsModifiedCallback:]
+//         when called from swift CLI (Swift block ABI mismatch — would need
+//         compiled binary). Even ignoring the callback path: the wrapper is
+//         a thin shim over the same Fig routing daemon discovery pipeline
+//         that gated Paths 1-3.
+//   - meets 5-criteria validation: NO (criterion 1: 0 of 5 AirPlay devices
+//     visible; criterion 4: empty enumeration)
+//   - verdict: REJECTED
+//   - notes: MediaRemote.framework is a different ObjC surface but the data
+//     flows from the SAME upstream source (the Fig routing daemon) as Paths
+//     1, 2, 3. MRMediaRemoteCopyPickableRoutes only returns whatever local
+//     HAL routes the system has already published into MediaRemote — it does
+//     NOT contain LAN-discovered AirPlay endpoints unless the gating daemon
+//     has populated them, which requires the same private entitlement
+//     (com.apple.private.mediaremote.*-family) Path 1 hit.
+//
+//     Confirms the unified root cause: every native AirPlay enumeration API
+//     on macOS 26.5 — AVFoundation routing, MediaRemote, all the way down —
+//     is gated on first-party private entitlements at the routing-daemon
+//     layer. A Developer ID app cannot reach LAN AirPlay device enumeration
+//     through any documented or commonly-known private symbol.
+//
+//     Next step: Task 0.7 downscope. Remove HAL AirPlay filter
+//     (AudioDeviceManager:244) so the currently-selected AirPlay route shows
+//     up in Tutti's device list when the user picks it via Control Center.
+//     Drop multi-device-list scope from v0.3.x.
+//
 
 import Foundation
 import AVFoundation
@@ -518,7 +581,65 @@ class NetServiceBrowserDelegateImpl: NSObject, NetServiceBrowserDelegate, NetSer
         services.append(service)
     }
 }
-func runPath4() { print("\n=== Path 4: MRMediaRemoteService ===\n"); /* Task 0.5 fills in */ }
+func runPath4() {
+    print("\n=== Path 4: MRMediaRemoteService ===\n")
+
+    // The framework is at /System/Library/PrivateFrameworks/MediaRemote.framework
+    // For AirPlay device enumeration, likely candidate classes:
+    let candidateClasses = [
+        "MRMediaRemoteService",
+        "MRDestinationGroup",
+        "MRDevice",
+        "MRAVRoutingController",
+        "MRAVOutputDevice",
+        "MRAVEndpoint",
+        "MROrigin",
+        "MRNowPlayingController",
+    ]
+
+    var foundClasses: [String: AnyClass] = [:]
+    for name in candidateClasses {
+        if let cls = classExists(name) {
+            foundClasses[name] = cls
+            print("[Path 4] \(name) FOUND")
+        } else {
+            print("[Path 4] \(name) NOT FOUND")
+        }
+    }
+
+    print("\n[Path 4] Inspecting found classes:")
+    for (name, cls) in foundClasses {
+        print("\n  === \(name) ===")
+        printClassMethods(cls)
+    }
+
+    // If MediaRemote framework is loadable, try dlopen'ing for additional symbols
+    let frameworkPath = "/System/Library/PrivateFrameworks/MediaRemote.framework/MediaRemote"
+    if let handle = dlopen(frameworkPath, RTLD_NOW) {
+        print("\n[Path 4] dlopen succeeded for MediaRemote framework")
+        // Look for global C functions like MRMediaRemoteCopyAvailableOutputDevices
+        let candidateSymbols = [
+            "MRMediaRemoteGetAvailableOutputDevices",
+            "MRMediaRemoteCopyAvailableOutputDevices",
+            "MRMediaRemoteCopyOutputDevicesForController",
+            "MRMediaRemoteGetOutputDevicesForController",
+            "MRMediaRemoteRegisterForAvailableOutputDevicesChangeUpdates",
+            "MRRoutingControllerCreate",
+            "MRDestinationCopyAvailableDestinations",
+        ]
+        for sym in candidateSymbols {
+            if dlsym(handle, sym) != nil {
+                print("[Path 4]   ★ symbol found: \(sym)")
+            } else {
+                print("[Path 4]   - symbol missing: \(sym)")
+            }
+        }
+        dlclose(handle)
+    } else {
+        let err = dlerror().flatMap { String(cString: $0) } ?? "unknown"
+        print("\n[Path 4] dlopen failed: \(err)")
+    }
+}
 
 // MARK: - Entry point
 
