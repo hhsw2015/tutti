@@ -45,6 +45,42 @@
 //   first-party entitlement (com.apple.private.avfoundation.* family) or an
 //   Apple-team-id check. Move on to Path 2/3/4.
 //
+// Path 2 result (run 2026-05-27, macOS 26.5):
+//   - class found: yes (AVOutputContext)
+//   - total class methods sweeped: 25
+//   - interesting selectors (20): outputContext, auxiliaryOutputContext,
+//     defaultSharedOutputContext, outputContextForControllingOutputDeviceGroupWithID:options:,
+//     outputContextExistsWithRemoteOutputDevice, resetOutputDeviceForAllOutputContexts,
+//     sharedSystemAudioContext, outputContextWithFigRoutingContextCreator:,
+//     outputContextWithFigRoutingContextCreator:communicationChannelManagerCreator:,
+//     sharedAudioPresentationOutputContext, outputContextForControllingOutputDeviceGroupWithID:,
+//     outputContextForID:, defaultOutputContextImplClass,
+//     outputContextWithFigRoutingContextCreator:volumeController:,
+//     outputContextWithFigRoutingContextCreator:outputDeviceTranslator:,
+//     sharedSystemRemotePoolContext, sharedSystemScreenContext,
+//     allSharedAudioOutputContexts, addSharedAudioOutputContext,
+//     sharedSystemRemoteDisplayContext
+//   - non-nil array-returning methods:
+//       +allSharedAudioOutputContexts -> NSArray of 4 AVOutputContext
+//         (UUIDs, type=AVOutputContextTypeAudio) — but these are AUDIO CONTEXTS,
+//         not devices. Each context's outputDevice = nil, outputDevices = [].
+//   - other non-nil singletons (all AVOutputContext, not devices):
+//       +outputContext (video), +auxiliaryOutputContext (video),
+//       +defaultSharedOutputContext (audio), +addSharedAudioOutputContext (audio),
+//       +defaultOutputContextImplClass (returns AVFigRoutingContextOutputContextImpl class)
+//   - drill-down: probed instance methods (62 total). outputDevice/outputDevices
+//     properties exist but are nil/empty even after 5s poll on every context,
+//     including +iTunesAudioContext. The class is a routing SINK abstraction
+//     (setOutputDevice:, addOutputDevice:, removeOutputDevice:), not a discovery
+//     source — it expects you to already have an AVOutputDevice from elsewhere.
+//   - meets 5-criteria validation: NO (criterion 1: 0 AirPlay devices visible;
+//     criterion 2: contexts are not AVOutputDevice-shaped; criterion 4: empty)
+//   - verdict: REJECTED
+//   - notes: confirms Path 1's finding — AirPlay device enumeration is gated at
+//     the Fig daemon level regardless of which AVFoundation surface you use.
+//     AVOutputContext is downstream of discovery, not a discovery API itself.
+//     Move on to Path 3 (NetServiceBrowser + AVOutputDevice mapping).
+//
 
 import Foundation
 import AVFoundation
@@ -300,7 +336,59 @@ func runPath1() {
     // Reset to off
     setMode(probeSession, 0)
 }
-func runPath2() { print("\n=== Path 2: AVOutputContext class methods ===\n"); /* Task 0.3 fills in */ }
+func runPath2() {
+    print("\n=== Path 2: AVOutputContext class methods sweep ===\n")
+    guard let cls = classExists("AVOutputContext") else {
+        print("[Path 2] AVOutputContext NSClassFromString returned nil — unexpected, was found in v0.3.0 spike")
+        return
+    }
+    print("[Path 2] Class found: \(cls)")
+
+    guard let meta: AnyClass = object_getClass(cls) else {
+        print("[Path 2] No metaclass — abort")
+        return
+    }
+
+    var classCount: UInt32 = 0
+    guard let classMethods = class_copyMethodList(meta, &classCount) else {
+        print("[Path 2] class_copyMethodList returned nil")
+        return
+    }
+    defer { free(classMethods) }
+
+    print("[Path 2] All \(classCount) class methods:")
+    var interesting: [String] = []
+    for i in 0..<Int(classCount) {
+        let sel = method_getName(classMethods[i])
+        let selStr = NSStringFromSelector(sel)
+        print("  + \(selStr)")
+        let lower = selStr.lowercased()
+        let keywords = ["discover", "candidate", "available", "browse", "session", "all", "shared", "output"]
+        if keywords.contains(where: { lower.contains($0) }) {
+            interesting.append(selStr)
+        }
+    }
+
+    print("\n[Path 2] Interesting selectors (discovery-adjacent):")
+    for sel in interesting { print("  ★ \(sel)") }
+
+    // Try invoking each interesting class method with no args; check return type
+    for selStr in interesting {
+        let sel = NSSelectorFromString(selStr)
+        guard cls.responds(to: sel) else { continue }
+        // Only invoke methods with 0 args (no colon = no params)
+        if !selStr.contains(":") {
+            let result = cls.perform(sel)?.takeUnretainedValue()
+            print("[Path 2] +[\(cls) \(selStr)] → \(String(describing: result))")
+            if let array = result as? NSArray {
+                print("    array of \(array.count) elements")
+                for item in array {
+                    print("    - \(type(of: item)): \(item)")
+                }
+            }
+        }
+    }
+}
 func runPath3() { print("\n=== Path 3: NetServiceBrowser + AVOutputDevice mapping ===\n"); /* Task 0.4 fills in */ }
 func runPath4() { print("\n=== Path 4: MRMediaRemoteService ===\n"); /* Task 0.5 fills in */ }
 
