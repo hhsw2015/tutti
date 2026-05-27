@@ -55,6 +55,12 @@ Pro lets you adjust volume without opening Tutti, and save device combinations a
 
 [Get a Tutti Pro license](https://tutti.recents.com/buy)
 
+## Roadmap
+
+A glimpse of where we'd like Tutti to go. Timing depends on what macOS opens up to third-party apps, so no promised dates.
+
+- **AirPlay routing inside Tutti**: pick HomePods, Apple TVs and other AirPlay receivers straight from the panel, the same way you switch local outputs today. macOS currently keeps AirPlay discovery and switching on a first-party-only track, so for now you'll keep using Control Center for that. The moment that opens up, Tutti will too.
+
 ## Localization
 
 Localized in 9 languages: Simplified Chinese, Traditional Chinese, English, Japanese, Korean, French, German, Italian, Spanish.

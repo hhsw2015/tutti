@@ -55,6 +55,12 @@ Pro 让你不打开 Tutti 也能调音量，把常用设备组合存为预设一
 
 [获取 Tutti Pro 激活码](https://tutti.recents.com/buy)
 
+## 路线图
+
+下面是我们希望 Tutti 未来能做的事情。能不能做到、什么时候做到要看 macOS 给第三方 app 开放哪些接口，所以不承诺时间表。
+
+- **在 Tutti 里直接切 AirPlay**：让你像切换本地设备一样，在 Tutti 面板里点 HomePod、Apple TV 或别的 AirPlay 接收器。macOS 目前把 AirPlay 的发现和切换放在只对自家 app 开放的接口里，所以暂时还是要用控制中心切。一旦这条路打通，Tutti 第一时间补上。
+
 ## 多语言
 
 支持 9 种语言：简体中文、繁体中文、English、日本語、한국어、Français、Deutsch、Italiano、Español。
