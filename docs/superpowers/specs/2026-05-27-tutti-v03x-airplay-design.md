@@ -33,6 +33,25 @@ Tutti 的产品定位是「替代 macOS 系统音量图标」。当前缺口：
 
 ---
 
+## Spike Result (Phase 0 outcome, 2026-05-27)
+
+**所有 4 条路径 REJECTED**。AirPlay 发现整套 API 在 macOS 26.5 上**通过 Fig 路由 daemon 网关**，要求私有 `com.apple.private.avfoundation.*` 类 entitlement（只发给 Apple 自签 app 如 Control Center / Music）。**第三方 app 无法获得发现能力**。
+
+| Path | API | 结论 | 关键发现 |
+|---|---|---|---|
+| 1 | `AVOutputDeviceDiscoverySession` | REJECTED | Class 存在，`initWithDeviceFeatures:` 真实存在，`setDiscoveryMode:`/`availableOutputDevices` 都接受调用。但 `availableOutputDevices` 永远空 — 即使签 Developer ID + Hardened Runtime + network entitlements 也一样。Fig daemon 拒绝非 Apple-team-signed 进程 |
+| 2 | `AVOutputContext` 25 个 class methods | REJECTED | 全扫一遍。`AVOutputContext` 是路由 **sink**（消费 device），不是 discovery source。`+allSharedAudioOutputContexts` 返回 4 个 app audio session 容器，不是设备 |
+| 3 | `NetServiceBrowser` + `AVOutputDevice` 工厂 | REJECTED | Bonjour 看到所有 5 个 LAN AirPlay 设备（2 HomePod + 1 Apple TV + 2 Mac）。但 `AVOutputDevice` 真实工厂方法只接受 `FigEndpointRef` / `RouteDescriptorRef` 等私有 CoreMedia 类型，这些 ref 只能在 Fig daemon 内生产。Bridge 不可建 |
+| 4 | `MediaRemote.framework` (MR*) | REJECTED | `MRMediaRemoteCopyPickableRoutes()` 工作，返回 12 routes，**全部 12 个是本地 Core Audio HAL 设备**（0 HomePod, 0 Apple TV）。Category-filtered 变体 timeout。`MRAVRoutingDiscoverySessionWrapper` 也走 Fig daemon |
+
+**Downscope 决定**：v0.3.x 改为 v0.2.2 minor release。仅执行 Phase B（解除 HAL AirPlay 过滤），让用户在 Control Center 激活 AirPlay 后能在 Tutti 看到该设备 + 加入聚合 + 调音量 + 静音。Phase A / C / D / E（discovery + 新 capsule + 切换 wiring）全部砍掉。
+
+**Spike 提交链**：`b04ee2f` `86b0d9b` `3b7b760` `27c8510` `febab59` `e6926e1`
+
+**v0.3.x 重启方向**（未来）：等 Apple 放开公开 AirPlay discovery API，或找到不走 Fig daemon 的替代发现机制（HomeKit / Network framework 直接 RAOP 握手 / 等）。
+
+---
+
 ## 已知 Spike 结论（来自 v0.3.0 spec）
 
 **已验证可用**：
