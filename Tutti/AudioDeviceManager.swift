@@ -240,12 +240,8 @@ final class AudioDeviceManager: ObservableObject {
                   let uid = stringProp(id, kAudioDevicePropertyDeviceUID),
                   uid != aggregateUID else { continue }
             let transport = readTransportType(id)
-            // AirPlay devices appear here only when the user already picked
-            // them in Control Center (HAL only sees the currently-routed
-            // device). v0.3.x spike confirmed macOS 26 has no third-party
-            // API to enumerate not-yet-activated AirPlay devices — see
-            // docs/superpowers/specs/2026-05-27-tutti-v03x-airplay-design.md
-            // for Phase 0 spike findings.
+            // AirPlay devices can't be aggregated — Audio MIDI Setup hides them too.
+            if transport == kAudioDeviceTransportTypeAirPlay { continue }
             newDevices.append(AudioDevice(id: id, name: name, uid: uid,
                                           canSetVolume: checkSettable(id),
                                           transportType: transport))

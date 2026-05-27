@@ -1,7 +1,7 @@
 # Tutti v0.3.x — AirPlay 快捷入口
 
 **日期**：2026-05-27
-**状态**：v0.3.x 完整方案 park；v0.2.2 minor 已落地（"解除 HAL AirPlay 过滤"），其余功能等私有 API 路径成熟再重启
+**状态**：**全部 park。** 产品里没有任何 AirPlay 入口或显示。HAL 过滤恢复，AirPlay 设备就算系统在用也不进 Tutti 列表。等私有 API 路径或 macOS 公开 discovery 政策成熟再重启。
 **作者**：Barry × Claude
 **前置背景**：v0.3.0 蓝牙重连尝试 revert（系统自动重连已覆盖、Tutti 通过 Core Audio HAL 自动检测，手动入口冗余）。见 `2026-05-27-tutti-v031-bluetooth-design.md`（已 abandoned）
 
@@ -9,24 +9,25 @@
 
 ## 当前 AirPlay 支持现状（v0.2.x）
 
-**能做的**：
-- macOS 已激活 AirPlay 路由后，AirPlay 设备会作为名为 "AirPlay" 的 HAL 设备出现在 Tutti 输出列表里（`kAudioDeviceTransportTypeAirPlay`），用 `airplayaudio` SF Symbol 渲染。可单选切换、显示音量、加入聚合（如果 CoreAudio 允许）。
+**产品里没有任何 AirPlay 支持。** AirPlay 是 macOS 系统功能，跟 Tutti 解耦：用户在 Control Center 自己切，切完之后 Tutti 也不感知（HAL 过滤直接 skip 掉）。
 
-**不能做的（公开 API 硬边界）**：
-- **在 Tutti 内启动 AirPlay 切换**：无公开 API 在没有 AVPlayer 会话的情况下把系统默认输出切到 AirPlay。
-- **列出未激活的 AirPlay 设备**：HAL 不暴露；私有 `AVOutputContext.outputDevices` 只返回当前路由。
-- **把 AirPlay 跟其他设备叠加输出**：CoreAudio 拒绝把 AirPlay 加入 Aggregate Device。
+**完全不支持的事情**：
+- 在 Tutti 内启动 AirPlay 切换
+- 列出 LAN 上的 AirPlay 接收器
+- 把 AirPlay 路由后的设备显示在 Tutti 输出列表里
+- 把 AirPlay 跟本地设备叠加输出
 
-**未来会支持（等私有 API 路径成熟）**：
-- 用 `AVOutputContext.defaultSharedOutputContext.setOutputDevice(_:options:)`（spike 已确认 macOS 26 上 class method 存在）做 Tutti 内一键切换
-- 用 Bonjour（`_airplay._tcp` / `_raop._tcp`）扫 LAN 拿候选列表，把 endpoint 映射回 `AVOutputDevice` 句柄
-- 触发条件：macOS 后续版本放开公开 discovery API；或评估 DevID 应用直接调用私有 API 的法律/兼容风险后决定。**不上 Mac App Store**，DevID 在风险评估通过的前提下可行。
+**未来重启条件**（满足其一即可考虑）：
+- macOS 公开 discovery API（如 iOS 上的 `AVOutputDeviceDiscoverySession`）放开给第三方 macOS app
+- 评估通过 DevID 应用调用私有 `AVOutputContext.setOutputDevice(_:options:)` 的法律 / 兼容风险，决定接受
+- 找到不走 Fig daemon 的替代发现机制（HomeKit / RAOP 直接握手等）
 
-**今天（2026-05-27 晚）尝试过但 revert 的实验**：
-- 把 Bonjour 发现 + `AVRoutePickerView` 在 Tutti popover 里集成 → picker 显示设备但点击**不切换系统默认输出**（macOS picker 跟系统默认是两套独立状态）
-- 加一个静音 AVPlayer 试图给 picker 一个可路由的会话 → 也不行，picker 在 macOS 上没有 `.player` 属性可绑定
+**已尝试过的 revert 实验**（2026-05-27 晚）：
+- Bonjour 发现 + `AVRoutePickerView` 集成 → picker 显示设备但点击**不切换系统默认输出**（macOS picker 跟系统默认是两套独立状态）
+- 静音 AVPlayer 给 picker 提供会话 → 不行，macOS `AVRoutePickerView` 没有 `.player` 可绑定
 - 跳系统设置「声音」面板作为替代入口 → 功能可用但不够优雅，跟"Tutti 替代系统菜单"定位冲突
-- 结论：纯公开 API 在 macOS 26.5 上做不到"Tutti 内一键切 AirPlay"，park 等私有 API
+- 把 HAL 已激活的 AirPlay 设备显示在列表里（commit d3286a8）→ 跟"Tutti 不感知 AirPlay"的清晰定位冲突，也 revert
+- **结论**：v0.2.2 不发，AirPlay 整体退场。等私有 API 路径成熟再说
 
 ---
 
