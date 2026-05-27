@@ -81,6 +81,50 @@
 //     AVOutputContext is downstream of discovery, not a discovery API itself.
 //     Move on to Path 3 (NetServiceBrowser + AVOutputDevice mapping).
 //
+// Path 3 result (run 2026-05-27, macOS 26.5):
+//   - Bonjour _airplay._tcp services discovered: 5
+//       * Barry's HomePod 2 @ Barrys-HomePod-2.local.:7000
+//       * Barry's TV @ Barrys-TV.local.:7000  (Apple TV)
+//       * Fanny's MacBook Air @ Fanny.local.:7000
+//       * Barry's Mac Studio @ Barrys-Mac-Studio.local.:7000
+//       * Barry's MacBook Neo @ Barrys-MacBook-Neo.local.:7000
+//     (Bonjour is NOT entitlement-gated — works fine from unsigned swift CLI.)
+//   - AVOutputDevice class found: yes
+//   - AVOutputDevice class methods (12 total):
+//       initialize, sharedLocalDevice, localDeviceDidChange,
+//       outputDeviceWithFigEndpoint:,
+//       outputDeviceWithFigEndpoint:routingContextFactory:,
+//       outputDeviceWithFigEndpoint:volumeController:,
+//       outputDeviceWithRouteDescriptor:,
+//       outputDeviceWithRouteDescriptor:routeDiscoverer:,
+//       outputDeviceWithRouteDescriptor:routingContextFactory:,
+//       outputDeviceWithRouteDescriptor:volumeController:,
+//       outputDeviceWithRouteDescriptor:withRoutingContext:,
+//       prefersRouteDescriptors
+//   - Common public-shape factory selectors that exist: NONE
+//       (deviceWithUID:, deviceWithName:, deviceWithHost:, deviceWithIdentifier:,
+//        outputDeviceWithUID:, outputDeviceWithIdentifier: all absent)
+//   - Real factories require opaque CoreMedia private types as input:
+//       FigEndpointRef        — a MediaToolbox CFTypeRef produced by the Fig
+//                               routing daemon's discovery pipeline
+//       RouteDescriptorRef    — same family, also Fig-daemon-sourced
+//     NSClassFromString("FigEndpoint"), "AVFigEndpoint", "FigRoutingContextEndpoint",
+//     "AVOutputDeviceRouteDescriptor" all return nil. The visible classes in
+//     AVFoundation are wrappers like AVFigEndpointOutputDeviceImpl /
+//     AVFigRouteDescriptorOutputDeviceImpl that CONSUME these refs internally;
+//     there is no public way to mint a FigEndpoint from a Bonjour hostname.
+//   - meets 5-criteria validation: no
+//   - verdict: REJECTED
+//   - notes: Bonjour discovery itself works perfectly and we can see every
+//     AirPlay endpoint on the LAN. But the bridge from "I have a hostname and
+//     port" to "I have an AVOutputDevice the rest of AVFoundation will accept"
+//     does not exist in any reachable form. AVOutputDevice factories all
+//     require Fig-daemon-produced opaque refs, which is exactly the gate that
+//     blocked Paths 1 and 2. Bonjour alone is useful for *listing* devices but
+//     not for *switching* — and even listing would require us to reimplement
+//     the AirPlay capability/feature parsing the Fig daemon already does from
+//     TXT records. Move on to Path 4 (MRMediaRemoteService).
+//
 
 import Foundation
 import AVFoundation
@@ -389,7 +433,91 @@ func runPath2() {
         }
     }
 }
-func runPath3() { print("\n=== Path 3: NetServiceBrowser + AVOutputDevice mapping ===\n"); /* Task 0.4 fills in */ }
+func runPath3() {
+    print("\n=== Path 3: NetServiceBrowser + AVOutputDevice mapping ===\n")
+
+    // Phase 3a: Can we discover AirPlay endpoints via mDNS?
+    let browser = NetServiceBrowser()
+    let delegate = NetServiceBrowserDelegateImpl()
+    browser.delegate = delegate
+    browser.searchForServices(ofType: "_airplay._tcp.", inDomain: "local.")
+
+    // Run RunLoop for 3 seconds to give Bonjour time to discover
+    let deadline = Date().addingTimeInterval(3)
+    while Date() < deadline {
+        RunLoop.current.run(mode: .default, before: Date(timeIntervalSinceNow: 0.1))
+    }
+
+    browser.stop()
+
+    print("[Path 3a] Discovered \(delegate.services.count) _airplay._tcp services:")
+    for svc in delegate.services {
+        print("  - \(svc.name) @ \(svc.hostName ?? "?"):\(svc.port)")
+    }
+
+    if delegate.services.isEmpty {
+        print("[Path 3a] No services found — Bonjour either restricted or no AirPlay endpoints on LAN")
+        return
+    }
+
+    // Phase 3b: Try to construct AVOutputDevice for the first endpoint
+    guard let avOutputDeviceCls = classExists("AVOutputDevice") else {
+        print("[Path 3b] AVOutputDevice class not found")
+        return
+    }
+
+    print("\n[Path 3b] AVOutputDevice class found, inspecting class methods:")
+    guard let meta: AnyClass = object_getClass(avOutputDeviceCls) else { return }
+    var count: UInt32 = 0
+    if let methods = class_copyMethodList(meta, &count) {
+        for i in 0..<Int(count) {
+            print("  + \(NSStringFromSelector(method_getName(methods[i])))")
+        }
+        free(methods)
+    }
+
+    // Also dump instance methods for context — AVOutputDevice's properties
+    // tell us what fields a discovery API would need to fill in
+    print("\n[Path 3b] AVOutputDevice instance methods (first 30):")
+    var icount: UInt32 = 0
+    if let methods = class_copyMethodList(avOutputDeviceCls, &icount) {
+        for i in 0..<min(Int(icount), 30) {
+            print("  - \(NSStringFromSelector(method_getName(methods[i])))")
+        }
+        free(methods)
+    }
+
+    // Common factory selector patterns to try
+    let constructorSelectors = [
+        "deviceWithUID:",
+        "deviceWithName:",
+        "deviceWithHost:",
+        "deviceWithIdentifier:",
+        "outputDeviceWithUID:",
+        "outputDeviceWithIdentifier:",
+    ]
+    print("\n[Path 3b] Trying factory selectors:")
+    for selName in constructorSelectors {
+        let sel = NSSelectorFromString(selName)
+        if avOutputDeviceCls.responds(to: sel) {
+            print("  ★ +[AVOutputDevice \(selName)] EXISTS — try invoking")
+            if let firstSvc = delegate.services.first, let host = firstSvc.hostName {
+                let device = avOutputDeviceCls.perform(sel, with: host)?.takeUnretainedValue()
+                print("    result: \(String(describing: device))")
+            }
+        }
+    }
+}
+
+class NetServiceBrowserDelegateImpl: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
+    var services: [NetService] = []
+
+    func netServiceBrowser(_ browser: NetServiceBrowser, didFind service: NetService, moreComing: Bool) {
+        service.delegate = self
+        service.resolve(withTimeout: 2)
+        services.append(service)
+    }
+}
 func runPath4() { print("\n=== Path 4: MRMediaRemoteService ===\n"); /* Task 0.5 fills in */ }
 
 // MARK: - Entry point
