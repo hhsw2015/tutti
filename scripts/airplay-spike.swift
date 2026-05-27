@@ -18,10 +18,32 @@
 //   - impl talks to a Fig daemon over XPC (has _serverDied callback)
 //   - devices enumerated by end-to-end probe: 0 across discoveryMode=1,2,3 with 8s wait + fastDiscoveryEnabled
 //   - meets 5-criteria validation: no (criterion 1 + 4 both fail in script context)
-//   - verdict: REJECTED for script-driven discovery. CAVEAT: behavior inside a
-//     signed/notarized .app with local-network entitlements may differ; if all
-//     other paths also fail in their respective contexts, re-test Path 1
-//     bundled in Tutti before final dismissal.
+//
+// Path 1 signed-binary re-test (run 2026-05-27, macOS 26.5):
+//   Hypothesis: Fig daemon refuses unsigned/unentitled clients; a notarization-
+//   class signed binary may receive a populated device list.
+//   Method: standalone swiftc-compiled Mach-O, signed with Developer ID
+//   Application (BaoLin Wu, RFW398ARA9), --options runtime --timestamp.
+//   Same code (direct IMP calls for initWithDeviceFeatures:0xFFFF,
+//   setDiscoveryMode:2, setFastDiscoveryEnabled:true), 10s poll.
+//   Results across three signing contexts (LAN had 4+ live AirPlay devices
+//   confirmed via `dns-sd -B _airplay._tcp local.`):
+//     - signed Developer ID + Hardened Runtime + timestamp:  0 devices (exit 2)
+//     - signed Developer ID + Hardened Runtime + network entitlements
+//       (com.apple.security.network.client/.server):         0 devices (exit 2)
+//     - ad-hoc / unsigned compiled binary:                   0 devices (exit 2)
+//   Impl is non-nil in all cases; the framework just never populates the array.
+//   Note: when using KVC setValue(forKey:"discoveryMode") instead of a direct
+//   setDiscoveryMode: IMP call, signed binaries crash inside
+//   -[AVOutputDeviceDiscoverySession setDiscoveryMode:forClientIdentifiers:]
+//   at offset 312 (KERN_INVALID_ADDRESS at 0x8). That crash is a Swift-bridging
+//   artifact unrelated to discovery — direct IMP calls work cleanly.
+//
+//   verdict: REJECTED for real. Signing/entitlements do not unlock this API
+//   from a Developer ID context. The Fig daemon appears to gate AirPlay device
+//   enumeration on something stronger than code signature — likely a private
+//   first-party entitlement (com.apple.private.avfoundation.* family) or an
+//   Apple-team-id check. Move on to Path 2/3/4.
 //
 
 import Foundation
