@@ -432,7 +432,7 @@ private struct ProfilesCapsule: View {
     var body: some View {
         GlassCapsule {
             VStack(spacing: 0) {
-                SectionHead(title: "档案", folded: $folded) {
+                SectionHead(title: "预设", folded: $folded) {
                     if canSave && !showSaveField {
                         Button {
                             withAnimation { showSaveField = true }
@@ -516,7 +516,7 @@ private struct ProfileSaveField: View {
 
     var body: some View {
         HStack(spacing: 4) {
-            TextField("档案名称", text: $draftName)
+            TextField("预设名称", text: $draftName)
                 .textFieldStyle(.plain)
                 .font(.system(size: 12))
                 .foregroundStyle(Color.glassTextHi)
@@ -979,7 +979,7 @@ private struct UpgradeBanner: View {
         case .trialCountdown(let days):      return "Pro 试用还剩 \(days) 天"
         case .trialExpired:                  return "Pro 试用已结束 · 高级功能已停用"
         case .upgrade(.volumeTakeover):      return "音量直控需要 Tutti Pro"
-        case .upgrade(.profile):             return "档案功能需要 Tutti Pro"
+        case .upgrade(.profile):             return "预设功能需要 Tutti Pro"
         }
     }
 

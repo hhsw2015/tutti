@@ -24,6 +24,7 @@
 - **Master and per-device mute**: silence one speaker while the rest keep playing.
 - **Three-state status**: "playing on all", "partially muted", or "all muted", with synchronized text and color dot.
 - **Volume takeover** (Pro): keyboard volume keys (F11 / F12 / mute) drive the aggregate output globally; the scroll wheel on the menu bar icon or popover does the same. Shift+Option fine-grain steps match the system. The keyboard path requires Accessibility permission; the scroll path doesn't.
+- **Presets** (Pro): save your favorite device combinations as named presets and switch with one click from the menu bar.
 - **Bluetooth headphone battery**: shown next to the device name when available.
 - **External change awareness**: switching the default output via System Settings or Control Center auto-destroys the Aggregate Device and updates the selection.
 - **Orphan device cleanup**: cleans up Aggregate Devices left behind from a previous crash, plus legacy MultiOut residues, on launch.
@@ -42,10 +43,11 @@
 
 Every new install gets a **7-day Pro trial** on first launch, no license key required. After the trial, all free-tier features keep working without limits.
 
-Pro lets you adjust volume without opening Tutti:
+Pro lets you adjust volume without opening Tutti, and save device combinations as presets for one-tap switching:
 
 - **Keyboard volume keys** (F11 / F12 / mute) drive the aggregate output globally. Shift+Option fine-grain steps match the system.
 - **Scroll wheel** on the menu bar icon or inside the popover panel does the same.
+- **Presets**: save the speaker combinations you use most and switch with one click from the menu bar.
 
 - **$7.99 one-time**, no subscription.
 - **Up to 2 Macs** per license. Activate and deactivate from Settings -> License.
