@@ -16,16 +16,20 @@
   docs/screenshots/settings.png - Settings -> License tab in activated state (scallop badge + key)
 -->
 
+## The audio icon macOS should have shipped
+
+macOS gives you a slider, a device list, and a tiny speaker glyph. Tutti shows what's actually playing, on which devices, with per-device volume, mute state, and Bluetooth battery — so you can hide the system icon and let Tutti take its spot. First launch walks you through it: System Settings › Control Center › Sound › Don't Show in Menu Bar.
+
 ## Features
 
 - **Multi-device output**: tick multiple outputs in the menu bar; Tutti creates an Aggregate Device on the fly and sets it as the system default.
 - **Single-device passthrough**: pick just one and Tutti switches the system default directly, no virtual device created.
-- **Master and per-device volume**: one slider for everything, individual sliders for each output.
-- **Master and per-device mute**: silence one speaker while the rest keep playing.
+- **Master and per-device volume + mute**: one slider for everything, individual sliders and mute toggles for each output — silence one speaker while the rest keep playing.
 - **Three-state status**: "playing on all", "partially muted", or "all muted", with synchronized text and color dot.
 - **Volume takeover** (Pro): keyboard volume keys (F11 / F12 / mute) drive the aggregate output globally; the scroll wheel on the menu bar icon or popover does the same. Shift+Option fine-grain steps match the system. The keyboard path requires Accessibility permission; the scroll path doesn't.
 - **Presets** (Pro): save your favorite device combinations as named presets and switch with one click from the menu bar.
 - **Bluetooth headphone battery**: shown next to the device name when available.
+- **Active AirPlay surfacing**: once macOS has routed audio to an AirPlay receiver, it appears in Tutti's device list as an `airplayaudio`-marked output, ready to be selected like any other device.
 - **External change awareness**: switching the default output via System Settings or Control Center auto-destroys the Aggregate Device and updates the selection.
 - **Orphan device cleanup**: cleans up Aggregate Devices left behind from a previous crash, plus legacy MultiOut residues, on launch.
 - **Light / Dark / System** theme.
@@ -59,7 +63,7 @@ Pro lets you adjust volume without opening Tutti, and save device combinations a
 
 A glimpse of where we'd like Tutti to go. Timing depends on what macOS opens up to third-party apps, so no promised dates.
 
-- **AirPlay routing inside Tutti**: pick HomePods, Apple TVs and other AirPlay receivers straight from the panel, the same way you switch local outputs today. macOS currently keeps AirPlay discovery and switching on a first-party-only track, so for now you'll keep using Control Center for that. The moment that opens up, Tutti will too.
+- **AirPlay routing inside Tutti**: today, Tutti shows an AirPlay receiver in its device list *after* macOS has already routed audio to it. The missing piece is starting and switching that route from inside Tutti — picking HomePods, Apple TVs and other AirPlay receivers straight from the panel, without first going to Control Center. macOS keeps AirPlay discovery and switching on a first-party-only track, so for now Control Center handles that initial route. The moment that opens up, Tutti will too.
 
 ## Localization
 
