@@ -162,6 +162,7 @@
 				it,
 				ja,
 				ko,
+				"zh-Hans",
 				"zh-Hant",
 			);
 			mainGroup = A46816F907156223EA4BDE0B;
