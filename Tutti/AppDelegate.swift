@@ -16,6 +16,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         // LicenseManager.hasProAccess.
         TrialManager.shared.startTrialIfFirstLaunch()
 
+        // Touch the Sparkle facade so its underlying SPUStandardUpdaterController
+        // gets created + started at launch, not lazily when the user first
+        // opens Settings. Notification category + UN delegate are registered
+        // inside UpdateChecker.init.
+        _ = UpdateChecker.shared
+
         let rootView = MenuBarView()
             .environmentObject(manager)
             .environmentObject(profiles)
@@ -95,6 +101,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         popover.behavior = .transient
         popover.close()
         settingsWindow = nil
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        manager.cleanup()
     }
 }
 
