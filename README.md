@@ -57,7 +57,7 @@ Pro lets you adjust volume without opening Tutti, and save device combinations a
 - **Up to 2 Macs** per license. Activate and deactivate from Settings -> License.
 - **All future Pro features included** at no extra cost.
 
-[Get a Tutti Pro license](https://tutti.recents.com/buy)
+[Get a Tutti Pro license](https://checkout.dodopayments.com/buy/pdt_0NfolyiommnaLUYQ5aPqn)
 
 ## Roadmap
 

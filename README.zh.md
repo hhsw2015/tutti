@@ -57,7 +57,7 @@ Pro 让你不打开 Tutti 也能调音量，把常用设备组合存为预设一
 - **一码 2 台 Mac**，在 Settings -> 许可 里随时激活、停用。
 - **未来所有 Pro 新功能免费升级**。
 
-[获取 Tutti Pro 激活码](https://tutti.recents.com/buy)
+[获取 Tutti Pro 激活码](https://checkout.dodopayments.com/buy/pdt_0NfolyiommnaLUYQ5aPqn)
 
 ## 路线图
 

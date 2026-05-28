@@ -51,7 +51,7 @@ final class LicenseManager: ObservableObject {
     }
 
     /// 升级跳转地址。Landing page 上线前是占位。
-    let purchaseURL = URL(string: "https://tutti.recents.com/buy")!
+    let purchaseURL = URL(string: "https://checkout.dodopayments.com/buy/pdt_0NfolyiommnaLUYQ5aPqn")!
 
     private let baseURL: URL = {
         #if DEBUG
