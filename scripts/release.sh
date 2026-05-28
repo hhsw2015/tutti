@@ -33,9 +33,16 @@ if [ -n "$NEW_VERSION" ]; then
     exit 1
   fi
   echo "==> Bumping version to $NEW_VERSION in project.yml"
+  # Bump marketing version. Auto-increment CFBundleVersion (monotonic integer)
+  # because Sparkle compares CFBundleVersion to decide which build is newer —
+  # if we reuse the marketing string here, "0.2.3" < "4" in string-compare
+  # and Sparkle would refuse to update an installed v0.2.2 (CFBundleVersion=4)
+  # to v0.2.3 (CFBundleVersion=0.2.3).
+  CURRENT_BUILD="$(/usr/bin/awk '/CFBundleVersion:/ {gsub(/"/, "", $2); print $2; exit}' project.yml)"
+  NEW_BUILD=$((CURRENT_BUILD + 1))
   /usr/bin/sed -i '' \
     -e "s/CFBundleShortVersionString: \".*\"/CFBundleShortVersionString: \"$NEW_VERSION\"/" \
-    -e "s/CFBundleVersion: \".*\"/CFBundleVersion: \"$NEW_VERSION\"/" \
+    -e "s/CFBundleVersion: \".*\"/CFBundleVersion: \"$NEW_BUILD\"/" \
     project.yml
   xcodegen generate
 fi
@@ -52,6 +59,13 @@ if ! command -v gh >/dev/null 2>&1; then
 fi
 if gh release view "$TAG" --repo "$GH_REPO" >/dev/null 2>&1; then
   echo "Release $TAG already exists on $GH_REPO. Bump version first." >&2; exit 1
+fi
+
+NOTES_FILE="$PROJECT_ROOT/docs/release-notes/$TAG.md"
+if [ ! -f "$NOTES_FILE" ]; then
+  echo "Missing release notes: $NOTES_FILE" >&2
+  echo "Write user-facing notes (zh + en) before releasing." >&2
+  exit 1
 fi
 
 # ---------- 3. Build ----------
@@ -111,20 +125,61 @@ echo "==> Repackage stapled .app"
 rm "$ZIP_PATH"
 ditto -c -k --keepParent "$APP_PATH" "$ZIP_PATH"
 
+# ---------- 4.5. Sparkle appcast ----------
+SPARKLE_BIN="$PROJECT_ROOT/.sparkle-tools/bin"
+if [ ! -x "$SPARKLE_BIN/generate_appcast" ]; then
+  echo "Sparkle tools missing at $SPARKLE_BIN/. Re-run: " >&2
+  echo "  mkdir -p $PROJECT_ROOT/.sparkle-tools && cd $_ && \\" >&2
+  echo "    curl -sL -o sparkle.tar.xz 'https://github.com/sparkle-project/Sparkle/releases/download/2.7.0/Sparkle-2.7.0.tar.xz' && \\" >&2
+  echo "    tar xf sparkle.tar.xz" >&2
+  exit 1
+fi
+
+echo "==> Build appcast pool"
+POOL="$BUILD_DIR/appcast-pool"
+mkdir -p "$POOL"
+cp "$ZIP_PATH" "$POOL/"
+# Seed the pool with the existing appcast so generate_appcast only needs to
+# add the new entry rather than re-deriving all historical versions.
+if [ -f "$PROJECT_ROOT/docs/appcast.xml" ]; then
+  cp "$PROJECT_ROOT/docs/appcast.xml" "$POOL/appcast.xml"
+fi
+
+echo "==> generate_appcast (signs with EdDSA key from keychain)"
+"$SPARKLE_BIN/generate_appcast" \
+  --download-url-prefix "https://github.com/$GH_REPO/releases/download/$TAG/" \
+  --link "https://github.com/$GH_REPO/releases/tag/$TAG" \
+  "$POOL"
+
+mkdir -p "$PROJECT_ROOT/docs"
+cp "$POOL/appcast.xml" "$PROJECT_ROOT/docs/appcast.xml"
+
 # ---------- 5. Publish to GitHub Releases ----------
 echo "==> Publish GitHub release $TAG"
 gh release create "$TAG" "$ZIP_PATH" \
   --repo "$GH_REPO" \
   --title "Tutti $VERSION" \
-  --generate-notes \
+  --notes-file "$NOTES_FILE" \
   --latest
 
 RELEASE_URL="$(gh release view "$TAG" --repo "$GH_REPO" --json url -q .url)"
+
+# ---------- 6. Commit appcast.xml so Sparkle clients see the new release ----------
+echo "==> Commit + push docs/appcast.xml"
+cd "$PROJECT_ROOT"
+git add docs/appcast.xml
+if git diff --cached --quiet; then
+  echo "  (no appcast change to commit)"
+else
+  git commit -m "appcast: $VERSION"
+  git push origin main
+fi
 
 echo ""
 echo "Done."
 echo "  Local artifact: $ZIP_PATH"
 echo "  GitHub release: $RELEASE_URL"
+echo "  Appcast:        https://barrybarrywu.github.io/tutti/appcast.xml"
 echo ""
 if [ -n "$NEW_VERSION" ]; then
   echo "Reminder: commit the version bump in project.yml + Tutti/Info.plist"

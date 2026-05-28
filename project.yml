@@ -5,6 +5,11 @@ options:
     macOS: "13.0"
   createIntermediateGroups: false
 
+packages:
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    from: "2.7.0"
+
 targets:
   Tutti:
     type: application
@@ -35,6 +40,11 @@ targets:
           - de
           - it
           - es
+        SUFeedURL: "https://barrybarrywu.github.io/tutti/appcast.xml"
+        SUPublicEDKey: "qp6joWAdv6afi4P/Ux8rhTzAsQup8fPuVz9Bj2Y1SmQ="
+        SUEnableInstallerLauncherService: NO
+    dependencies:
+      - package: Sparkle
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: com.recents.tutti
       SWIFT_VERSION: "5.9"

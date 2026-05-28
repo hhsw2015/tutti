@@ -32,3 +32,9 @@ TuttiTests/
 *.dmg
 *.zip
 *.app
+
+# Sparkle release tooling (downloaded, not source-controlled)
+.sparkle-tools/
+
+# Local-only xcodegen overlay for TuttiTests target (TuttiTests/ is gitignored)
+project.tests.yml

@@ -38,5 +38,11 @@
 	<true/>
 	<key>NSHumanReadableCopyright</key>
 	<string></string>
+	<key>SUEnableInstallerLauncherService</key>
+	<false/>
+	<key>SUFeedURL</key>
+	<string>https://barrybarrywu.github.io/tutti/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>qp6joWAdv6afi4P/Ux8rhTzAsQup8fPuVz9Bj2Y1SmQ=</string>
 </dict>
 </plist>
