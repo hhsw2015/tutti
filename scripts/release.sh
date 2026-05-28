@@ -57,6 +57,11 @@ echo "==> Tutti $VERSION → tag $TAG → repo $GH_REPO"
 if ! command -v gh >/dev/null 2>&1; then
   echo "gh CLI not installed. brew install gh" >&2; exit 1
 fi
+if ! command -v pandoc >/dev/null 2>&1; then
+  echo "pandoc not installed (needed to render release notes for Sparkle)." >&2
+  echo "  brew install pandoc" >&2
+  exit 1
+fi
 if gh release view "$TAG" --repo "$GH_REPO" >/dev/null 2>&1; then
   echo "Release $TAG already exists on $GH_REPO. Bump version first." >&2; exit 1
 fi
@@ -144,6 +149,13 @@ cp "$ZIP_PATH" "$POOL/"
 if [ -f "$PROJECT_ROOT/docs/appcast.xml" ]; then
   cp "$PROJECT_ROOT/docs/appcast.xml" "$POOL/appcast.xml"
 fi
+
+# Render the markdown release notes to HTML beside the zip — generate_appcast
+# picks up matching <basename>.html files and embeds them as Sparkle's
+# <description>, so the update alert shows the actual notes instead of a one-
+# liner.
+NOTES_HTML="$POOL/Tutti-${VERSION}.html"
+pandoc -f markdown -t html "$NOTES_FILE" -o "$NOTES_HTML"
 
 echo "==> generate_appcast (signs with EdDSA key from keychain)"
 "$SPARKLE_BIN/generate_appcast" \
