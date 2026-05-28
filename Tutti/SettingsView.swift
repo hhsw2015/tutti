@@ -20,7 +20,7 @@ enum SettingsTab: String, CaseIterable, Identifiable {
 // MARK: - Root
 
 struct TuttiSettingsView: View {
-    @StateObject private var updater = UpdateChecker()
+    @ObservedObject private var updater = UpdateChecker.shared
     @StateObject private var prefs = AppearancePrefs.shared
     @StateObject private var license = LicenseManager.shared
     @State private var selectedTab: SettingsTab = .general
@@ -61,6 +61,7 @@ struct TuttiSettingsView: View {
             .padding(.bottom, 22)
         }
         .frame(width: 720, height: 600)
+        .background(WindowAppearanceBinder(theme: prefs.theme))
         .environmentObject(prefs)
         .preferredColorScheme(prefs.theme.colorScheme)
         .onChange(of: license.status) { newStatus in

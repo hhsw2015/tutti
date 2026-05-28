@@ -356,3 +356,33 @@ struct TransparentWindow: NSViewRepresentable {
         }
     }
 }
+
+/// Forces the hosting NSWindow's `appearance` to match `theme`. SwiftUI's
+/// `.preferredColorScheme(nil)` does not reliably reset `window.appearance`
+/// back to nil after it has previously been pinned to .light or .dark, so the
+/// Settings window can stay stuck on the old theme when the user switches
+/// back to "System". Setting `window.appearance` directly is the only way to
+/// undo the override.
+struct WindowAppearanceBinder: NSViewRepresentable {
+    let theme: ThemeChoice
+
+    func makeNSView(context: Context) -> NSView {
+        let v = NSView()
+        v.setAccessibilityHidden(true)
+        DispatchQueue.main.async { apply(v.window) }
+        return v
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        DispatchQueue.main.async { apply(nsView.window) }
+    }
+
+    private func apply(_ window: NSWindow?) {
+        guard let window else { return }
+        switch theme {
+        case .system: window.appearance = nil
+        case .light:  window.appearance = NSAppearance(named: .aqua)
+        case .dark:   window.appearance = NSAppearance(named: .darkAqua)
+        }
+    }
+}
