@@ -8,13 +8,19 @@
 
 <p align="center">A macOS menu bar utility that plays the same audio through any number of output devices at once.</p>
 
+<p align="center">
+  <a href="https://github.com/BarryBarrywu/tutti/releases/latest/download/Tutti.dmg"><strong>Download for macOS</strong></a>
+  ·
+  <a href="https://github.com/BarryBarrywu/tutti/releases">All releases</a>
+</p>
+
 <!-- TODO screenshots:
   docs/screenshots/menubar.png  - menu bar icon, three states stacked (idle / playing / muted)
   docs/screenshots/popover.png  - popover open with 2+ devices selected, sliders visible
   docs/screenshots/settings.png - Settings -> License tab in activated state (scallop badge + key)
 -->
 
-## The audio icon macOS should have shipped
+## The volume icon macOS should have shipped
 
 macOS gives you a slider, a device list, and a tiny speaker glyph. Tutti shows what's actually playing, on which devices, with per-device volume, mute state, and Bluetooth battery — so you can hide the system icon and let Tutti take its spot. First launch walks you through it: System Settings › Control Center › Sound › Don't Show in Menu Bar.
 
@@ -31,7 +37,7 @@ macOS gives you a slider, a device list, and a tiny speaker glyph. Tutti shows w
 - **External change awareness**: switching the default output via System Settings or Control Center auto-destroys the Aggregate Device and updates the selection.
 - **Orphan device cleanup**: cleans up Aggregate Devices left behind from a previous crash, plus legacy MultiOut residues, on launch.
 - **Light / Dark / System** theme.
-- **Launch at login** and **GitHub Releases auto-update check**.
+- **Launch at login** and **automatic update checks** via Sparkle.
 
 ## Use cases
 
@@ -54,6 +60,7 @@ Pro lets you adjust volume without opening Tutti, and save device combinations a
 - **$7.99 one-time**, no subscription.
 - **Up to 2 Macs** per license. Activate and deactivate from Settings -> License.
 - **All future Pro features included** at no extra cost.
+- **14-day refund**, no questions asked — just email support@barrybarrywu.com.
 
 [Get a Tutti Pro license](https://checkout.dodopayments.com/buy/pdt_0NfolyiommnaLUYQ5aPqn)
 
