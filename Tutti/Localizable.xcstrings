@@ -4083,161 +4083,161 @@
         }
       }
     },
-    "登录系统时静默打开 Tutti，并以菜单栏图标方式驻留。": {
+    "开机后自动在后台打开，安静待在菜单栏里。": {
       "extractionState": "manual",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Beim Anmelden öffnet Tutti im Hintergrund und bleibt als Menüleistensymbol aktiv."
+            "value": "Öffnet sich bei der Anmeldung automatisch im Hintergrund und wartet leise in der Menüleiste."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Opens silently at login and stays in the menubar."
+            "value": "Opens automatically in the background at login and waits quietly in the menu bar."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Se abre silenciosamente al iniciar sesión y permanece en la barra de menús."
+            "value": "Se abre automáticamente en segundo plano al iniciar sesión y espera tranquilo en la barra de menús."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Démarre en silence à la connexion et reste dans la barre des menus."
+            "value": "S'ouvre automatiquement en arrière-plan à la connexion et attend tranquillement dans la barre des menus."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Si avvia silenziosamente all'accesso e rimane nella barra dei menu."
+            "value": "Si apre automaticamente in background all'accesso e resta tranquillo nella barra dei menu."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ログイン時に静かに起動し、メニューバーアイコンとして常駐します。"
+            "value": "ログイン時に自動でバックグラウンドで起動し、メニューバーで静かに待機します。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "로그인 시 조용히 실행되어 메뉴 막대 아이콘으로 상주합니다."
+            "value": "로그인하면 백그라운드에서 자동으로 열려 메뉴 막대에서 조용히 대기해요."
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "登入系統時靜默打開 Tutti，並以選單列圖示方式常駐。"
+            "value": "開機後自動在背景打開，安靜待在選單列裡。"
           }
         }
       }
     },
-    "授权后，键盘音量键能直接控制聚合输出。": {
+    "授权后，键盘音量键可以直接调所有扬声器的音量。": {
       "extractionState": "manual",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mit Berechtigung steuern die Lautstärketasten die Sammelausgabe direkt."
+            "value": "Nach der Freigabe steuern die Lautstärketasten alle Lautsprecher gleichzeitig."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Once granted, the volume keys directly control the aggregate output."
+            "value": "Once granted, the volume keys control all your speakers at once."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Con el permiso, las teclas de volumen controlan directamente la salida agregada."
+            "value": "Una vez autorizado, las teclas de volumen controlan todos tus altavoces a la vez."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Une fois autorisé, les touches de volume contrôlent la sortie agrégée."
+            "value": "Une fois autorisé, les touches de volume contrôlent tous vos haut-parleurs à la fois."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Una volta concesso, i tasti volume controllano direttamente l'uscita aggregata."
+            "value": "Una volta autorizzato, i tasti volume controllano tutti gli altoparlanti insieme."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "許可すると、音量キーで集約出力を直接コントロールできます。"
+            "value": "許可すると、音量キーですべてのスピーカーをまとめて操作できます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "허용하면 볼륨 키로 집계 출력을 직접 제어할 수 있습니다."
+            "value": "허용하면 음량 키로 모든 스피커를 한 번에 조절할 수 있어요."
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "授權後，鍵盤音量鍵能直接控制聚合輸出。"
+            "value": "授權後，鍵盤音量鍵可以直接調所有揚聲器的音量。"
           }
         }
       }
     },
-    "从 GitHub Releases 拉取，仅在有新版本时通知一次。": {
+    "每次帮你看看有没有新版本，有了才提醒一次。": {
       "extractionState": "manual",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lädt aus GitHub Releases und benachrichtigt nur bei neuer Version."
+            "value": "Prüft jedes Mal auf eine neue Version und benachrichtigt dich einmal, wenn es eine gibt."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pulls from GitHub Releases — notifies once when a new version is found."
+            "value": "Checks for a new version each time and notifies you once when there is one."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Se obtiene de GitHub Releases. Notifica una vez por nueva versión."
+            "value": "Comprueba si hay una versión nueva cada vez y te avisa una sola vez cuando la hay."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Récupère depuis GitHub Releases — notifie une fois par nouvelle version."
+            "value": "Vérifie s'il existe une nouvelle version à chaque fois et vous prévient une seule fois le cas échéant."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Recupera da GitHub Releases — notifica una volta a ogni nuova versione."
+            "value": "Controlla ogni volta se c'è una nuova versione e ti avvisa una sola volta quando c'è."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "GitHub Releases から取得し、新バージョンがあるときに 1 度だけ通知します。"
+            "value": "起動のたびに新バージョンを確認し、見つかったときだけ一度お知らせします。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "GitHub Releases에서 가져오며 새 버전이 있을 때 한 번만 알려줍니다."
+            "value": "실행할 때마다 새 버전이 있는지 확인하고, 있으면 한 번만 알려드려요."
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "從 GitHub Releases 拉取，僅在有新版本時通知一次。"
+            "value": "每次幫你看看有沒有新版本，有了才提醒一次。"
           }
         }
       }
@@ -5143,55 +5143,55 @@
         }
       }
     },
-    "把一路音频同时送到多个输出设备的 macOS 菜单栏小工具。基于 CoreAudio aggregate device，原生 SwiftUI + AppKit 互操作，无第三方依赖。": {
+    "一个 macOS 菜单栏小工具，让同一段声音同时从你的多个扬声器里放出来。": {
       "extractionState": "manual",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ein macOS-Menüleisten-Tool, das eine Audioquelle gleichzeitig an mehrere Ausgabegeräte sendet. Baut auf CoreAudio Aggregate Device, natives SwiftUI + AppKit, ohne Drittabhängigkeiten."
+            "value": "Ein macOS-Menüleisten-Tool, das denselben Ton gleichzeitig über alle deine Lautsprecher wiedergibt."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A macOS menubar tool that sends one audio stream to multiple output devices at once. Built on CoreAudio aggregate devices, native SwiftUI + AppKit, no third-party dependencies."
+            "value": "A macOS menu bar utility that plays the same sound through all your speakers at once."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Una utilidad de la barra de menús de macOS que envía un flujo de audio a varios dispositivos a la vez. Basada en dispositivos agregados de CoreAudio, SwiftUI + AppKit nativos, sin dependencias externas."
+            "value": "Una utilidad de la barra de menús de macOS que reproduce el mismo sonido en todos tus altavoces a la vez."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Un utilitaire de la barre des menus macOS qui envoie un flux audio vers plusieurs sorties en même temps. Basé sur les aggregate devices CoreAudio, SwiftUI + AppKit natifs, sans dépendances tierces."
+            "value": "Un utilitaire de la barre des menus macOS qui diffuse le même son sur tous vos haut-parleurs à la fois."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Un'utilità della barra dei menu di macOS che invia un flusso audio a più dispositivi contemporaneamente. Basata su CoreAudio aggregate device, SwiftUI + AppKit nativi, senza dipendenze esterne."
+            "value": "Un'utility per la barra dei menu di macOS che riproduce lo stesso suono su tutti gli altoparlanti contemporaneamente."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "1 つのオーディオを複数の出力デバイスに同時に送る macOS メニューバー小ツール。CoreAudio aggregate device 上に構築。SwiftUI + AppKit のネイティブのみ、サードパーティ依存なし。"
+            "value": "macOS のメニューバーアプリ。同じ音を手持ちの複数のスピーカーから同時に鳴らせます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "오디오를 여러 출력 장치로 동시에 보내는 macOS 메뉴 막대 도구. CoreAudio aggregate device 기반, 네이티브 SwiftUI + AppKit, 외부 의존성 없음."
+            "value": "같은 소리를 여러 스피커에서 동시에 들려주는 macOS 메뉴 막대 앱이에요."
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "把一路音訊同時送到多個輸出裝置的 macOS 選單列小工具。基於 CoreAudio aggregate device，原生 SwiftUI + AppKit 互操作，無第三方依賴。"
+            "value": "一個 macOS 選單列小工具，讓同一段聲音同時從你的多個揚聲器裡放出來。"
           }
         }
       }
@@ -5408,55 +5408,55 @@
         }
       }
     },
-    "完全退出应用，不再驻留菜单栏。": {
+    "彻底退出，菜单栏图标也一起消失。": {
       "extractionState": "manual",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Beendet Tutti vollständig und entfernt das Menüleistensymbol."
+            "value": "Beendet vollständig – das Menüleistensymbol verschwindet ebenfalls."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quits Tutti fully and removes the menubar icon."
+            "value": "Quits completely — the menu bar icon disappears too."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cierra Tutti por completo y elimina el icono de la barra de menús."
+            "value": "Sale por completo: el icono de la barra de menús también desaparece."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quitte Tutti complètement et retire l'icône de la barre des menus."
+            "value": "Quitte complètement — l'icône de la barre des menus disparaît aussi."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chiude completamente Tutti e rimuove l'icona dalla barra dei menu."
+            "value": "Esce completamente — anche l'icona nella barra dei menu scompare."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tutti を完全に終了し、メニューバーアイコンも消します。"
+            "value": "完全に終了し、メニューバーのアイコンも消えます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tutti를 완전히 종료하고 메뉴 막대 아이콘도 제거합니다."
+            "value": "완전히 종료되고 메뉴 막대 아이콘도 함께 사라져요."
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "完全結束應用，不再常駐於選單列。"
+            "value": "徹底退出，選單列圖示也一起消失。"
           }
         }
       }
@@ -6468,55 +6468,55 @@
         }
       }
     },
-    "Pro 让你用键盘音量键和菜单栏滚轮直接调聚合输出，还能把常用设备组合存为预设一键切换。一次买断 $7.99，含所有未来 Pro 功能升级。": {
+    "Pro 让你用键盘音量键和鼠标滚轮直接调所有扬声器，还能把常用设备组合存成预设一键切换。一次买断 $7.99，含所有未来 Pro 功能升级。": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pro lets you adjust the aggregate output with your keyboard volume keys and the menu bar scroll wheel, and save device combinations as presets for one-tap switching. One-time $7.99, includes all future Pro upgrades."
+            "value": "Pro lets you control all your speakers with the volume keys and scroll wheel, and save your go-to setups as one-click presets. One-time $7.99, all future Pro features included."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mit Pro steuerst du die Mischausgabe über die Lautstärketasten der Tastatur und das Scrollrad in der Menüleiste und speicherst Gerätekombinationen als Presets für den Schnellwechsel. Einmalig $7.99, inkl. aller künftigen Pro-Upgrades."
+            "value": "Mit Pro steuerst du alle Lautsprecher über Lautstärketasten und Scrollrad und speicherst deine üblichen Setups als Ein-Klick-Presets. Einmalig 7,99 $, alle künftigen Pro-Funktionen inklusive."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pro permite ajustar la salida combinada con las teclas de volumen y la rueda de desplazamiento en la barra de menús, y guardar combinaciones de dispositivos como presets para cambiar con un toque. Pago único de $7.99, incluye todas las futuras actualizaciones Pro."
+            "value": "Pro te permite controlar todos tus altavoces con las teclas de volumen y la rueda del ratón, y guardar tus combinaciones habituales como ajustes preestablecidos de un clic. Pago único de 7,99 $, todas las funciones Pro futuras incluidas."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pro vous permet d'ajuster la sortie agrégée avec les touches de volume du clavier et la molette de la barre des menus, et d'enregistrer des combinaisons d'appareils sous forme de préréglages pour basculer en un clic. Achat unique de $7.99, inclut toutes les futures mises à jour Pro."
+            "value": "Pro vous permet de contrôler tous vos haut-parleurs avec les touches de volume et la molette, et d'enregistrer vos configurations habituelles en préréglages activables d'un clic. Paiement unique de 7,99 $, toutes les futures fonctions Pro incluses."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Con Pro regoli l'uscita aggregata con i tasti volume e la rotella nella barra dei menu, e salvi le combinazioni di dispositivi come preset per passare con un clic. Pagamento unico di $7.99, include tutti gli aggiornamenti Pro futuri."
+            "value": "Pro ti permette di controllare tutti gli altoparlanti con i tasti volume e la rotellina, e di salvare le combinazioni che usi di più come preset attivabili con un clic. Pagamento unico di 7,99 $, tutte le future funzioni Pro incluse."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pro ではキーボードの音量キーとメニューバーのスクロールホイールで集約出力を直接調整でき、よく使う出力先の組み合わせをプリセットとして保存してワンタップで切り替えられます。買い切り $7.99、今後のすべての Pro アップグレードを含みます。"
+            "value": "Pro なら音量キーとスクロールホイールですべてのスピーカーを操作でき、よく使う組み合わせをプリセットとしてワンクリックで切り替えられます。買い切り $7.99、今後の Pro 機能もすべて含まれます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pro에서는 키보드 볼륨 키와 메뉴 막대 스크롤 휠로 통합 출력을 직접 조절하고, 자주 쓰는 기기 조합을 프리셋으로 저장해 원클릭으로 전환할 수 있습니다. 일회성 $7.99, 모든 향후 Pro 업그레이드 포함."
+            "value": "Pro에서는 음량 키와 스크롤 휠로 모든 스피커를 조절하고, 자주 쓰는 조합을 프리셋으로 저장해 한 번에 전환할 수 있어요. 한 번 결제 $7.99, 앞으로 추가되는 모든 Pro 기능 포함."
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pro 讓你用鍵盤音量鍵和選單列滾輪直接調聚合輸出，還能把常用裝置組合存為預設一鍵切換。一次買斷 $7.99，含所有未來 Pro 功能升級。"
+            "value": "Pro 讓你用鍵盤音量鍵和滑鼠滾輪直接調所有揚聲器，還能把常用設備組合存成預設一鍵切換。一次買斷 $7.99，含所有未來 Pro 功能升級。"
           }
         }
       }
@@ -6680,108 +6680,108 @@
         }
       }
     },
-    "升级 Pro 后，键盘音量键和菜单栏滚轮直接调聚合输出，常用设备组合存为预设一键切换。": {
+    "升级 Pro 后，键盘音量键和鼠标滚轮直接调所有扬声器，常用设备组合还能存成预设一键切换。": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Upgrade to Pro: keyboard volume keys and the menu bar scroll wheel adjust the aggregate output directly, and save device combinations as presets for one-tap switching."
+            "value": "With Pro, the volume keys and scroll wheel control all your speakers, and you can save your go-to setups as one-click presets."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Upgrade auf Pro: Die Lautstärketasten der Tastatur und das Scrollrad in der Menüleiste steuern die Mischausgabe direkt, und du speicherst Gerätekombinationen als Presets für den Schnellwechsel."
+            "value": "Mit Pro steuern Lautstärketasten und Scrollrad alle Lautsprecher, und du kannst deine üblichen Setups als Ein-Klick-Presets speichern."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mejora a Pro: las teclas de volumen y la rueda de desplazamiento ajustan directamente la salida combinada, y guardas combinaciones de dispositivos como presets para cambiar con un toque."
+            "value": "Con Pro, las teclas de volumen y la rueda del ratón controlan todos tus altavoces, y puedes guardar tus combinaciones habituales como ajustes preestablecidos de un clic."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Passez à Pro : les touches de volume et la molette de la barre des menus ajustent directement la sortie agrégée, et vous enregistrez les combinaisons d'appareils sous forme de préréglages pour basculer en un clic."
+            "value": "Avec Pro, les touches de volume et la molette contrôlent tous vos haut-parleurs, et vous pouvez enregistrer vos configurations habituelles en préréglages activables d'un clic."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Passa a Pro: i tasti volume e la rotella nella barra dei menu regolano direttamente l'uscita aggregata e salvi le combinazioni di dispositivi come preset per passare con un clic."
+            "value": "Con Pro, i tasti volume e la rotellina controllano tutti gli altoparlanti, e puoi salvare le combinazioni che usi di più come preset attivabili con un clic."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pro にアップグレード: キーボードの音量キーとメニューバーのスクロールホイールで集約出力を直接調整でき、出力先の組み合わせをプリセットとして保存できます。"
+            "value": "Pro にすると、音量キーとスクロールホイールですべてのスピーカーを操作でき、よく使う組み合わせをプリセットとしてワンクリックで切り替えられます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pro로 업그레이드: 키보드 볼륨 키와 메뉴 막대 스크롤 휠로 통합 출력을 바로 조절하고, 자주 쓰는 기기 조합을 프리셋으로 저장할 수 있습니다."
+            "value": "Pro로 업그레이드하면 음량 키와 스크롤 휠로 모든 스피커를 조절하고, 자주 쓰는 조합을 프리셋으로 저장해 한 번에 전환할 수 있어요."
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "升級 Pro 後，鍵盤音量鍵和選單列滾輪直接調聚合輸出，常用裝置組合存為預設一鍵切換。"
+            "value": "升級 Pro 後，鍵盤音量鍵和滑鼠滾輪直接調所有揚聲器，常用設備組合還能存成預設一鍵切換。"
           }
         }
       }
     },
-    "Pro 已解锁。键盘音量键和菜单栏滚轮可直接调聚合输出，常用设备组合也能存为预设一键切换。": {
+    "Pro 已解锁。键盘音量键和鼠标滚轮可以直接调所有扬声器，常用设备组合也能存成预设一键切换。": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pro is unlocked. Adjust the aggregate output with your keyboard volume keys or the menu bar scroll wheel, and save device combinations as presets for one-tap switching."
+            "value": "Pro is unlocked. The volume keys and scroll wheel control all your speakers, and you can save your go-to setups as one-click presets."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pro freigeschaltet. Steuere die Mischausgabe mit den Lautstärketasten der Tastatur oder dem Scrollrad in der Menüleiste und speichere Gerätekombinationen als Presets für den Schnellwechsel."
+            "value": "Pro ist freigeschaltet. Lautstärketasten und Scrollrad steuern alle Lautsprecher, und du kannst deine üblichen Setups als Ein-Klick-Presets speichern."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pro desbloqueado. Ajusta la salida combinada con las teclas de volumen o la rueda de desplazamiento, y guarda combinaciones de dispositivos como presets para cambiar con un toque."
+            "value": "Pro está desbloqueado. Las teclas de volumen y la rueda del ratón controlan todos tus altavoces, y puedes guardar tus combinaciones habituales como ajustes preestablecidos de un clic."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pro déverrouillé. Ajustez la sortie agrégée avec les touches de volume ou la molette de la barre des menus, et enregistrez les combinaisons d'appareils sous forme de préréglages pour basculer en un clic."
+            "value": "Pro est débloqué. Les touches de volume et la molette contrôlent tous vos haut-parleurs, et vous pouvez enregistrer vos configurations habituelles en préréglages activables d'un clic."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pro sbloccato. Regola l'uscita aggregata con i tasti volume o la rotella nella barra dei menu e salva le combinazioni di dispositivi come preset per passare con un clic."
+            "value": "Pro è sbloccato. I tasti volume e la rotellina controllano tutti gli altoparlanti, e puoi salvare le combinazioni che usi di più come preset attivabili con un clic."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pro が有効になりました。キーボードの音量キーやメニューバーのスクロールホイールで集約出力を調整でき、出力先の組み合わせをプリセットとして保存できます。"
+            "value": "Pro が有効になりました。音量キーとスクロールホイールですべてのスピーカーを操作でき、よく使う組み合わせをプリセットとしてワンクリックで切り替えられます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pro가 활성화되었습니다. 키보드 볼륨 키나 메뉴 막대 스크롤 휠로 통합 출력을 조절하고, 기기 조합을 프리셋으로 저장할 수 있습니다."
+            "value": "Pro가 활성화됐어요. 음량 키와 스크롤 휠로 모든 스피커를 조절하고, 자주 쓰는 조합을 프리셋으로 저장해 한 번에 전환할 수 있어요."
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pro 已解鎖。鍵盤音量鍵和選單列滾輪可直接調聚合輸出，常用裝置組合也能存為預設一鍵切換。"
+            "value": "Pro 已解鎖。鍵盤音量鍵和滑鼠滾輪可以直接調所有揚聲器，常用設備組合也能存成預設一鍵切換。"
           }
         }
       }

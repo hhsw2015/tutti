@@ -233,7 +233,7 @@ private struct GeneralTab: View {
             }
 
             CardRow("开机自动启动",
-                    subtitle: "登录系统时静默打开 Tutti，并以菜单栏图标方式驻留。") {
+                    subtitle: "开机后自动在后台打开，安静待在菜单栏里。") {
                 Toggle("", isOn: Binding(
                     get: { autoLaunchEnabled },
                     set: { _ in toggleAutoLaunch() }
@@ -245,7 +245,7 @@ private struct GeneralTab: View {
 
             if LicenseManager.hasProAccess {
                 CardRow("辅助功能权限",
-                        subtitle: "授权后，键盘音量键能直接控制聚合输出。") {
+                        subtitle: "授权后，键盘音量键可以直接调所有扬声器的音量。") {
                     if audio.hasAccessibilityPermission {
                         StatusPill(label: "已授权", tone: .accent)
                     } else {
@@ -255,14 +255,14 @@ private struct GeneralTab: View {
                 }
             } else {
                 CardRow("高级功能 · Pro",
-                        subtitle: "升级 Pro 后，键盘音量键和菜单栏滚轮直接调聚合输出，常用设备组合存为预设一键切换。") {
+                        subtitle: "升级 Pro 后，键盘音量键和鼠标滚轮直接调所有扬声器，常用设备组合还能存成预设一键切换。") {
                     ProUpgradeButton(purchaseURL: license.purchaseURL)
                 }
             }
 
             VStack(spacing: 0) {
                 CardRow("自动检查更新",
-                        subtitle: "从 GitHub Releases 拉取，仅在有新版本时通知一次。") {
+                        subtitle: "每次帮你看看有没有新版本，有了才提醒一次。") {
                     HStack(spacing: 10) {
                         Text("v\(updater.currentVersion)")
                             .font(.system(size: 12, design: .monospaced))
@@ -284,7 +284,7 @@ private struct GeneralTab: View {
             }
 
             CardRow("退出 Tutti",
-                    subtitle: "完全退出应用，不再驻留菜单栏。") {
+                    subtitle: "彻底退出，菜单栏图标也一起消失。") {
                 Button {
                     NSApplication.shared.terminate(nil)
                 } label: {
@@ -437,7 +437,7 @@ private struct LicenseTab: View {
             Text("感谢您购买 Tutti")
                 .font(.system(size: 19, weight: .bold))
 
-            Text("Pro 已解锁。键盘音量键和菜单栏滚轮可直接调聚合输出，常用设备组合也能存为预设一键切换。")
+            Text("Pro 已解锁。键盘音量键和鼠标滚轮可以直接调所有扬声器，常用设备组合也能存成预设一键切换。")
                 .font(.system(size: 13))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -550,7 +550,7 @@ private struct LicenseTab: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("免费版 · 基础功能完整可用")
                         .font(.system(size: 14, weight: .semibold))
-                    Text("Pro 让你用键盘音量键和菜单栏滚轮直接调聚合输出，还能把常用设备组合存为预设一键切换。一次买断 $7.99，含所有未来 Pro 功能升级。")
+                    Text("Pro 让你用键盘音量键和鼠标滚轮直接调所有扬声器，还能把常用设备组合存成预设一键切换。一次买断 $7.99，含所有未来 Pro 功能升级。")
                         .font(.system(size: 12.5))
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -784,7 +784,7 @@ private struct AboutTab: View {
                 .foregroundStyle(.secondary)
                 .padding(.top, 2)
 
-            Text("把一路音频同时送到多个输出设备的 macOS 菜单栏小工具。基于 CoreAudio aggregate device，原生 SwiftUI + AppKit 互操作，无第三方依赖。")
+            Text("一个 macOS 菜单栏小工具，让同一段声音同时从你的多个扬声器里放出来。")
                 .font(.system(size: 13))
                 .foregroundStyle(.secondary)
                 .lineSpacing(3)
