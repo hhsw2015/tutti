@@ -16,6 +16,9 @@ TODO.md
 # Unit tests stay local — they document license/trial internals
 TuttiTests/
 
+# Internal planning docs (specs/plans) — local-only, not for the public repo
+docs/superpowers/
+
 # Signing & credentials must never be committed
 *.certSigningRequest
 *.mobileprovision
