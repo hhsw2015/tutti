@@ -604,9 +604,14 @@ private struct LicenseTab: View {
 
             // Footer row
             HStack {
-                Text("一次付费 · 可在 2 台 Mac 上使用")
-                    .font(.system(size: 12))
-                    .foregroundStyle(.tertiary)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("一次付费 · 可在 2 台 Mac 上使用")
+                        .font(.system(size: 12))
+                        .foregroundStyle(.tertiary)
+                    Text("14 天无理由退款")
+                        .font(.system(size: 11.5))
+                        .foregroundStyle(.tertiary)
+                }
                 Spacer()
                 Button {
                     NSWorkspace.shared.open(license.purchaseURL)
@@ -790,6 +795,7 @@ private struct AboutTab: View {
             HStack(spacing: 28) {
                 FooterLink("GitHub", url: "https://github.com/BarryBarrywu/tutti")
                 FooterLink("反馈", url: "https://github.com/BarryBarrywu/tutti/issues")
+                FooterLink("联系支持", url: "mailto:support@barrybarrywu.com")
                 FooterLink("致谢", url: "https://github.com/BarryBarrywu/tutti#acknowledgements")
             }
             .padding(.top, 24)
