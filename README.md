@@ -8,8 +8,6 @@
 
 <p align="center">A macOS menu bar utility that plays the same audio through any number of output devices at once.</p>
 
-<p align="center"><a href="README.zh.md">中文版 README</a></p>
-
 <!-- TODO screenshots:
   docs/screenshots/menubar.png  - menu bar icon, three states stacked (idle / playing / muted)
   docs/screenshots/popover.png  - popover open with 2+ devices selected, sliders visible
