@@ -44,3 +44,6 @@ project.tests.yml
 
 # Claude Code local settings (may hold MCP tokens)
 .claude/settings.local.json
+
+# Project guidance for Claude — local-only, not for the public repo
+CLAUDE.md
