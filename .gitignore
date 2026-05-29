@@ -41,3 +41,6 @@ docs/superpowers/
 
 # Local-only xcodegen overlay for TuttiTests target (TuttiTests/ is gitignored)
 project.tests.yml
+
+# Claude Code local settings (may hold MCP tokens)
+.claude/settings.local.json
