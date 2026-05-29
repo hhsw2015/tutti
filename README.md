@@ -70,6 +70,14 @@ A glimpse of where we'd like Tutti to go. Timing depends on what macOS opens up 
 
 - **AirPlay routing inside Tutti**: today, Tutti shows an AirPlay receiver in its device list *after* macOS has already routed audio to it. The missing piece is starting and switching that route from inside Tutti — picking HomePods, Apple TVs and other AirPlay receivers straight from the panel, without first going to Control Center. macOS keeps AirPlay discovery and switching on a first-party-only track, so for now Control Center handles that initial route. The moment that opens up, Tutti will too.
 
+## Non-goals
+
+Tutti deliberately does **one** thing: send the same sound to several output devices at once, with no driver and no trace left behind.
+
+It will not grow into a per-app mixer. Per-app volume, per-app routing, and a system EQ all require a virtual audio driver / Audio Server plugin running in the background — incompatible with Tutti's driver-free, leave-no-trace design and its macOS 13 baseline. The name says it too: *tutti* means everyone playing together, one sound everywhere, not each app on its own.
+
+If you need per-app control or an equalizer, [SoundSource](https://rogueamoeba.com/soundsource/) (paid) and [FineTune](https://github.com/ronitsingh10/FineTune) (free, open source) are built for exactly that.
+
 ## Localization
 
 Localized in 9 languages: Simplified Chinese, Traditional Chinese, English, Japanese, Korean, French, German, Italian, Spanish.
