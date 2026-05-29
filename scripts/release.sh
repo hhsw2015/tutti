@@ -66,10 +66,11 @@ if gh release view "$TAG" --repo "$GH_REPO" >/dev/null 2>&1; then
   echo "Release $TAG already exists on $GH_REPO. Bump version first." >&2; exit 1
 fi
 
-NOTES_FILE="$PROJECT_ROOT/docs/release-notes/$TAG.md"
-if [ ! -f "$NOTES_FILE" ]; then
-  echo "Missing release notes: $NOTES_FILE" >&2
-  echo "Write user-facing notes (zh + en) before releasing." >&2
+NOTES_DIR="$PROJECT_ROOT/docs/release-notes/$TAG"
+NOTES_EN="$NOTES_DIR/en.md"
+if [ ! -f "$NOTES_EN" ]; then
+  echo "Missing English release notes: $NOTES_EN" >&2
+  echo "Write en.md before releasing; add zh-Hans.md / zh-Hant.md for localized in-app notes." >&2
   exit 1
 fi
 
@@ -173,13 +174,30 @@ fi
 # <description>, so the update alert shows the actual notes instead of a one-
 # liner.
 NOTES_HTML="$POOL/Tutti-${VERSION}.html"
-pandoc -f markdown -t html "$NOTES_FILE" -o "$NOTES_HTML"
+pandoc -f markdown -t html "$NOTES_EN" -o "$NOTES_HTML"
 
 echo "==> generate_appcast (signs with EdDSA key from keychain)"
 "$SPARKLE_BIN/generate_appcast" \
   --download-url-prefix "https://github.com/$GH_REPO/releases/download/$TAG/" \
   --link "https://github.com/$GH_REPO/releases/tag/$TAG" \
   "$POOL"
+
+# Add localized in-app release notes (zh-Hans / zh-Hant) as xml:lang-tagged
+# <description> entries. The unqualified English description stays the fallback
+# for every other language. Skips any language whose md file is absent.
+echo "==> Inject localized release notes"
+LOCALIZED_ARGS=()
+for lang in zh-Hans zh-Hant; do
+  src="$NOTES_DIR/$lang.md"
+  [ -f "$src" ] || continue
+  html="$POOL/Tutti-${VERSION}.${lang}.html"
+  pandoc -f markdown -t html "$src" -o "$html"
+  LOCALIZED_ARGS+=("$lang=$html")
+done
+if [ ${#LOCALIZED_ARGS[@]} -gt 0 ]; then
+  /usr/bin/python3 "$PROJECT_ROOT/scripts/inject-localized-notes.py" \
+    "$POOL/appcast.xml" "$VERSION" "${LOCALIZED_ARGS[@]}"
+fi
 
 mkdir -p "$PROJECT_ROOT/docs"
 cp "$POOL/appcast.xml" "$PROJECT_ROOT/docs/appcast.xml"
@@ -189,7 +207,7 @@ echo "==> Publish GitHub release $TAG"
 gh release create "$TAG" "$ZIP_PATH" "$DMG_PATH" \
   --repo "$GH_REPO" \
   --title "Tutti $VERSION" \
-  --notes-file "$NOTES_FILE" \
+  --notes-file "$NOTES_EN" \
   --latest
 
 RELEASE_URL="$(gh release view "$TAG" --repo "$GH_REPO" --json url -q .url)"
