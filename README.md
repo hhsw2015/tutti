@@ -14,9 +14,12 @@
   <a href="https://github.com/BarryBarrywu/tutti/releases">All releases</a>
 </p>
 
+<p align="center">
+  <img src="docs/screenshots/popover.png" alt="Tutti menu bar panel: master volume, per-device sliders, and presets" width="720">
+</p>
+
 <!-- TODO screenshots:
   docs/screenshots/menubar.png  - menu bar icon, three states stacked (idle / playing / muted)
-  docs/screenshots/popover.png  - popover open with 2+ devices selected, sliders visible
   docs/screenshots/settings.png - Settings -> License tab in activated state (scallop badge + key)
 -->
 
