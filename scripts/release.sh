@@ -130,6 +130,24 @@ echo "==> Repackage stapled .app"
 rm "$ZIP_PATH"
 ditto -c -k --keepParent "$APP_PATH" "$ZIP_PATH"
 
+# ---------- 4.6. Build notarized DMG for human download ----------
+echo "==> Build DMG"
+DMG_PATH="$BUILD_DIR/Tutti.dmg"
+DMG_STAGE="$BUILD_DIR/dmg-stage"
+rm -rf "$DMG_STAGE" "$DMG_PATH"
+mkdir -p "$DMG_STAGE"
+cp -R "$APP_PATH" "$DMG_STAGE/"
+ln -s /Applications "$DMG_STAGE/Applications"
+hdiutil create -volname "Tutti" -srcfolder "$DMG_STAGE" -ov -format UDZO "$DMG_PATH"
+
+echo "==> Sign + notarize DMG"
+codesign --force --sign "$SIGN_IDENTITY" "$DMG_PATH"
+xcrun notarytool submit "$DMG_PATH" \
+  --keychain-profile "$KEYCHAIN_PROFILE" \
+  --wait
+xcrun stapler staple "$DMG_PATH"
+xcrun stapler validate "$DMG_PATH"
+
 # ---------- 4.5. Sparkle appcast ----------
 SPARKLE_BIN="$PROJECT_ROOT/.sparkle-tools/bin"
 if [ ! -x "$SPARKLE_BIN/generate_appcast" ]; then
@@ -168,7 +186,7 @@ cp "$POOL/appcast.xml" "$PROJECT_ROOT/docs/appcast.xml"
 
 # ---------- 5. Publish to GitHub Releases ----------
 echo "==> Publish GitHub release $TAG"
-gh release create "$TAG" "$ZIP_PATH" \
+gh release create "$TAG" "$ZIP_PATH" "$DMG_PATH" \
   --repo "$GH_REPO" \
   --title "Tutti $VERSION" \
   --notes-file "$NOTES_FILE" \
