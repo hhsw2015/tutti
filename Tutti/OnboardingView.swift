@@ -62,7 +62,7 @@ struct OnboardingView: View {
 
             Spacer().frame(height: 8)
 
-            Text("把一路音频同时送到多个设备。\n音箱、AirPods、HomePod —— 一键合奏。")
+            Text("把一路音频同时送到多个设备。\n音箱、AirPods、HomePod —— 播放同一段声音。")
                 .font(.system(size: 13.5))
                 .foregroundStyle(Color.glassTextMid)
                 .multilineTextAlignment(.center)
@@ -360,10 +360,10 @@ private struct OnboardingPermRow: View {
             }
 
             VStack(alignment: .leading, spacing: 3) {
-                Text("拦截 F11 / F12 与音量键")
+                Text("使用 F11 / F12 与音量键")
                     .font(.system(size: 13.5, weight: .semibold))
                     .foregroundStyle(Color.glassTextHi)
-                Text("替代系统默认，使音量调节作用于聚合输出而不是单一设备。")
+                Text("替代系统默认音频管理，使音量调节作用于聚合输出而不是单一设备。")
                     .font(.system(size: 11.5))
                     .foregroundStyle(Color.glassTextMid)
                     .lineSpacing(2)
@@ -409,12 +409,10 @@ private struct OnboardingPermRow: View {
 private struct OnboardingHintBox: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            (Text("点击「打开设置」会跳转到 ")
-            + Text("系统设置 › 隐私与安全性 › 辅助功能").font(.system(size: 12, design: .monospaced))
-            + Text("，把 Tutti 的开关打开即可。"))
-            .font(.system(size: 12))
-            .foregroundStyle(Color.glassTextMid)
-            .lineSpacing(3)
+            Text("点击「打开设置」会跳转到 `系统设置 › 隐私与安全性 › 辅助功能`，把 Tutti 的开关打开即可。")
+                .font(.system(size: 12))
+                .foregroundStyle(Color.glassTextMid)
+                .lineSpacing(3)
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
@@ -434,14 +432,10 @@ private struct OnboardingHintBox: View {
 private struct OnboardingTidyHintBox: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            (Text("点击「打开系统设置」会跳到 ")
-            + Text("控制中心").font(.system(size: 12, design: .monospaced))
-            + Text("，把 ")
-            + Text("声音").font(.system(size: 12, design: .monospaced))
-            + Text(" 一栏的「在菜单栏中显示」改为「不显示」即可。"))
-            .font(.system(size: 12))
-            .foregroundStyle(Color.glassTextMid)
-            .lineSpacing(3)
+            Text("点击「打开系统设置」会跳到 `控制中心`，把 `声音` 一栏的「在菜单栏中显示」改为「不显示」即可。")
+                .font(.system(size: 12))
+                .foregroundStyle(Color.glassTextMid)
+                .lineSpacing(3)
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
