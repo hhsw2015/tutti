@@ -15,6 +15,13 @@
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/github/v/release/BarryBarrywu/tutti?style=flat-square&color=blue&label=release" alt="Release">
+  <img src="https://img.shields.io/badge/platform-macOS-000000?style=flat-square&logo=apple&logoColor=white" alt="Platform">
+  <img src="https://img.shields.io/github/downloads/BarryBarrywu/tutti/total?style=flat-square&color=orange&label=downloads" alt="Downloads">
+  <img src="https://img.shields.io/badge/web-tutti.barrybarrywu.com-38bdf8?style=flat-square" alt="Website">
+</p>
+
+<p align="center">
   <img src="docs/screenshots/popover.webp" alt="Tutti menu bar panel: master volume, per-device sliders, and presets" width="720">
 </p>
 
