@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/popover.png" alt="Tutti menu bar panel: master volume, per-device sliders, and presets" width="720">
+  <img src="docs/screenshots/popover.webp" alt="Tutti menu bar panel: master volume, per-device sliders, and presets" width="720">
 </p>
 
 <!-- TODO screenshots:
