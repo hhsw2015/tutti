@@ -14,6 +14,11 @@ private extension AudioObjectPropertyAddress {
 private let aggregateUID = "com.recents.tutti.aggregate"
 private let legacyMultiOutUID = "com.multiout.aggregate"
 private let systemObject = AudioObjectID(kAudioObjectSystemObject)
+// UID of the output device that was default before Tutti built its aggregate.
+// Persisted so a crash / force-quit (which skips applicationWillTerminate, so
+// destroyAggregate never restores it) can recover the user's original device
+// on next launch instead of letting CoreAudio pick an arbitrary one.
+private let savedDefaultDefaultsKey = "tutti.savedDefaultUID"
 
 /// Why a free user just hit a Pro gate. Banner copy routes on this.
 enum UpgradeReason: Equatable {
@@ -207,13 +212,20 @@ final class AudioDeviceManager: ObservableObject {
     private func destroyAggregate() {
         guard let agg = aggregateID else { return }
         if let saved = savedDefaultID { setDefault(saved); savedDefaultID = nil }
+        // Clean teardown restored the default itself; drop the crash-recovery hint.
+        UserDefaults.standard.removeObject(forKey: savedDefaultDefaultsKey)
         AudioHardwareDestroyAggregateDevice(agg)
         aggregateID = nil
         isActive = false
     }
 
     private func buildAggregate(_ selected: [AudioDevice]) -> AudioDeviceID? {
-        if savedDefaultID == nil { savedDefaultID = readDefault() }
+        if savedDefaultID == nil {
+            savedDefaultID = readDefault()
+            if let saved = savedDefaultID, let uid = stringProp(saved, kAudioDevicePropertyDeviceUID) {
+                UserDefaults.standard.set(uid, forKey: savedDefaultDefaultsKey)
+            }
+        }
 
         let subs: [[String: Any]] = selected.enumerated().map { i, d in
             ["uid": d.uid, "drift": i == 0 ? 0 : 1]
@@ -287,6 +299,10 @@ final class AudioDeviceManager: ObservableObject {
         var ids = [AudioDeviceID](repeating: 0, count: count)
         AudioObjectGetPropertyData(systemObject, &addr, 0, nil, &size, &ids)
         return ids
+    }
+
+    private func deviceID(forUID uid: String) -> AudioDeviceID? {
+        allDeviceIDs().first { stringProp($0, kAudioDevicePropertyDeviceUID) == uid }
     }
 
     private func activeSubdeviceIDs() -> Set<AudioDeviceID> {
@@ -443,13 +459,25 @@ final class AudioDeviceManager: ObservableObject {
     // MARK: - Orphan cleanup & device listener
 
     private func cleanupOrphans() {
+        var destroyedOrphan = false
         for id in allDeviceIDs() {
             guard let uid = stringProp(id, kAudioDevicePropertyDeviceUID) else { continue }
             // Also destroy leftover MultiOut aggregate from before the rename
             if uid == aggregateUID || uid == legacyMultiOutUID {
                 AudioHardwareDestroyAggregateDevice(id)
+                destroyedOrphan = true
             }
         }
+        // A leftover aggregate at launch means last session didn't tear down
+        // cleanly (crash / force-quit). Restore the output device the user had
+        // before Tutti took over — otherwise destroying the orphan leaves
+        // CoreAudio to pick an arbitrary default.
+        if destroyedOrphan,
+           let uid = UserDefaults.standard.string(forKey: savedDefaultDefaultsKey),
+           let id = deviceID(forUID: uid) {
+            setDefault(id)
+        }
+        UserDefaults.standard.removeObject(forKey: savedDefaultDefaultsKey)
     }
 
     private func startListening() {
@@ -474,6 +502,7 @@ final class AudioDeviceManager: ObservableObject {
             AudioHardwareDestroyAggregateDevice(aggID)
             aggregateID = nil
             savedDefaultID = nil
+            UserDefaults.standard.removeObject(forKey: savedDefaultDefaultsKey)
             selectedIDs = []
             isActive = false
             // refreshDevices() will be called by the kAudioHardwarePropertyDevices
