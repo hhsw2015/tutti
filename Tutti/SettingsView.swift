@@ -63,7 +63,6 @@ struct TuttiSettingsView: View {
         .frame(width: 720, height: 600)
         .background(WindowAppearanceBinder(theme: prefs.theme))
         .environmentObject(prefs)
-        .preferredColorScheme(prefs.theme.colorScheme)
         .onChange(of: license.status) { newStatus in
             // Any transition back to inactive (user deactivate or server
             // revoke) re-arms the prefill so the saved key is offered once

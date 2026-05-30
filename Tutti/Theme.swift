@@ -6,14 +6,6 @@ enum ThemeChoice: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
-    var colorScheme: ColorScheme? {
-        switch self {
-        case .system: return nil
-        case .light:  return .light
-        case .dark:   return .dark
-        }
-    }
-
     var label: LocalizedStringKey {
         switch self {
         case .system: return "系统"

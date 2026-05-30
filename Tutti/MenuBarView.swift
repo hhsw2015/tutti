@@ -95,7 +95,6 @@ struct MenuBarView: View {
         )
         .background(TransparentWindow(theme: prefs.theme))
         .environmentObject(prefs)
-        .preferredColorScheme(prefs.theme.colorScheme)
     }
 
     // MARK: - Banner state machine
