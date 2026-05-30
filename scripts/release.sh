@@ -212,15 +212,39 @@ gh release create "$TAG" "$ZIP_PATH" "$DMG_PATH" \
 
 RELEASE_URL="$(gh release view "$TAG" --repo "$GH_REPO" --json url -q .url)"
 
-# ---------- 6. Commit appcast.xml so Sparkle clients see the new release ----------
-echo "==> Commit + push docs/appcast.xml"
+# ---------- 6. Commit the release (version bump + appcast + notes) ----------
+echo "==> Commit + push release artifacts"
 cd "$PROJECT_ROOT"
-git add docs/appcast.xml
+git add docs/appcast.xml project.yml Tutti/Info.plist Tutti.xcodeproj "docs/release-notes/$TAG"
 if git diff --cached --quiet; then
-  echo "  (no appcast change to commit)"
+  echo "  (nothing to commit)"
 else
-  git commit -m "appcast: $VERSION"
+  git commit -m "release: $VERSION"
   git push origin main
+fi
+
+# ---------- 7. Sync the version label on the marketing site ----------
+# The site (barrybarrywu-site, Cloudflare Pages) shows a hardcoded version in
+# its header. The download button already tracks releases/latest, so only the
+# label needs bumping — do it here so one release run keeps the site in sync and
+# nobody has to remember a manual edit. Non-fatal: the release is already
+# published by this point, so a failed site push only warns.
+SITE_DIR="$PROJECT_ROOT/../barrybarrywu-site"
+SITE_VERSION_FILE="$SITE_DIR/src/version.ts"
+if [ -f "$SITE_VERSION_FILE" ]; then
+  echo "==> Bump site version label to $VERSION"
+  printf 'export const VERSION = "%s";\n' "$VERSION" > "$SITE_VERSION_FILE"
+  git -C "$SITE_DIR" add src/version.ts
+  if git -C "$SITE_DIR" diff --cached --quiet; then
+    echo "  (site already $VERSION)"
+  else
+    git -C "$SITE_DIR" commit -m "chore: bump version label to $VERSION" >/dev/null
+    git -C "$SITE_DIR" push origin main \
+      && echo "  Site version pushed; Cloudflare Pages will redeploy." \
+      || echo "  WARN: site committed but push failed; run: git -C \"$SITE_DIR\" push" >&2
+  fi
+else
+  echo "  (site repo not found at $SITE_DIR — skipping label bump)" >&2
 fi
 
 echo ""
@@ -228,7 +252,3 @@ echo "Done."
 echo "  Local artifact: $ZIP_PATH"
 echo "  GitHub release: $RELEASE_URL"
 echo "  Appcast:        https://barrybarrywu.github.io/tutti/appcast.xml"
-echo ""
-if [ -n "$NEW_VERSION" ]; then
-  echo "Reminder: commit the version bump in project.yml + Tutti/Info.plist"
-fi
