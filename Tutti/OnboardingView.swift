@@ -287,8 +287,8 @@ private struct OnboardingStepper: View {
 
 private struct OnboardingFeatureCard: View {
     let icon: String
-    let title: String
-    let sub: String
+    let title: LocalizedStringKey
+    let sub: LocalizedStringKey
     let pro: Bool
 
     var body: some View {
@@ -455,7 +455,7 @@ private struct OnboardingTidyHintBox: View {
 private enum OnboardingButtonTone { case accent, primary }
 
 private struct OnboardingPrimaryButton: View {
-    let label: String
+    let label: LocalizedStringKey
     let tone: OnboardingButtonTone
     let action: () -> Void
 
