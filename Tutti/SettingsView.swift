@@ -399,6 +399,7 @@ private struct ThemeSegmented: View {
 private struct LicenseTab: View {
     @EnvironmentObject var prefs: AppearancePrefs
     @StateObject private var license = LicenseManager.shared
+    @StateObject private var trial = TrialManager.shared
     @Binding var showDeactivateConfirm: Bool
     @Binding var inputKey: String
     @Binding var didPrefill: Bool
@@ -415,6 +416,10 @@ private struct LicenseTab: View {
         Group {
             if license.isPro {
                 activatedCard
+            } else if trial.isInTrial {
+                trialCard
+            } else if trial.hasUsedTrial {
+                trialEndedCard
             } else {
                 freeTierCard
             }
@@ -532,100 +537,47 @@ private struct LicenseTab: View {
         }
     }
 
-    // MARK: Free tier
+    // MARK: Free tier / Trial (share the same activation section, differ only in header)
 
     private var freeTierCard: some View {
+        unactivatedCard {
+            cardHeader(
+                icon: "lock.fill",
+                iconColor: .secondary,
+                title: "免费版 · 基础功能完整可用",
+                subtitle: "Pro 让你用键盘音量键和鼠标滚轮直接调所有扬声器，还能把常用设备组合存成预设一键切换。一次买断 $7.99，含所有未来 Pro 功能升级。"
+            )
+        }
+    }
+
+    private var trialCard: some View {
+        unactivatedCard {
+            cardHeader(
+                icon: "sparkles",
+                iconColor: prefs.accentColor,
+                title: "Pro 试用中 · 还剩 \(trial.daysRemaining) 天",
+                subtitle: "试用期间所有 Pro 功能解锁"
+            )
+        }
+    }
+
+    private var trialEndedCard: some View {
+        unactivatedCard {
+            cardHeader(
+                icon: "exclamationmark.triangle.fill",
+                iconColor: .muteRed,
+                title: "Pro 试用已结束",
+                subtitle: "升级解锁键盘音量键直控与预设"
+            )
+        }
+    }
+
+    /// Card shell shared by free / trial / trial-ended states: a variable
+    /// header above the common key-input + activate + purchase section.
+    private func unactivatedCard<Header: View>(@ViewBuilder header: () -> Header) -> some View {
         VStack(spacing: 16) {
-            // Free-tier header
-            HStack(spacing: 14) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(Color.designToggleOff)
-                        .frame(width: 38, height: 38)
-                    Image(systemName: "lock.fill")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(.secondary)
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("免费版 · 基础功能完整可用")
-                        .font(.system(size: 14, weight: .semibold))
-                    Text("Pro 让你用键盘音量键和鼠标滚轮直接调所有扬声器，还能把常用设备组合存成预设一键切换。一次买断 $7.99，含所有未来 Pro 功能升级。")
-                        .font(.system(size: 12.5))
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                Spacer(minLength: 0)
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 14)
-            .background(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(Color.designBtnBg)
-                    .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .stroke(Color.designBtnEdge, lineWidth: 0.5))
-            )
-
-            // License key input
-            TextField("", text: $inputKey, prompt:
-                Text("粘贴邮件中的许可证密钥")
-                    .foregroundColor(.secondary)
-            )
-            .textFieldStyle(.plain)
-            .font(.system(size: 13.5))
-            .padding(.horizontal, 16)
-            .padding(.vertical, 14)
-            .background(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(Color.designBtnBg)
-                    .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .stroke(Color.designBtnEdge, lineWidth: 0.5))
-            )
-            .disableAutocorrection(true)
-
-            // Activate button
-            Button {
-                Task { await runActivate() }
-            } label: {
-                Text(isWorking ? "激活中…" : "激活")
-                    .font(.system(size: 13.5, weight: .semibold))
-                    .foregroundStyle(activateForeground)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
-                    .background(
-                        RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .fill(activateBackground)
-                            .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                .stroke(Color.designBtnEdge, lineWidth: 0.5))
-                    )
-            }
-            .buttonStyle(.plain)
-            .disabled(isWorking || inputKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-
-            // Footer row
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("一次付费 · 可在 2 台 Mac 上使用")
-                        .font(.system(size: 12))
-                        .foregroundStyle(.tertiary)
-                    Text("14 天无理由退款")
-                        .font(.system(size: 11.5))
-                        .foregroundStyle(.tertiary)
-                }
-                Spacer()
-                Button {
-                    NSWorkspace.shared.open(license.purchaseURL)
-                } label: {
-                    HStack(spacing: 4) {
-                        Text("购买许可证")
-                            .font(.system(size: 12, weight: .semibold))
-                        Image(systemName: "arrow.up.right")
-                            .font(.system(size: 10))
-                    }
-                    .foregroundStyle(Color.designAccent)
-                }
-                .buttonStyle(.plain)
-            }
-            .padding(.top, 2)
+            header()
+            activationSection
         }
         .padding(22)
         .background(
@@ -635,8 +587,8 @@ private struct LicenseTab: View {
                     .stroke(Color.designCardEdge, lineWidth: 0.5))
         )
         // Prefill once per "inactive session": the first appearance after
-        // the free tier card becomes visible (either on first open while
-        // already inactive, or right after a deactivate). Tab switches and
+        // the card becomes visible (either on first open while already
+        // inactive, or right after a deactivate). Tab switches and
         // re-renders within the same session don't refill, so a manual
         // clear or edit sticks.
         .onAppear {
@@ -646,6 +598,101 @@ private struct LicenseTab: View {
                 inputKey = last
             }
         }
+    }
+
+    private func cardHeader(icon: String, iconColor: Color, title: LocalizedStringKey, subtitle: LocalizedStringKey) -> some View {
+        HStack(spacing: 14) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(Color.designToggleOff)
+                    .frame(width: 38, height: 38)
+                Image(systemName: icon)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(iconColor)
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.system(size: 14, weight: .semibold))
+                Text(subtitle)
+                    .font(.system(size: 12.5))
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color.designBtnBg)
+                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(Color.designBtnEdge, lineWidth: 0.5))
+        )
+    }
+
+    @ViewBuilder
+    private var activationSection: some View {
+        // License key input
+        TextField("", text: $inputKey, prompt:
+            Text("粘贴邮件中的许可证密钥")
+                .foregroundColor(.secondary)
+        )
+        .textFieldStyle(.plain)
+        .font(.system(size: 13.5))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color.designBtnBg)
+                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(Color.designBtnEdge, lineWidth: 0.5))
+        )
+        .disableAutocorrection(true)
+
+        // Activate button
+        Button {
+            Task { await runActivate() }
+        } label: {
+            Text(isWorking ? "激活中…" : "激活")
+                .font(.system(size: 13.5, weight: .semibold))
+                .foregroundStyle(activateForeground)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 14)
+                .background(
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(activateBackground)
+                        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .stroke(Color.designBtnEdge, lineWidth: 0.5))
+                )
+        }
+        .buttonStyle(.plain)
+        .disabled(isWorking || inputKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+
+        // Footer row
+        HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("一次付费 · 可在 2 台 Mac 上使用")
+                    .font(.system(size: 12))
+                    .foregroundStyle(.tertiary)
+                Text("14 天无理由退款")
+                    .font(.system(size: 11.5))
+                    .foregroundStyle(.tertiary)
+            }
+            Spacer()
+            Button {
+                NSWorkspace.shared.open(license.purchaseURL)
+            } label: {
+                HStack(spacing: 4) {
+                    Text("购买许可证")
+                        .font(.system(size: 12, weight: .semibold))
+                    Image(systemName: "arrow.up.right")
+                        .font(.system(size: 10))
+                }
+                .foregroundStyle(Color.designAccent)
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.top, 2)
     }
 
     private var canActivate: Bool {
