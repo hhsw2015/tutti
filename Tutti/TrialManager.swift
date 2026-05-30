@@ -1,4 +1,10 @@
 import Foundation
+import Security
+
+protocol TrialStore {
+    func load() -> Date?
+    func save(_ date: Date)
+}
 
 @MainActor
 final class TrialManager: ObservableObject {
@@ -12,14 +18,13 @@ final class TrialManager: ObservableObject {
     @Published private(set) var trialStartDate: Date?
 
     private let trialDays = 7
-    private let trialStartKey = "tutti.trial.startedAt"
-    private let defaults: UserDefaults
+    private let store: TrialStore
     private let clock: () -> Date
 
-    init(defaults: UserDefaults = .standard, clock: @escaping () -> Date = Date.init) {
-        self.defaults = defaults
+    init(store: TrialStore = KeychainTrialStore(), clock: @escaping () -> Date = Date.init) {
+        self.store = store
         self.clock = clock
-        self.trialStartDate = defaults.object(forKey: trialStartKey) as? Date
+        self.trialStartDate = store.load()
     }
 
     var isInTrial: Bool {
@@ -45,7 +50,7 @@ final class TrialManager: ObservableObject {
     func startTrialIfFirstLaunch() {
         guard trialStartDate == nil else { return }
         let now = clock()
-        defaults.set(now, forKey: trialStartKey)
+        store.save(now)
         trialStartDate = now
     }
 }
@@ -76,3 +81,63 @@ extension TrialManager {
     }
 }
 #endif
+
+/// Persists the trial start date in the Keychain so a clean reinstall or
+/// `defaults delete` can't reset the 7-day window. Stored as a generic
+/// password under account `tutti.trial` / service `trial_started_at`; the
+/// date is the seconds-since-reference-date encoded as a UTF-8 string.
+struct KeychainTrialStore: TrialStore {
+    private let account = "tutti.trial"
+    private let service = "trial_started_at"
+    private let legacyDefaultsKey = "tutti.trial.startedAt"
+
+    func load() -> Date? {
+        if let date = readKeychain() { return date }
+        // One-time migration from the pre-Keychain build: move an existing
+        // trial start out of UserDefaults and drop the old copy so no
+        // tamperable trace remains.
+        guard let legacy = UserDefaults.standard.object(forKey: legacyDefaultsKey) as? Date else {
+            return nil
+        }
+        writeKeychain(legacy)
+        UserDefaults.standard.removeObject(forKey: legacyDefaultsKey)
+        return legacy
+    }
+
+    func save(_ date: Date) {
+        writeKeychain(date)
+    }
+
+    private func readKeychain() -> Date? {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account,
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne,
+        ]
+        var result: AnyObject?
+        guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
+              let data = result as? Data,
+              let str = String(data: data, encoding: .utf8),
+              let interval = TimeInterval(str) else {
+            return nil
+        }
+        return Date(timeIntervalSinceReferenceDate: interval)
+    }
+
+    private func writeKeychain(_ date: Date) {
+        let data = Data(String(date.timeIntervalSinceReferenceDate).utf8)
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account,
+        ]
+        let status = SecItemUpdate(query as CFDictionary, [kSecValueData as String: data] as CFDictionary)
+        if status == errSecItemNotFound {
+            var add = query
+            add[kSecValueData as String] = data
+            SecItemAdd(add as CFDictionary, nil)
+        }
+    }
+}
