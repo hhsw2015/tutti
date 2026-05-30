@@ -90,6 +90,7 @@ struct OnboardingView: View {
                     pro: false
                 )
             }
+            .fixedSize(horizontal: false, vertical: true)
 
             Spacer()
 
@@ -310,14 +311,18 @@ private struct OnboardingFeatureCard: View {
                 Text(title)
                     .font(.system(size: 12.5, weight: .semibold))
                     .foregroundStyle(Color.glassTextHi)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text(sub)
                     .font(.system(size: 11, weight: .regular))
                     .foregroundStyle(Color.glassTextMid)
                     .lineSpacing(2)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .padding(14)
-        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .overlay(alignment: .topTrailing) {
             if pro {
                 Text("PRO")
