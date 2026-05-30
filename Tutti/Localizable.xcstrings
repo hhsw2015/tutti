@@ -590,6 +590,112 @@
         }
       }
     },
+    "Pro 试用中 · 还剩 %lld 天": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro trial · %lld days left"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro 試用中 · 還剩 %lld 天"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro 試用中 · 残り %lld 日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro 체험 중 · %lld일 남음"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Essai Pro · %lld jours restants"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro-Test · noch %lld Tage"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prova Pro · %lld giorni rimanenti"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prueba Pro · quedan %lld días"
+          }
+        }
+      }
+    },
+    "Pro 试用已结束": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro trial ended"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro 試用已結束"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro 試用が終了しました"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro 체험이 종료되었습니다"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Essai Pro terminé"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro-Test beendet"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prova Pro terminata"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prueba Pro finalizada"
+          }
+        }
+      }
+    },
     "Pro 试用已结束 · 高级功能已停用": {
       "extractionState": "manual",
       "localizations": {
@@ -2288,6 +2394,59 @@
           "stringUnit": {
             "state": "translated",
             "value": "升級到 Tutti Pro，同時連接任意數量的喇叭、耳機和 AirPods。"
+          }
+        }
+      }
+    },
+    "升级解锁键盘音量键直控与预设": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upgrade to unlock keyboard volume control and presets"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "升級解鎖鍵盤音量鍵直控與預設"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アップグレードでキーボード音量キーの直接操作とプリセットを解除"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "업그레이드하여 키보드 음량 키 직접 제어와 프리셋을 잠금 해제하세요"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passez à Pro pour le contrôle du volume au clavier et les préréglages"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upgrade für Lautstärketasten-Steuerung und Presets"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esegui l'upgrade per il controllo del volume da tastiera e i preset"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mejora para desbloquear el control de volumen por teclado y los ajustes"
           }
         }
       }
@@ -6322,6 +6481,59 @@
           "stringUnit": {
             "state": "translated",
             "value": "Todas las funciones desbloqueadas durante %lld días. Las funciones básicas siguen disponibles al terminar."
+          }
+        }
+      }
+    },
+    "试用期间所有 Pro 功能解锁": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All Pro features unlocked during the trial"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "試用期間所有 Pro 功能解鎖"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "試用期間中はすべての Pro 機能が利用可能"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "체험 기간 동안 모든 Pro 기능이 잠금 해제됩니다"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toutes les fonctions Pro débloquées pendant l'essai"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle Pro-Funktionen während des Tests freigeschaltet"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutte le funzioni Pro sbloccate durante la prova"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todas las funciones Pro desbloqueadas durante la prueba"
           }
         }
       }
