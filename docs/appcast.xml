@@ -6,6 +6,40 @@
         <description>Tutti release feed</description>
         <language>en</language>
         <item>
+            <title>1.0.0</title>
+            <pubDate>Thu, 04 Jun 2026 19:06:44 +0800</pubDate>
+            <link>https://github.com/BarryBarrywu/tutti/releases/tag/v1.0.0</link>
+            <sparkle:version>7</sparkle:version>
+            <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>13.0</sparkle:minimumSystemVersion>
+            <description>&lt;h2 id="whats-new-in-1.0.0"&gt;What’s new in 1.0.0&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;The accessibility permission step during first-time setup now works
+smoothly: Tutti adds itself to the system list automatically and
+switches to “granted” the moment you turn it on — no more adding it by
+hand or being stuck on “not authorized.”&lt;/li&gt;
+&lt;li&gt;The permission prompt no longer pops up before the welcome screen
+has had a chance to explain why it’s needed.&lt;/li&gt;
+&lt;li&gt;The “Credits” link in Settings now opens the sponsor page.&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+            <enclosure url="https://github.com/BarryBarrywu/tutti/releases/download/v1.0.0/Tutti-1.0.0.zip" length="2032421" type="application/octet-stream" sparkle:edSignature="ZK7gV3xL8JLI1AtpKnEwiIuHuJnV/xDYkCOVZLGdhmUqZHDoDzpq1Ueam6z3BXlZo7ckSM2FQuvqn2YXsBZlCg==" />
+        <description xml:lang="zh-Hans">&lt;h2 id="更新内容"&gt;1.0.0 更新内容&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;初次设置时的辅助功能授权步骤现在更顺畅：Tutti
+会自动出现在系统列表里，你一打开开关，这一步就会立刻变成「已授权」——不用再手动添加，也不会卡在「未授权」。&lt;/li&gt;
+&lt;li&gt;授权提示不会再在欢迎页说明之前就弹出来。&lt;/li&gt;
+&lt;li&gt;设置里的「致谢」链接现在会打开赞助页面。&lt;/li&gt;
+&lt;/ul&gt;
+</description><description xml:lang="zh-Hant">&lt;h2 id="更新內容"&gt;1.0.0 更新內容&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;初次設定時的輔助使用授權步驟現在更順暢：Tutti
+會自動出現在系統列表裡，你一開啟開關，這一步就會立刻變成「已授權」——不用再手動加入，也不會卡在「未授權」。&lt;/li&gt;
+&lt;li&gt;授權提示不會再在歡迎頁說明之前就跳出來。&lt;/li&gt;
+&lt;li&gt;設定裡的「致謝」連結現在會開啟贊助頁面。&lt;/li&gt;
+&lt;/ul&gt;
+</description></item>
+        <item>
             <title>0.2.4</title>
             <pubDate>Sun, 31 May 2026 07:54:00 +0800</pubDate>
             <link>https://github.com/BarryBarrywu/tutti/releases/tag/v0.2.4</link>
@@ -31,7 +65,7 @@ French, German, Italian, and Spanish.&lt;/li&gt;
 &lt;/ul&gt;
 </description>
             <enclosure url="https://github.com/BarryBarrywu/tutti/releases/download/v0.2.4/Tutti-0.2.4.zip" length="2031185" type="application/octet-stream" sparkle:edSignature="pAgPBfOHhjmS4rq+3+yiwZB78au4J3s3+UClx7St34jdIJSV7rZ8DqBUCV6+2mRaIZMWFY8+8N2LanlmQLeuCw==" />
-        <description xml:lang="zh-Hans">&lt;h2 id="更新内容"&gt;0.2.4 更新内容&lt;/h2&gt;
+            <description xml:lang="zh-Hans">&lt;h2 id="更新内容"&gt;0.2.4 更新内容&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;把主题切到「跟随系统」时，设置面板不再变灰。&lt;/li&gt;
 &lt;li&gt;如果应用意外退出，下次打开会自动恢复你原来的扬声器。&lt;/li&gt;
@@ -41,7 +75,8 @@ French, German, Italian, and Spanish.&lt;/li&gt;
 &lt;li&gt;试用期间，设置的「许可」页现在会显示试用状态和剩余天数。&lt;/li&gt;
 &lt;li&gt;引导页、试用提示和升级说明现已完整支持简繁中文、英、日、韩、法、德、意、西。&lt;/li&gt;
 &lt;/ul&gt;
-</description><description xml:lang="zh-Hant">&lt;h2 id="更新內容"&gt;0.2.4 更新內容&lt;/h2&gt;
+</description>
+            <description xml:lang="zh-Hant">&lt;h2 id="更新內容"&gt;0.2.4 更新內容&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;把主題切到「跟隨系統」時，設定面板不再變灰。&lt;/li&gt;
 &lt;li&gt;如果應用程式意外結束，下次開啟會自動恢復你原本的喇叭。&lt;/li&gt;
@@ -51,7 +86,8 @@ French, German, Italian, and Spanish.&lt;/li&gt;
 &lt;li&gt;試用期間，設定的「授權」頁現在會顯示試用狀態和剩餘天數。&lt;/li&gt;
 &lt;li&gt;引導頁、試用提示和升級說明現已完整支援簡繁中文、英、日、韓、法、德、義、西。&lt;/li&gt;
 &lt;/ul&gt;
-</description></item>
+</description>
+        </item>
         <item>
             <title>0.2.3</title>
             <pubDate>Fri, 29 May 2026 06:00:08 +0800</pubDate>
