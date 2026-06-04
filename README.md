@@ -25,13 +25,10 @@
   <img src="docs/screenshots/popover.webp" alt="Tutti menu bar panel: master volume, per-device sliders, and presets" width="720">
 </p>
 
-<p align="center">
-  <img src="docs/screenshots/menubar.png" alt="Tutti menu bar icon in three states: idle, playing, and muted" width="360">
-</p>
-
-<p align="center">
-  <img src="docs/screenshots/settings.webp" alt="Tutti Settings: License tab with Pro activated" width="720">
-</p>
+<!-- TODO screenshots:
+  docs/screenshots/menubar.png  - menu bar icon, three states stacked (idle / playing / muted)
+  docs/screenshots/settings.png - Settings -> License tab in activated state (scallop badge + key)
+-->
 
 ## The volume icon macOS should have shipped
 
