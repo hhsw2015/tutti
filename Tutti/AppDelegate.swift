@@ -122,9 +122,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private func showOnboardingIfNeeded() {
         guard !UserDefaults.standard.bool(forKey: "tutti.onboarding.completed") else { return }
         let view = OnboardingView {
-            UserDefaults.standard.set(true, forKey: "tutti.onboarding.completed")
+            // windowWillClose runs the completion work, so closing by any route
+            // (buttons, red close button, Cmd+W) starts volume-key monitoring.
             self.onboardingWindow?.close()
-            self.onboardingWindow = nil
         }
         .environmentObject(manager)
         let host = NSHostingController(rootView: view)
@@ -138,13 +138,29 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         win.isMovableByWindowBackground = true
         win.standardWindowButton(.miniaturizeButton)?.isHidden = true
         win.standardWindowButton(.zoomButton)?.isHidden = true
+        win.delegate = self
         onboardingWindow = win
         NSApp.activate(ignoringOtherApps: true)
         win.makeKeyAndOrderFront(nil)
     }
 
+    /// Marks onboarding done and starts the deferred volume-key monitoring.
+    /// Idempotent via the completed flag, so the button path (which closes the
+    /// window) and a direct window close don't both run it.
+    private func finishOnboarding() {
+        guard !UserDefaults.standard.bool(forKey: "tutti.onboarding.completed") else { return }
+        UserDefaults.standard.set(true, forKey: "tutti.onboarding.completed")
+        manager.beginVolumeKeyMonitoring()
+        onboardingWindow = nil
+    }
+
     func windowWillClose(_ notification: Notification) {
-        guard (notification.object as? NSWindow) == settingsWindow else { return }
+        let win = notification.object as? NSWindow
+        if win == onboardingWindow {
+            finishOnboarding()
+            return
+        }
+        guard win == settingsWindow else { return }
         popover.behavior = .transient
         popover.close()
         settingsWindow = nil

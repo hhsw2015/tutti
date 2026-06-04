@@ -72,11 +72,22 @@ final class AudioDeviceManager: ObservableObject {
         cleanupOrphans()
         refreshDevices()
         startListening()
-        startVolumeKeyMonitoring()
-        startPermissionPolling()
+        // Creating the CGEvent tap triggers the system Accessibility prompt for
+        // an untrusted process. Hold off until onboarding is done so the prompt
+        // never fires before the user has seen what it's for.
+        if UserDefaults.standard.bool(forKey: "tutti.onboarding.completed") {
+            beginVolumeKeyMonitoring()
+        }
         startBatteryPolling()
         startLicenseObserver()
         startTrialObserver()
+    }
+
+    /// Starts hardware volume-key takeover and the permission poller. Deferred
+    /// past first-run onboarding (see init); call this when onboarding completes.
+    func beginVolumeKeyMonitoring() {
+        startVolumeKeyMonitoring()
+        startPermissionPolling()
     }
 
     private func startLicenseObserver() {
