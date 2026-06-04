@@ -842,7 +842,7 @@ private struct AboutTab: View {
                 FooterLink("GitHub", url: "https://github.com/BarryBarrywu/tutti")
                 FooterLink("反馈", url: "https://github.com/BarryBarrywu/tutti/issues")
                 FooterLink("联系支持", url: "mailto:support@barrybarrywu.com")
-                FooterLink("致谢", url: "https://github.com/BarryBarrywu/tutti#acknowledgements")
+                FooterLink("致谢", url: "https://sponsor.barrybarrywu.com/")
             }
             .padding(.top, 24)
         }
