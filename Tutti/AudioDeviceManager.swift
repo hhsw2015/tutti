@@ -54,6 +54,7 @@ final class AudioDeviceManager: ObservableObject {
     private var preMuteVolumes: [AudioDeviceID: Float] = [:]
     private var volumeAddressCache: [AudioDeviceID: AudioObjectPropertyAddress] = [:]
     private var permissionTimer: DispatchSourceTimer?
+    private var volumeMonitoringStarted = false
     private var batteryTask: Task<Void, Never>?
     private var popoverIsOpen = false
     private var licenseObserver: AnyCancellable?
@@ -84,9 +85,19 @@ final class AudioDeviceManager: ObservableObject {
     }
 
     /// Starts hardware volume-key takeover and the permission poller. Deferred
-    /// past first-run onboarding (see init); call this when onboarding completes.
-    func beginVolumeKeyMonitoring() {
-        startVolumeKeyMonitoring()
+    /// past first-run onboarding (see init); the onboarding permission step
+    /// calls this with `promptForPermission: true` so macOS registers Tutti in
+    /// the Accessibility list and the poller can flip the UI once granted.
+    /// Idempotent — safe to call from both the onboarding step and completion.
+    func beginVolumeKeyMonitoring(promptForPermission: Bool = false) {
+        guard !volumeMonitoringStarted else {
+            // Already running. Re-surface the prompt if asked while still
+            // untrusted; start() no-ops once the tap is live.
+            if promptForPermission { volumeKeyMonitor?.start(promptForPermission: true) }
+            return
+        }
+        volumeMonitoringStarted = true
+        startVolumeKeyMonitoring(promptForPermission: promptForPermission)
         startPermissionPolling()
     }
 
@@ -608,7 +619,7 @@ final class AudioDeviceManager: ObservableObject {
         }
     }
 
-    private func startVolumeKeyMonitoring() {
+    private func startVolumeKeyMonitoring(promptForPermission: Bool = false) {
         volumeKeyMonitor = VolumeKeyMonitor(
             onKey: { [weak self] action in
                 Task { @MainActor [weak self] in
@@ -621,11 +632,12 @@ final class AudioDeviceManager: ObservableObject {
                 }
             }
         )
-        // No prompt at startup — the system permission dialog only appears
-        // when the user explicitly clicks "去授权" in Settings (after they
-        // have or want Pro). Free-tier users never see an unsolicited
-        // accessibility prompt for a feature they can't use.
-        volumeKeyMonitor?.start(promptForPermission: false)
+        // promptForPermission is true only when the user reaches the onboarding
+        // permission step or taps "去授权" in Settings — that's when macOS both
+        // registers Tutti in the Accessibility list and shows the grant prompt.
+        // On a normal launch it's false, so a free-tier user never sees an
+        // unsolicited accessibility prompt for a feature they can't use.
+        volumeKeyMonitor?.start(promptForPermission: promptForPermission)
     }
 
     /// Called when a free / expired-trial user hits a Pro-only path.

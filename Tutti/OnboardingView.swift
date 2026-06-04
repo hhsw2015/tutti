@@ -191,6 +191,13 @@ struct OnboardingView: View {
             }
         }
         .animation(.easeInOut(duration: 0.25), value: authed)
+        .onAppear {
+            // Reaching this step is the user's cue to grant access. Trigger the
+            // prompt now so macOS registers Tutti in the Accessibility list
+            // (otherwise it's absent and the user must add it by hand), and the
+            // poller starts so the page flips to "已授权" once they toggle it on.
+            manager.beginVolumeKeyMonitoring(promptForPermission: true)
+        }
     }
 
     // MARK: - Step 3: Tidy the menu bar
