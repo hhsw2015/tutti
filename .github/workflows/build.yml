@@ -24,34 +24,30 @@ jobs:
       - name: Generate project
         run: xcodegen generate
 
-      - name: Build (unsigned Release)
+      - name: Build (ad-hoc signed Release)
         run: |
           set -o pipefail
           xcodebuild \
             -scheme Tutti \
             -configuration Release \
             -derivedDataPath build \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGN_ENTITLEMENTS="" \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=YES \
+            CODE_SIGNING_ALLOWED=YES \
             -skipPackagePluginValidation \
             -skipMacroValidation \
-            build | xcbeautify || xcodebuild \
-              -scheme Tutti \
-              -configuration Release \
-              -derivedDataPath build \
-              CODE_SIGNING_ALLOWED=NO \
-              CODE_SIGN_IDENTITY="" \
-              CODE_SIGN_ENTITLEMENTS="" \
-              -skipPackagePluginValidation \
-              -skipMacroValidation \
-              build
+            build
 
-      - name: Strip quarantine + zip
+      - name: Re-sign deeply (ad-hoc) + strip quarantine + zip
         run: |
           APP="build/Build/Products/Release/Tutti.app"
           test -d "$APP"
           xattr -cr "$APP" || true
+          # ad-hoc sign every nested binary, framework, xpc, helper
+          find "$APP" -type f \( -perm -u+x -o -name '*.dylib' -o -name '*.framework' \) -print0 \
+            | xargs -0 -I{} codesign --force --sign - --timestamp=none --options=runtime "{}" 2>/dev/null || true
+          codesign --force --deep --sign - --timestamp=none --options=runtime "$APP"
+          codesign --verify --deep --strict --verbose=2 "$APP" || true
           ditto -c -k --sequesterRsrc --keepParent "$APP" Tutti.app.zip
 
       - name: Upload artifact
