@@ -1,0 +1,66 @@
+name: Build Tutti.app
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+
+      - name: Install xcodegen
+        run: brew install xcodegen
+
+      - name: Generate project
+        run: xcodegen generate
+
+      - name: Build (unsigned Release)
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -scheme Tutti \
+            -configuration Release \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGN_ENTITLEMENTS="" \
+            -skipPackagePluginValidation \
+            -skipMacroValidation \
+            build | xcbeautify || xcodebuild \
+              -scheme Tutti \
+              -configuration Release \
+              -derivedDataPath build \
+              CODE_SIGNING_ALLOWED=NO \
+              CODE_SIGN_IDENTITY="" \
+              CODE_SIGN_ENTITLEMENTS="" \
+              -skipPackagePluginValidation \
+              -skipMacroValidation \
+              build
+
+      - name: Strip quarantine + zip
+        run: |
+          APP="build/Build/Products/Release/Tutti.app"
+          test -d "$APP"
+          xattr -cr "$APP" || true
+          ditto -c -k --sequesterRsrc --keepParent "$APP" Tutti.app.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tutti-app-unsigned
+          path: Tutti.app.zip
+          if-no-files-found: error
+
+      - name: Create release on tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Tutti.app.zip
+          generate_release_notes: true
