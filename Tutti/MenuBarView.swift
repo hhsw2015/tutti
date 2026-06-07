@@ -100,21 +100,7 @@ struct MenuBarView: View {
     // MARK: - Banner state machine
 
     private var bannerVariant: BannerVariant? {
-        // Priority: trialExpired > volume-key upgrade pulse > countdown > welcome
-        if trial.hasUsedTrial && !trial.isInTrial && !license.isPro
-            && trialExpiredDismissedSession != TrialManager.currentSessionID {
-            return .trialExpired
-        }
-        if showUpgradePulse && !LicenseManager.hasProAccess {
-            return .upgrade(reason: manager.pendingUpgradeReason)
-        }
-        if trial.isInTrial && trial.daysRemaining <= 3
-            && countdownDismissedDate != todayKey() {
-            return .trialCountdown(daysRemaining: trial.daysRemaining)
-        }
-        if trial.isInTrial && !welcomeAcknowledged {
-            return .welcome(trialDays: 7)
-        }
+        // Self-build with Pro permanently unlocked — suppress every license/trial banner.
         return nil
     }
 

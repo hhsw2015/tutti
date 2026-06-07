@@ -19,10 +19,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private let repositionedWindows = NSHashTable<NSWindow>.weakObjects()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // 7-day Pro trial. Idempotent — only sets the start date the first
-        // time, so re-launches don't reset it. Must run before any UI reads
-        // LicenseManager.hasProAccess.
-        TrialManager.shared.startTrialIfFirstLaunch()
+        // Pro is unlocked unconditionally in this self-build, so the trial
+        // is never started.
 
         // Touch the Sparkle facade so its underlying SPUStandardUpdaterController
         // gets created + started at launch, not lazily when the user first
