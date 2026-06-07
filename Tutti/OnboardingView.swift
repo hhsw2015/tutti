@@ -81,7 +81,7 @@ struct OnboardingView: View {
                     icon: "keyboard",
                     title: "高级功能",
                     sub: "音量直控 + 预设切换",
-                    pro: true
+                    pro: false
                 )
                 OnboardingFeatureCard(
                     icon: "bolt.fill",
