@@ -242,20 +242,13 @@ private struct GeneralTab: View {
                 .tint(Color.designAccent)
             }
 
-            if LicenseManager.hasProAccess {
-                CardRow("辅助功能权限",
-                        subtitle: "授权后，键盘音量键可以直接调所有扬声器的音量。") {
-                    if audio.hasAccessibilityPermission {
-                        StatusPill(label: "已授权", tone: .accent)
-                    } else {
-                        Button("去授权") { openAccessibilitySettings() }
-                            .buttonStyle(GhostButtonStyle())
-                    }
-                }
-            } else {
-                CardRow("高级功能 · Pro",
-                        subtitle: "升级 Pro 后，键盘音量键和鼠标滚轮直接调所有扬声器，常用设备组合还能存成预设一键切换。") {
-                    ProUpgradeButton(purchaseURL: license.purchaseURL)
+            CardRow("辅助功能权限",
+                    subtitle: "授权后，键盘音量键可以直接调所有扬声器的音量。") {
+                if audio.hasAccessibilityPermission {
+                    StatusPill(label: "已授权", tone: .accent)
+                } else {
+                    Button("去授权") { openAccessibilitySettings() }
+                        .buttonStyle(GhostButtonStyle())
                 }
             }
 

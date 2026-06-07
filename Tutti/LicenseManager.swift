@@ -357,7 +357,7 @@ extension LicenseManager {
     /// first-launch trial still running. All Pro-only feature paths must
     /// route through this, not `isPro`, so trial users get full access.
     static var hasProAccess: Bool {
-        shared.isPro || TrialManager.shared.isInTrial
+        return true
     }
 }
 
