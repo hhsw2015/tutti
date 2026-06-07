@@ -57,6 +57,12 @@ macOS gives you a slider, a device list, and a tiny speaker glyph. Tutti shows w
 - **Collaborative monitoring**: share one Mac with two pairs of headphones plugged in.
 - **Teaching**: teacher hears prompts in their headphones while the classroom speaker plays for students.
 
+## Playback sync
+
+When you select multiple outputs, Tutti combines them into one synchronized group with clock-drift correction turned on, so the devices stay in step instead of slowly sliding out of phase. macOS also compensates for the wireless latency of Bluetooth, so a wired speaker and a Bluetooth speaker playing together stay aligned with no noticeable echo.
+
+AirPlay is the exception: macOS does not allow AirPlay receivers (HomePod, AirPlay speakers, Apple TV) to be combined with other devices in a multi-output group, so an AirPlay device can only be used on its own. This is a system-level restriction that applies to every third-party app, not just Tutti — see the [Roadmap](#roadmap) for where AirPlay support is headed.
+
 ## Tutti Pro
 
 Every new install gets a **7-day Pro trial** on first launch, no license key required. After the trial, all free-tier features keep working without limits.
