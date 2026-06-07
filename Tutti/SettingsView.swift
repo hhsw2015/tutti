@@ -782,8 +782,10 @@ private struct ScallopedBadge: Shape {
         for i in 0..<(points * 2) {
             let theta = (Double(i) / Double(points * 2)) * 2 * .pi - .pi / 2
             let r = (i % 2 == 0) ? outer : inner
-            let p = CGPoint(x: center.x + cos(theta) * r,
-                            y: center.y + sin(theta) * r)
+            let cx: Double = Darwin.cos(theta)
+            let sy: Double = Darwin.sin(theta)
+            let p = CGPoint(x: center.x + CGFloat(cx) * r,
+                            y: center.y + CGFloat(sy) * r)
             if i == 0 { path.move(to: p) } else { path.addLine(to: p) }
         }
         path.closeSubpath()
